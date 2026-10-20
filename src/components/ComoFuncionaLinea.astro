@@ -1,0 +1,409 @@
+---
+// «Cómo funciona» · versión A, «La línea».
+// Referencia: exploracion/como-funciona-linea-completa.html.
+// «Tú» baja por una línea a la altura del ~45 % de la ventana; cada parada se enciende al llegar.
+// Móvil: cada paso con su pantalla debajo. Ordenador: un móvil fijo enseña la pantalla del paso más cercano
+// y, en la opción premium, se aparta y aparece una videollamada de escritorio.
+// PLACEHOLDER: personas, fotos y textos de muestra.
+import { Image } from 'astro:assets';
+import { CTA_PRINCIPAL } from '../config';
+import { losDeDentro } from '../data/home';
+
+const [marta, dani, ivan, mia] = losDeDentro.personas;
+const gente = [marta, ivan, mia];
+const SIL = '<svg class="cfl-sil" viewBox="0 0 200 170" aria-hidden="true"><circle cx="100" cy="66" r="36"/><path d="M24 170c0-46 34-72 76-72s76 26 76 72z"/></svg>';
+// Pantalla del paso 2: el chico «elige» un camino (PLACEHOLDER: profesiones de ejemplo)
+const pantCaminos = () => `<div class="cfl-pant" data-p="1">
+  <div class="cfl-pant__cab"><span>Tus caminos</span><span>3</span></div>
+  <p class="cfl-pant__tit">Tus <em>3</em> caminos</p>
+  <p class="cfl-pant__sub">¿Por cuál empiezas?</p>
+  <div class="cfl-cam">
+    <svg aria-hidden="true"></svg>
+    <span class="cfl-cam__tu">Tú</span>
+    <div class="cfl-cam__f"><span class="cfl-cam__ic"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3.5v11L16 14z"/></svg></span><div><small>Lo que más te pega</small><b>Creación de contenido</b></div></div>
+    <div class="cfl-cam__f e"><span class="cfl-cam__ic"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg></span><div><small>El puente</small><b>Animación 3D</b><span class="cfl-cam__ok">✓ Empiezas por aquí</span></div></div>
+    <div class="cfl-cam__f salto"><span class="cfl-cam__ic"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5.5-3.5 9-8 11-4.5-2-8-5.5-8-11V5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></span><div><small>El salto</small><b>Ciberseguridad</b></div></div>
+  </div>
+</div>`;
+const MIC = '<svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+---
+
+<section id="como-funciona" class="cfl" aria-labelledby="cfl-titulo" data-cfl data-placeholder="true">
+  <div class="ancho cfl__rej">
+    <div class="cfl__col" data-cfl-col>
+      <div class="cfl__hilo" aria-hidden="true">
+        <span class="cfl__base"></span>
+        <span class="cfl__viva" data-cfl-viva></span>
+        <span class="cfl__tu" data-cfl-tu>Tú</span>
+      </div>
+
+      <header class="cfl__cab">
+        <p class="cfl__eti">Cómo funciona</p>
+        <h2 id="cfl-titulo" class="cfl__tit">De no saber qué estudiar a saber qué <span>quieres probar</span>.</h2>
+      </header>
+
+      <div class="cfl__parada" data-k="0">
+        <span class="cfl__punto" aria-hidden="true"></span>
+        <span class="cfl__n">01</span>
+        <h3>Haces un test</h3>
+        <p class="cfl__t">¿Cómo es tu energía? Eliges lo que más se parece a ti y en 8 minutos tienes tu perfil.</p>
+        <span class="cfl__chip">8 min · 12 preguntas</span>
+        <div class="cfl__slot" aria-hidden="true">
+          <div class="cfl-pant" data-p="0">
+            <div class="cfl-pant__cab"><span>Brújula interior</span><span>3 de 12</span></div>
+            <div class="cfl-pant__barra"><i></i></div>
+            <p class="cfl-pant__q">¿Cómo describirías tu energía natural?</p>
+            <div class="cfl-ops"><span><b>Creador/a</b>Imaginas y construyes</span><span><b>Estratega</b>Planificas y resuelves</span><span><b>Conector/a</b>Unes personas e ideas</span><span><b>Explorador/a</b>Buscas lo desconocido</span></div>
+            <span class="cfl-pant__sig">Siguiente →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cfl__parada" data-k="1">
+        <span class="cfl__punto" aria-hidden="true"></span>
+        <span class="cfl__n">02</span>
+        <h3>Recibes 3 caminos</h3>
+        <p class="cfl__t">Al acabar, recibes 3 caminos que encajan contigo: el que más te pega, un puente hacia algo conocido y un salto hacia algo nuevo. Tú eliges por cuál empezar.</p>
+        <div class="cfl__slot" aria-hidden="true">
+          <Fragment set:html={pantCaminos()} />
+        </div>
+      </div>
+
+      <div class="cfl__parada" data-k="2">
+        <span class="cfl__punto" aria-hidden="true"></span>
+        <span class="cfl__n">03</span>
+        <h3>Hablas con gente real</h3>
+        <p class="cfl__t">Recibes consejos y entrevistas con personas que ya se dedican a ello: qué estudiaron, cómo empezaron y cómo es su día a día.</p>
+        <div class="cfl__slot" aria-hidden="true">
+          <div class="cfl-pant" data-p="2">
+            <div class="cfl-pant__cab"><span>Entrevista</span><span class="cfl-lima">● En directo</span></div>
+            <div class="cfl-vid">
+              <Image src={dani.foto} alt="" width={540} height={540} quality={65} class="cfl-vid__img" />
+              <span class="cfl-vid__yo">Tú</span><span class="cfl-vid__nom">{dani.nombre}, {dani.edad} · sonido para videojuegos</span>
+            </div>
+            <div class="cfl-burb"><p class="yo">¿Qué estudiaste tú?</p><p class="ella">Empecé Informática, me pasé a una FP de Sonido… y aquí estoy.</p></div>
+          </div>
+        </div>
+        <div class="cfl-gente">
+          <p class="cfl-gente__eti">Algunas personas con las que puedes hablar</p>
+          <ul class="cfl-gente__lista" role="list" tabindex="0" aria-label="Personas con las que puedes hablar">
+            {gente.map((p) => (
+              <li class="cfl-gente__it">
+                <div class="cfl-gente__foto"><Image src={p.foto} alt={p.alt} width={480} height={330} quality={65} /><span aria-hidden="true">▶ {p.duracion}</span></div>
+                <b>{p.nombre}, {p.edad}</b>
+                <small>{p.camino.join(' → ')}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="cfl__parada cfl__parada--premium" data-k="3">
+        <span class="cfl__punto" aria-hidden="true"></span>
+        <span class="cfl__n">+ Opción premium</span>
+        <h3>Un coach te acompaña</h3>
+        <p class="cfl__t">Para quien quiera ir un paso más allá: sesiones online con un coach para probar tus caminos en la vida real y decidir qué estudiar.</p>
+        <span class="cfl__chip">Opcional · de pago</span>
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, duración y frecuencia de las sesiones -->" />
+        <div class="cfl__slot cfl__slot--coach" aria-hidden="true">
+          <div class="cfl-pant" data-p="3">
+            <div class="cfl-pant__cab"><span>Sesión con tu coach</span><span class="cfl-lima">● En directo</span></div>
+            <div class="cfl-vid cfl-vid--coach"><Fragment set:html={SIL} /><span class="cfl-vid__yo">Tú</span><span class="cfl-vid__nom">Laura · coach</span></div>
+            <div class="cfl-burb"><p class="ella">De tus 3 caminos, ¿cuál te apetece probar primero?</p><p class="yo">Animación 3D. ¿Por dónde empiezo?</p></div>
+          </div>
+        </div>
+        <!-- Ordenador: la sesión como videollamada de escritorio -->
+        <div class="cfl-meet" aria-hidden="true" data-cfl-meet>
+          <div class="cfl-meet__barra"><i></i><i></i><i></i><span>Sesión con tu coach · NextYou</span></div>
+          <div class="cfl-meet__cuerpo">
+            <div class="cfl-meet__tile cfl-meet__ella"><Fragment set:html={SIL} /><span class="cfl-meet__nom">Laura · coach</span><span class="cfl-meet__mic"><Fragment set:html={MIC} /></span></div>
+            <div class="cfl-meet__tile cfl-meet__tu"><span class="cfl-meet__nom">Tú</span></div>
+            <p class="cfl-meet__sub"><b>Laura:</b> <span data-cfl-subt></span></p>
+          </div>
+          <div class="cfl-meet__ctrl"><span>10:30 · Sesión 2</span><div class="cfl-meet__bot"><i></i><i></i><i></i><i class="colgar"></i></div><span></span></div>
+        </div>
+      </div>
+
+      <div class="cfl__final" data-cfl-fin>
+        <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
+        <a href={CTA_PRINCIPAL.href} class="boton boton--grande">Haz el test gratis <span aria-hidden="true">→</span></a>
+        <small>8 minutos · gratis</small>
+      </div>
+    </div>
+
+    <!-- Ordenador: móvil fijo que cambia de pantalla -->
+    <div class="cfl__fijo" aria-hidden="true" data-cfl-fijo>
+      <div class="cfl-tel"><div class="cfl-tel__in" data-cfl-tel></div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const sec = document.querySelector<HTMLElement>('[data-cfl]');
+  if (sec) {
+    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ancho = window.matchMedia('(min-width: 64rem)');
+    const col = sec.querySelector<HTMLElement>('[data-cfl-col]')!;
+    const viva = sec.querySelector<HTMLElement>('[data-cfl-viva]')!;
+    const tu = sec.querySelector<HTMLElement>('[data-cfl-tu]')!;
+    const fin = sec.querySelector<HTMLElement>('[data-cfl-fin]')!;
+    const fijo = sec.querySelector<HTMLElement>('[data-cfl-fijo]')!;
+    const tel = sec.querySelector<HTMLElement>('[data-cfl-tel]')!;
+    const meet = sec.querySelector<HTMLElement>('[data-cfl-meet]');
+    const paradas = [...sec.querySelectorAll<HTMLElement>('.cfl__parada')];
+
+    // El móvil fijo lleva copias de las pantallas 0-2 (la del coach va en la videollamada)
+    [0, 1, 2].forEach((k) => {
+      const p = sec.querySelector<HTMLElement>(`.cfl__slot .cfl-pant[data-p="${k}"]`);
+      if (p) tel.append(p.cloneNode(true));
+    });
+    const pantFijo = [...tel.querySelectorAll<HTMLElement>('.cfl-pant')];
+    const pantSlot = [...sec.querySelectorAll<HTMLElement>('.cfl__slot .cfl-pant')];
+
+    const arriba = (el: HTMLElement) => el.getBoundingClientRect().top - col.getBoundingClientRect().top;
+
+    // Ramas de la pantalla de caminos (dependen del tamaño real)
+    const ramas = (p: HTMLElement) => {
+      const cam = p.querySelector<HTMLElement>('.cfl-cam');
+      if (!cam || !cam.offsetWidth) return;
+      const svg = cam.querySelector('svg')!;
+      const ct = cam.querySelector<HTMLElement>('.cfl-cam__tu')!;
+      const base = cam.getBoundingClientRect();
+      const x = ct.offsetLeft + ct.offsetWidth / 2, y0 = ct.offsetTop + ct.offsetHeight, r = 12;
+      let rs = '', brillo = '';
+      [...cam.querySelectorAll<HTMLElement>('.cfl-cam__f')].forEach((f, k) => {
+        const ic = f.querySelector<HTMLElement>('.cfl-cam__ic')!.getBoundingClientRect();
+        const ix = ic.left - base.left, cy = ic.top - base.top + ic.height / 2;
+        const d = `M${x} ${y0} L${x} ${cy - r} Q${x} ${cy} ${x + r} ${cy} L${ix} ${cy}`;
+        rs += `<path class="cfl-cam__rama${k === 2 ? ' salto' : ''}" d="${d}"/>`;
+        if (k === 1) brillo = `<path class="cfl-cam__brillo" pathLength="1" d="${d}"/>`;
+      });
+      svg.innerHTML = rs + brillo;
+    };
+
+    // Cada pantalla cobra vida al llegar
+    const tiempos = new WeakMap<HTMLElement, number>();
+    const activa = (p: HTMLElement, on: boolean) => {
+      const k = Number(p.dataset.p);
+      window.clearTimeout(tiempos.get(p));
+      if (k === 0) {
+        const op = p.querySelector('.cfl-ops span');
+        op?.classList.remove('s');
+        if (on) tiempos.set(p, window.setTimeout(() => op?.classList.add('s'), quieto ? 0 : 700));
+      } else if (k === 1) {
+        const cam = p.querySelector('.cfl-cam')!, sub = p.querySelector('.cfl-pant__sub')!;
+        if (on) {
+          ramas(p);
+          tiempos.set(p, window.setTimeout(() => { cam.classList.add('sel'); sub.innerHTML = 'Empiezas por <b>Animación 3D</b>'; }, quieto ? 0 : 900));
+        } else { cam.classList.remove('sel'); sub.textContent = '¿Por cuál empiezas?'; }
+      } else p.classList.toggle('vivo', on);
+    };
+
+    // Subtítulos de la videollamada
+    let escrito = false, tSub = 0;
+    const subtitula = (on: boolean) => {
+      if (!meet) return;
+      const s = meet.querySelector<HTMLElement>('[data-cfl-subt]')!;
+      const frase = 'De tus 3 caminos, ¿cuál te apetece probar primero?';
+      window.clearTimeout(tSub);
+      if (!on || escrito) return;
+      let i = 0;
+      const paso = () => { s.textContent = frase.slice(0, i); if (i++ < frase.length) tSub = window.setTimeout(paso, quieto ? 0 : 35); else escrito = true; };
+      paso();
+    };
+
+    let actual = -2;
+    const mueve = () => {
+      const yIni = 8;
+      const yFin = arriba(fin) + 24;
+      const obj = window.innerHeight * 0.45 - col.getBoundingClientRect().top;
+      const y = quieto ? yFin : Math.max(yIni, Math.min(yFin, obj));
+      sec.style.setProperty('--cfl-y', `${y}px`);
+      sec.style.setProperty('--cfl-fin', `${yFin}px`);
+      let k = -1;
+      paradas.forEach((p, i) => {
+        const pt = arriba(p.querySelector<HTMLElement>('.cfl__punto')!) + 8;
+        const ok = y >= pt - 4;
+        p.classList.toggle('ok', ok);
+        if (ok) k = i;
+      });
+      if (ancho.matches) {
+        let mejor = 0, dm = Infinity;
+        paradas.forEach((p, i) => { const c = arriba(p) + p.offsetHeight / 2; const d = Math.abs(c - obj); if (d < dm) { dm = d; mejor = i; } });
+        k = mejor;
+      }
+      if (k === actual) return;
+      actual = k;
+      if (ancho.matches) {
+        pantFijo.forEach((p, i) => { const on = i === Math.max(0, Math.min(k, 2)); p.classList.toggle('act', on); activa(p, on); });
+        fijo.classList.toggle('fuera', k === 3);
+        subtitula(k === 3);
+      } else {
+        pantSlot.forEach((p) => activa(p, Number(p.dataset.p) === k));
+      }
+    };
+    let marco = 0;
+    const pedir = () => { cancelAnimationFrame(marco); marco = requestAnimationFrame(mueve); };
+    window.addEventListener('scroll', pedir, { passive: true });
+    window.addEventListener('resize', () => { actual = -2; pedir(); });
+    ancho.addEventListener('change', () => { actual = -2; pedir(); });
+    document.fonts.ready.then(() => { actual = -2; mueve(); });
+    mueve();
+  }
+</script>
+
+<style is:global>
+  /* ---------- «Cómo funciona» · La línea ---------- */
+  .cfl { --cfl-linea: color-mix(in srgb, var(--negro) 18%, var(--papel)); background: var(--papel); color: var(--negro); padding-block: var(--aire); }
+  .cfl__rej { display: grid; }
+  .cfl__col { position: relative; padding-left: 3.25rem; }
+  .cfl__hilo { position: absolute; left: 0; top: 0; width: 1.5rem; height: 100%; pointer-events: none; }
+  .cfl__base, .cfl__viva { position: absolute; left: 11px; top: 8px; width: 2px; border-radius: 2px; }
+  .cfl__base { height: calc(var(--cfl-fin, 100%) - 8px); background: var(--cfl-linea); }
+  .cfl__viva { height: calc(var(--cfl-y, 8px) - 8px); background: var(--negro); }
+  .cfl__tu { position: absolute; left: 12px; top: var(--cfl-y, 8px); z-index: 2; display: grid; place-items: center; width: 2rem; height: 2rem; translate: -50% -50%; border-radius: 50%; background: var(--negro); color: var(--crema); font-size: 0.625rem; font-weight: 800; }
+  .cfl__eti { font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gris-oscuro); }
+  .cfl__tit { max-width: 14em; margin-top: 0.625rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: clamp(1.875rem, 1.2rem + 2.6vw, 2.875rem); line-height: 1.08; letter-spacing: -0.015em; }
+  .cfl__tit span { background: linear-gradient(var(--acento), var(--acento)) no-repeat left 88% / 100% 0.26em; }
+
+  .cfl__parada { position: relative; display: flex; flex-direction: column; margin-top: 7rem; }
+  .cfl__punto { position: absolute; left: -48px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--papel); border: 2px solid var(--cfl-linea); transition: background 300ms, border-color 300ms, transform 300ms; }
+  .cfl__parada.ok .cfl__punto { background: var(--acento); border-color: var(--negro); transform: scale(1.1); }
+  .cfl__n { font-family: var(--titular); font-weight: 800; font-size: 0.875rem; color: var(--gris-oscuro); }
+  .cfl__parada h3 { margin-top: 0.25rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.25rem); line-height: 1.05; }
+  .cfl__t { max-width: 30em; margin-top: 0.5rem; font-size: clamp(0.9375rem, 0.85rem + 0.35vw, 1.125rem); line-height: 1.5; color: var(--gris-oscuro); }
+  .cfl__chip { align-self: flex-start; margin-top: 0.75rem; padding: 0.25rem 0.7rem; border: 1.5px solid var(--negro); border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
+  .cfl__slot { margin-top: 1.125rem; }
+  .cfl__parada--premium .cfl__punto { border-style: dashed; }
+  .cfl__parada--premium.ok .cfl__punto { background: var(--papel); border-color: var(--negro); border-style: dashed; }
+  .cfl__parada--premium .cfl__n { align-self: flex-start; padding: 0.2rem 0.625rem; border-radius: 999px; background: color-mix(in srgb, var(--negro) 8%, var(--papel)); color: var(--negro); font-size: 0.72rem; }
+  .cfl__final { margin-top: 5.5rem; }
+  .cfl__final .boton span { margin-left: 0.4em; }
+  .cfl__final small { display: block; margin-top: 0.625rem; font-size: 0.78rem; color: var(--gris-oscuro); }
+  .cfl__fijo, .cfl-meet { display: none; }
+
+  /* Pantallas */
+  .cfl-pant { display: flex; flex-direction: column; min-height: 20.5rem; padding: 1.125rem 1rem; border-radius: 22px; background: var(--negro); color: var(--crema); }
+  .cfl-pant__cab { display: flex; justify-content: space-between; font-size: 0.625rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris); }
+  .cfl-lima { color: var(--acento-texto); }
+  .cfl-pant__barra { height: 4px; margin-top: 0.5rem; border-radius: 4px; background: #3a342e; overflow: hidden; }
+  .cfl-pant__barra i { display: block; width: 25%; height: 100%; background: var(--acento); }
+  .cfl-pant__q { margin-top: 1rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.2rem; line-height: 1.12; }
+  .cfl-ops { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 0.875rem; }
+  .cfl-ops span { padding: 10px 9px; border: 1.3px solid #3a342e; border-radius: 12px; font-size: 0.69rem; line-height: 1.25; color: var(--gris); transition: background 300ms, border-color 300ms, color 300ms; }
+  .cfl-ops b { display: block; margin-bottom: 2px; font-size: 0.81rem; color: var(--crema); }
+  .cfl-ops span.s { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+  .cfl-ops span.s b { color: var(--acento-txt); }
+  .cfl-pant__sig { align-self: flex-end; margin-top: auto; padding: 8px 14px; border-radius: 999px; background: var(--crema); color: var(--negro); font-size: 0.75rem; font-weight: 800; }
+  .cfl-pant__tit { margin-top: 0.625rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.25rem; line-height: 1.1; }
+  .cfl-pant__tit em { font-style: normal; color: var(--acento-texto); }
+  .cfl-pant__sub { min-height: 1.3em; margin-top: 0.25rem; font-size: 0.72rem; color: var(--gris); }
+  .cfl-pant__sub b { color: var(--crema); }
+  /* Caminos */
+  .cfl-cam { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; min-height: 15.5rem; margin-top: 0.5rem; padding-top: 2.5rem; }
+  .cfl-cam > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .cfl-cam__rama { fill: none; stroke: var(--crema); stroke-opacity: 0.45; stroke-width: 1.3; transition: stroke-opacity 400ms; }
+  .cfl-cam__rama.salto { stroke-dasharray: 3 4; }
+  .cfl-cam__brillo { fill: none; stroke: var(--acento); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 800ms cubic-bezier(0.5, 0, 0.2, 1); }
+  .cfl-cam.sel .cfl-cam__brillo { stroke-dashoffset: 0; }
+  .cfl-cam.sel .cfl-cam__rama { stroke-opacity: 0.18; }
+  .cfl-cam__tu { position: absolute; top: 0; left: 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--crema); color: var(--negro); font-size: 0.69rem; font-weight: 800; }
+  .cfl-cam__f { display: grid; grid-template-columns: 40px 1fr; gap: 11px; align-items: center; margin-left: 38px; transition: opacity 400ms; }
+  .cfl-cam__ic { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1.3px solid #6f675e; background: var(--negro); transition: background 350ms, border-color 350ms; }
+  .cfl-cam__ic svg { width: 19px; height: 19px; fill: none; stroke: var(--crema); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .cfl-cam__f.salto .cfl-cam__ic { border-style: dashed; }
+  .cfl-cam__f small { display: block; font-size: 0.53rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: var(--gris); }
+  .cfl-cam__f b { display: block; margin-top: 2px; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 0.94rem; line-height: 1.05; }
+  .cfl-cam__ok { display: inline-block; margin-top: 5px; padding: 2px 8px; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font-size: 0.6rem; font-weight: 800; opacity: 0; transition: opacity 300ms 600ms; }
+  .cfl-cam.sel .cfl-cam__f { opacity: 0.32; }
+  .cfl-cam.sel .cfl-cam__f.e { opacity: 1; }
+  .cfl-cam.sel .cfl-cam__f.e .cfl-cam__ic { background: var(--acento); border-color: var(--acento); border-style: solid; }
+  .cfl-cam.sel .cfl-cam__f.e .cfl-cam__ic svg { stroke: var(--acento-txt); }
+  .cfl-cam.sel .cfl-cam__ok { opacity: 1; }
+  /* Vídeo de la entrevista / coach */
+  .cfl-vid { position: relative; flex: none; aspect-ratio: 16 / 11; margin-top: 0.625rem; border-radius: 16px; overflow: hidden; background: #000; }
+  .cfl-vid__img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .cfl-vid__yo { position: absolute; right: 9px; top: 9px; display: grid; place-items: center; width: 52px; aspect-ratio: 3 / 4; border-radius: 9px; border: 1.5px solid rgb(255 255 255 / 0.4); background: linear-gradient(135deg, #4a433c, #2a2622); font-size: 0.62rem; font-weight: 800; }
+  .cfl-vid__nom { position: absolute; left: 10px; bottom: 9px; font-size: 0.75rem; font-weight: 800; text-shadow: 0 1px 5px rgb(0 0 0 / 0.7); }
+  .cfl-vid--coach { display: grid; place-items: end center; background: linear-gradient(160deg, #3a342e, #211e1b); }
+  .cfl-sil { width: 70%; margin-bottom: -2px; fill: #5a524a; }
+  .cfl-burb { display: flex; flex-direction: column; gap: 6px; margin-top: 0.625rem; }
+  .cfl-burb p { max-width: 88%; padding: 8px 11px; border-radius: 15px; font-size: 0.78rem; line-height: 1.3; opacity: 0; transform: translateY(6px); transition: opacity 350ms, transform 350ms; }
+  .cfl-burb .yo { align-self: flex-end; border-bottom-right-radius: 5px; background: var(--crema); color: var(--negro); }
+  .cfl-burb .ella { align-self: flex-start; border-bottom-left-radius: 5px; background: #2a2622; }
+  .cfl-pant.vivo .cfl-burb p { opacity: 1; transform: none; }
+  .cfl-pant.vivo .cfl-burb p:nth-child(1) { transition-delay: 300ms; }
+  .cfl-pant.vivo .cfl-burb p:nth-child(2) { transition-delay: 1300ms; }
+  /* Las 3 personas: carrusel en móvil */
+  .cfl-gente { margin-top: 1.625rem; }
+  .cfl-gente__eti { margin-bottom: 0.75rem; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris-oscuro); }
+  .cfl-gente__lista { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-right: calc(-1 * var(--margen)); padding-right: var(--margen); }
+  .cfl-gente__lista::-webkit-scrollbar { display: none; }
+  .cfl-gente__lista:focus-visible { outline: 2px solid var(--negro); outline-offset: 4px; border-radius: 8px; }
+  .cfl-gente__it { flex: 0 0 62%; scroll-snap-align: start; }
+  .cfl-gente__foto { position: relative; aspect-ratio: 16 / 11; border-radius: 14px; overflow: hidden; background: #000; }
+  .cfl-gente__foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .cfl-gente__foto span { position: absolute; left: 8px; bottom: 8px; padding: 3px 9px; border-radius: 999px; background: rgb(0 0 0 / 0.55); color: #fff; font-size: 0.69rem; font-weight: 800; }
+  .cfl-gente__it b { display: block; margin-top: 0.5rem; font-size: 0.94rem; }
+  .cfl-gente__it small { display: block; margin-top: 2px; font-size: 0.78rem; line-height: 1.35; color: var(--gris-oscuro); }
+
+  /* Ordenador */
+  @media (min-width: 64rem) {
+    .cfl__rej { grid-template-columns: 1fr 340px; gap: 60px; }
+    .cfl__parada { justify-content: center; min-height: 32.5rem; margin-top: 0; }
+    .cfl__parada[data-k='0'] { margin-top: 3.75rem; }
+    .cfl__slot { display: none; }
+    .cfl__final { margin-top: 1.25rem; }
+    .cfl-gente__lista { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; margin-right: 0; padding-right: 0; }
+    .cfl__fijo { display: block; position: sticky; top: var(--cfl-arriba, 7.5rem); align-self: start; height: 38rem; margin-top: 3.75rem; transition: opacity 400ms; }
+    .cfl__fijo.fuera { opacity: 0; }
+    .cfl-tel { width: 300px; height: 610px; margin: 0 auto; padding: 10px; border-radius: 46px; background: #1d1a17; box-shadow: inset 0 0 0 2px #3b352f, 0 40px 70px -35px rgb(0 0 0 / 0.55); }
+    .cfl-tel__in { position: relative; height: 100%; border-radius: 37px; background: var(--negro); overflow: hidden; }
+    .cfl-tel__in::before { content: ''; position: absolute; z-index: 5; top: 10px; left: 50%; width: 84px; height: 23px; translate: -50% 0; border-radius: 20px; background: #000; }
+    .cfl-tel .cfl-pant { position: absolute; inset: 0; min-height: 0; padding: 44px 18px 20px; border-radius: 0; opacity: 0; transform: translateY(14px); transition: opacity 450ms, transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .cfl-tel .cfl-pant.act { opacity: 1; transform: none; }
+    .cfl-tel .cfl-vid { flex: 1; aspect-ratio: 4 / 5; }
+    .cfl-meet { display: block; width: calc(100% + 400px); margin-top: 1.375rem; border-radius: 14px; overflow: hidden; background: #202124; color: #e8eaed; box-shadow: 0 40px 70px -35px rgb(0 0 0 / 0.55); }
+    .cfl-meet__barra { display: flex; align-items: center; gap: 6px; padding: 9px 12px; background: #2b2c30; font-size: 0.72rem; color: #bdc1c6; }
+    .cfl-meet__barra i { width: 10px; height: 10px; border-radius: 50%; background: #e36a5a; }
+    .cfl-meet__barra i:nth-child(2) { background: #e8b84a; }
+    .cfl-meet__barra i:nth-child(3) { background: #7ac15a; }
+    .cfl-meet__barra span { margin-left: 10px; }
+    .cfl-meet__cuerpo { position: relative; display: grid; height: 330px; padding: 12px 12px 6px; }
+    .cfl-meet__tile { position: relative; border-radius: 12px; overflow: hidden; background: #3c4043; }
+    .cfl-meet__ella { display: grid; place-items: end center; background: linear-gradient(160deg, #4a4d52, #2e3134); box-shadow: inset 0 0 0 3px var(--acento); }
+    .cfl-meet__ella .cfl-sil { width: 44%; fill: #6b6f75; }
+    .cfl-meet__tu { position: absolute; right: 24px; bottom: 18px; width: 180px; aspect-ratio: 16 / 10; background: linear-gradient(135deg, #5a5249, #2a2622); box-shadow: 0 6px 18px rgb(0 0 0 / 0.45); }
+    .cfl-meet__nom { position: absolute; left: 10px; bottom: 8px; font-size: 0.75rem; font-weight: 700; text-shadow: 0 1px 4px rgb(0 0 0 / 0.7); }
+    .cfl-meet__mic { position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: rgb(0 0 0 / 0.35); }
+    .cfl-meet__mic svg { width: 14px; height: 14px; fill: none; stroke: #e8eaed; stroke-width: 1.7; stroke-linecap: round; }
+    .cfl-meet__sub { position: absolute; left: 50%; bottom: 26px; min-height: 38px; max-width: 62%; translate: -50% 0; padding: 8px 12px; border-radius: 8px; background: rgb(0 0 0 / 0.72); font-size: 0.94rem; line-height: 1.35; }
+    .cfl-meet__sub b { color: var(--acento); }
+    .cfl-meet__ctrl { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 14px; font-size: 0.78rem; color: #bdc1c6; }
+    .cfl-meet__bot { display: flex; gap: 9px; }
+    .cfl-meet__bot i { width: 38px; height: 38px; border-radius: 50%; background: #3c4043; }
+    .cfl-meet__bot i.colgar { width: 56px; border-radius: 999px; background: #d93025; }
+    .cfl__parada--premium .cfl__slot--coach { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cfl *, .cfl *::before { transition: none !important; } }
+</style>
+
+<style is:global>
+  /* Ajustes: pasos más compactos, hilo y móvil más cerca, coach al ancho del texto, paso 3 corto en móvil */
+  @media (max-width: 63.99rem) {
+    .cfl__parada[data-k='2'] .cfl__slot { display: none; }
+    .cfl__parada { margin-top: 5rem; }
+  }
+  @media (min-width: 64rem) {
+    .cfl__rej { grid-template-columns: minmax(0, 34rem) 300px; justify-content: center; gap: clamp(3rem, 2rem + 3vw, 6rem); }
+    .cfl__parada { min-height: 52vh; }
+    .cfl__parada[data-k='0'] { margin-top: 2.5rem; }
+    .cfl__fijo { margin-top: 2.5rem; top: max(var(--cfl-arriba, 7.5rem), calc(50vh - 305px + 2rem)); }
+    .cfl-meet { width: 100%; }
+    .cfl-meet__cuerpo { height: 260px; }
+    .cfl-meet__tu { width: 130px; right: 18px; bottom: 14px; }
+    .cfl-meet__sub { left: 18px; translate: none; max-width: calc(100% - 180px); font-size: 0.85rem; bottom: 18px; }
+    .cfl-meet__ella .cfl-meet__nom { bottom: auto; top: 10px; }
+    .cfl__final { margin-top: 3rem; }
+  }
+</style>

@@ -1,0 +1,236 @@
+---
+// Página para universitarios y estudiantes de FP (recorrido «Giro de Rumbo»), versión 4: con historias de cambio de rumbo.
+// Textos de src/data/universidad.ts, sacados de la documentación del proyecto.
+import V4 from '../../layouts/V4.astro';
+import { CTA_PRINCIPAL } from '../../config';
+import { universidad as u } from '../../data/universidad';
+import { historiasUni as h } from '../../data/v4';
+
+const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>${palabra}</em>`);
+---
+
+<V4 titulo={u.titulo} descripcion={u.descripcion} actual="universidad">
+  <main id="contenido" class="uni">
+    <!-- ===================== Portada ===================== -->
+    <section class="uni-hero" aria-labelledby="uni-titulo">
+      <div class="estrecho uni-hero__rejilla">
+        <div class="uni-hero__texto" data-aparece>
+          <p class="antetitulo">{u.hero.etiqueta}</p>
+          <h1 id="uni-titulo" class="titular" set:html={cursiva(u.hero.titulo, u.hero.resaltado)} />
+          <p class="uni-lema">{u.hero.lema}</p>
+          <p class="uni-lead">{u.hero.texto}</p>
+          <a href={CTA_PRINCIPAL.href} class="boton boton--grande">{u.hero.boton}</a>
+          <ul class="uni-meta" role="list">
+            {u.hero.meta.map((m) => <li class="pastilla">{m}</li>)}
+          </ul>
+        </div>
+
+        <!-- Muestra de la primera pantalla: el punto de giro -->
+        <figure class="uni-pantalla" aria-labelledby="uni-pantalla-titulo" data-aparece>
+          <p class="uni-pantalla__nota" aria-hidden="true">elige la tuya ↓</p>
+          <p id="uni-pantalla-titulo" class="uni-pantalla__titulo">¿En qué punto estás?</p>
+          <ul role="list">
+            {u.situacion.opciones.map((o, i) => (
+              <li class:list={{ sel: i === 0 }}><span class="uni-radio" aria-hidden="true" />{o}</li>
+            ))}
+          </ul>
+          <figcaption>Ejemplo de la primera pantalla.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===================== Cambiaron de rumbo (mismo formato que «Los de dentro») ===================== -->
+    <section class="uni-bloque uni-oscuro uni-gente uni-borde" aria-labelledby="uni-gente">
+      <div class="estrecho">
+        <header class="uni-cabecera" data-aparece>
+          <p class="antetitulo">{h.etiqueta}</p>
+          <h2 id="uni-gente">{h.titulo}</h2>
+        </header>
+        <ul class="uni-historias" role="list">
+          {h.personas.map((p) => (
+            <li class="uni-historia" data-placeholder="true" data-aparece>
+              <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real (también falta su foto) -->" />
+              <div class="uni-historia__foto" role="img" aria-label={`Foto de ${p.nombre}, pendiente`}>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+                <span aria-hidden="true">Foto pendiente</span>
+              </div>
+              <div class="uni-historia__pie">
+                <p class="uni-historia__gancho"><span>{p.cita}</span></p>
+                <p class="uni-historia__nombre">{p.nombre}, {p.edad}</p>
+                <p class="uni-historia__recorrido">{p.recorrido.join(' → ')}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== Lo que ya llevas contigo ===================== -->
+    <section class="uni-bloque sobre-claro" aria-labelledby="uni-conservar">
+      <div class="estrecho uni-dos">
+        <header class="uni-cabecera" data-aparece>
+          <p class="antetitulo antetitulo--claro">{u.conservar.etiqueta}</p>
+          <h2 id="uni-conservar">{u.conservar.titulo}</h2>
+          <p class="uni-lead">{u.conservar.texto}</p>
+        </header>
+        <div class="uni-activos" data-aparece>
+          <ul role="list">
+            {u.conservar.activos.map((a, i) => (
+              <li class:list={{ sel: i === 0 || i === 3 }}>
+                <span class="uni-check" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.5l2.5 2.5L10 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </span>
+                {a}
+              </li>
+            ))}
+          </ul>
+          <p class="uni-nota">{u.conservar.nota}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Tres caminos ===================== -->
+    <section class="uni-bloque uni-oscuro" aria-labelledby="uni-caminos">
+      <div class="estrecho">
+        <header class="uni-cabecera" data-aparece>
+          <p class="antetitulo">{u.caminos.etiqueta}</p>
+          <h2 id="uni-caminos">{u.caminos.titulo}</h2>
+        </header>
+        <ul class="uni-caminos" role="list">
+          {u.caminos.lista.map((c) => (
+            <li data-aparece>
+              <h3 class="uni-camino__nombre">{c.nombre}</h3>
+              <p>{c.texto}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== Lo que recibes ===================== -->
+    <section class="uni-bloque sobre-claro" aria-labelledby="uni-informe">
+      <div class="estrecho">
+        <header class="uni-cabecera" data-aparece>
+          <p class="antetitulo antetitulo--claro">{u.informe.etiqueta}</p>
+          <h2 id="uni-informe">{u.informe.titulo}</h2>
+        </header>
+        <ol class="uni-informe" role="list">
+          {u.informe.puntos.map((p, i) => (
+            <li data-aparece>
+              <span class="uni-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{p.titulo}</h3>
+              <p>{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+        <ul class="uni-nopasa" role="list" aria-label="Lo que no va a pasar" data-aparece>
+          {u.noVaAPasar.map((t) => (
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+              {t}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== Acompañamiento ===================== -->
+    <section class="uni-bloque uni-oscuro" aria-labelledby="uni-acomp">
+      <div class="estrecho uni-dos">
+        <header class="uni-cabecera" data-aparece>
+          <p class="antetitulo">{u.acompanamiento.etiqueta}</p>
+          <h2 id="uni-acomp">{u.acompanamiento.titulo}</h2>
+        </header>
+        <Fragment set:html="<!-- PENDIENTE: precio del acompañamiento con coach -->" />
+        <p class="uni-lead" data-aparece>{u.acompanamiento.texto}</p>
+      </div>
+    </section>
+
+    <!-- ===================== Cierre ===================== -->
+    <section class="uni-cierre" aria-labelledby="uni-cierre">
+      <div class="estrecho uni-cierre__caja" data-aparece>
+        <h2 id="uni-cierre" class="titular">{u.cierre.titulo}</h2>
+        <a href={CTA_PRINCIPAL.href} class="boton boton--grande">{u.cierre.boton}</a>
+      </div>
+    </section>
+  </main>
+</V4>
+
+<style is:global>
+  .uni-hero { background: var(--negro); color: var(--crema); padding-block: clamp(3rem, 2rem + 4vw, 6rem); }
+  .uni-hero__rejilla { display: grid; gap: 3rem; align-items: center; }
+  .uni-hero__texto { display: grid; justify-items: start; gap: 1.25rem; }
+  .uni-hero .titular { font-size: var(--t6); max-width: 14ch; }
+  .uni-lema { color: var(--crema); font-weight: 600; font-size: var(--t3); line-height: 1.35; max-width: 32ch; padding-left: 0.875rem; border-left: 3px solid var(--acento-texto); }
+  .uni-lead { font-size: var(--t3); line-height: 1.55; max-width: 36rem; color: var(--gris); }
+  .sobre-claro .uni-lead { color: var(--gris-oscuro); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .uni-pantalla { justify-self: center; position: relative; width: min(100%, 23rem); display: grid; gap: 0.625rem; padding: 1.25rem; border-radius: 20px; background: var(--tarjeta); border: 1px solid var(--linea); box-shadow: 0 30px 50px -30px rgb(0 0 0 / 0.8); rotate: 1.5deg; }
+  .uni-pantalla__nota { position: absolute; top: -1.75rem; right: 0.5rem; color: var(--acento-texto); font-size: var(--t1); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .uni-pantalla__titulo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); margin-bottom: 0.25rem; }
+  .uni-pantalla ul { display: grid; gap: 0.5rem; }
+  .uni-pantalla li { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: 12px; background: var(--negro); border: 1px solid var(--linea); font-weight: 600; }
+  .uni-pantalla li.sel { border-color: var(--acento-texto); }
+  .uni-radio { width: 18px; height: 18px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--gris); }
+  .sel .uni-radio { border-color: var(--acento-texto); background: radial-gradient(circle, var(--acento-texto) 0 45%, transparent 50%); }
+  .uni-pantalla figcaption { font-size: var(--t1); color: var(--gris); }
+
+  .uni-bloque { padding-block: clamp(4rem, 3rem + 4vw, 7rem); }
+  .uni-bloque.sobre-claro { background: var(--papel); color: var(--negro); }
+  .uni-oscuro { background: var(--negro-2); color: var(--crema); }
+  .uni-cabecera { display: grid; gap: 1rem; margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem); }
+  .uni-cabecera h2 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t5); line-height: 1.05; letter-spacing: -0.025em; max-width: 20ch; text-wrap: balance; }
+  .uni h3 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.2; }
+  .uni-dos { display: grid; gap: 2rem; }
+  .uni-dos .uni-cabecera { margin-bottom: 0; }
+
+  .uni-activos ul { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+  .uni-activos li { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0.5rem 1.125rem 0.5rem 0.625rem; border-radius: 999px; background: var(--papel); border: 1.5px solid rgb(22 20 18 / 0.14); font-weight: 600; }
+  .uni-activos li.sel { border-color: var(--negro); }
+  .uni-check { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgb(22 20 18 / 0.3); color: transparent; }
+  .sel .uni-check { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+  .uni-nota { margin-top: 1.5rem; font-size: var(--t1); color: var(--gris-oscuro); max-width: 34rem; }
+
+  .uni-caminos { display: grid; gap: 1.25rem; }
+  .uni-caminos li { display: grid; gap: 0.75rem; align-content: start; padding: 1.75rem; border-radius: 18px; background: var(--tarjeta); border: 1px solid var(--linea); }
+  .uni-camino__nombre { font-size: var(--t4) !important; color: var(--acento-texto); letter-spacing: -0.02em; justify-self: start; }
+  .uni-caminos p { color: var(--gris); }
+
+  .uni-informe { display: grid; gap: 2rem; }
+  .uni-informe li { display: grid; gap: 0.5rem; align-content: start; padding-top: 1.5rem; border-top: 1px solid rgb(22 20 18 / 0.15); }
+  .uni-informe p { color: var(--gris-oscuro); }
+  .uni-n { font-family: var(--titular); font-weight: 800; font-size: var(--t5); line-height: 1; color: var(--acento-oscuro); }
+  [data-paleta='d'] .uni-n { justify-self: start; padding: 0.1em 0.22em 0; border-radius: 8px; background: #c8f53b; color: var(--negro); }
+  .uni-nopasa { display: grid; gap: 0.75rem 2.5rem; margin-top: clamp(2.5rem, 2rem + 2vw, 4rem); padding-top: 2rem; border-top: 1px solid rgb(22 20 18 / 0.15); font-weight: 600; }
+  .uni-nopasa li { display: flex; gap: 0.625rem; align-items: baseline; }
+  .uni-nopasa svg { flex-shrink: 0; color: var(--acento-oscuro); translate: 0 1px; }
+  [data-paleta='d'] .uni-nopasa svg { color: var(--negro); }
+
+  .uni-cierre { background: radial-gradient(60% 90% at 50% 100%, color-mix(in srgb, var(--acento) 16%, transparent), transparent 70%), var(--negro); color: var(--crema); padding-block: clamp(4.5rem, 3rem + 5vw, 7.5rem); border-block: 1px solid var(--linea); }
+  .uni-cierre__caja { display: grid; justify-items: center; gap: 2rem; text-align: center; }
+  .uni-cierre .titular { max-width: 18ch; }
+
+  @media (min-width: 48rem) {
+    .uni-caminos { grid-template-columns: repeat(3, 1fr); }
+    .uni-informe { grid-template-columns: repeat(2, 1fr); }
+    .uni-nopasa { grid-template-columns: repeat(2, auto); }
+  }
+  @media (min-width: 60rem) {
+    .uni-hero__rejilla { grid-template-columns: 1.25fr 1fr; gap: 4rem; }
+    .uni-dos { grid-template-columns: 1fr 1.15fr; gap: 4rem; align-items: start; }
+    .uni-informe { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* ---------- v4: historias de cambio de rumbo ---------- */
+  .uni-borde { border-top: 1px solid var(--linea); }
+  .uni-historias { display: grid; gap: 1rem; }
+  .uni-historia { position: relative; display: grid; align-content: end; aspect-ratio: 9 / 13; border-radius: 22px; overflow: hidden; background: var(--tarjeta); border: 1px solid var(--linea); }
+  .uni-historia__foto { position: absolute; inset: 0 0 45%; display: grid; place-content: center; justify-items: center; gap: 0.5rem; color: var(--gris); font-size: var(--t1); background: repeating-linear-gradient(-45deg, transparent 0 14px, rgb(246 241 232 / 0.04) 14px 28px); }
+  .uni-historia__pie { position: relative; display: grid; justify-items: start; gap: 0.25rem; padding: 1.25rem; }
+  .uni-historia__gancho { margin-bottom: 0.75rem; rotate: -2deg; transform-origin: left bottom; font-family: var(--titular); font-weight: 800; font-size: var(--t2); line-height: 1.6; }
+  .uni-historia__gancho span { padding: 0.15em 0.4em; border-radius: 6px; background: var(--crema); color: var(--negro); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .uni-historia__nombre { font-family: var(--titular); font-weight: 800; font-size: var(--t4); line-height: 1.05; }
+  .uni-historia__recorrido { font-size: var(--t2); font-weight: 600; color: var(--crema); }
+  @media (min-width: 48rem) { .uni-historias { grid-template-columns: repeat(2, minmax(0, 20rem)); gap: 1.5rem; } }
+</style>

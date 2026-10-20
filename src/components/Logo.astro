@@ -1,0 +1,28 @@
+---
+// Logo de NextYou en negativo (hueso + lima), para fondos oscuros.
+import { BASE } from '../config';
+
+interface Props {
+  tam?: 'menu' | 'pie';
+}
+const { tam = 'menu' } = Astro.props;
+const alto = tam === 'pie' ? 44 : 34;
+---
+
+<img
+  src={`${BASE}marca/nextyou-logo.svg`}
+  alt="NextYou"
+  width={Math.round(alto * 3.78)}
+  height={alto}
+  class="logo"
+  style={`height:${alto}px`}
+/>
+
+<style>
+  /* El SVG no declara medidas propias: la altura manda y el ancho se calcula. */
+  .logo {
+    display: block;
+    width: auto;
+    max-width: none;
+  }
+</style>

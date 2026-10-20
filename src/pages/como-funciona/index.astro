@@ -1,0 +1,1923 @@
+---
+// Página solo para comparar «Cómo funciona»: A (la línea) y B (la actual de /v7/).
+// B se genera desde la v7 publicada; /v7/ no se toca. Se elige con los botones de arriba o ?op=a / ?op=b.
+// Correcciones de la reunión con la clienta (2026-10-08).
+// Versión 5: una sola landing. Universidad y familias son bloques de esta página (antes, páginas en la v4).
+// Versión 4 de la home (a partir de la v3). Antes, versión 3: identidad de la versión 1 (logo, Archivo, negro cálido y lima, detalles a mano)
+// con la estructura de la versión 2 (comentarios de Sara, SEO, demo, vídeos, familias).
+// Página independiente, con su propio estilo: no usa global.css ni los componentes de la v1.
+// Los textos salen de src/data/home.ts, los mismos que la v1. Personas y fotos DE MUESTRA.
+import { Image, Picture, getImage } from 'astro:assets';
+import V5 from '../../layouts/V5.astro';
+import LogoV3 from '../../components/LogoV3.astro';
+import ComoFuncionaLinea from '../../components/ComoFuncionaLinea.astro';
+import { SITIO, BASE, ENLACES, CTA_PRINCIPAL } from '../../config';
+import caveat from '../../assets/fonts/caveat.woff2?url';
+import { hero, losDeDentro, familias, sara, uniNoUnico, queEsV5 } from '../../data/home';
+import { queEsV7, comoV7 } from '../../data/v7';
+import { unicoV4 as noEresElUnico, queV5 as q, bifurcacion, historiasUni, testDemo } from '../../data/v4';
+import { universidad as uni } from '../../data/universidad';
+import { familiasPagina } from '../../data/familias';
+const modos = familiasPagina.modos;
+
+const reels = await Promise.all(
+  losDeDentro.personas.map(async (p) => ({ ...p, grande: (await getImage({ src: p.foto, width: 900, format: 'webp' })).src }))
+);
+const insider = reels[0];
+const heroGrande = (await getImage({ src: hero.foto, width: 900, format: 'webp' })).src;
+
+// Paso 3 de «Cómo funciona»: entrevistas de ejemplo con gente de «Los de dentro»
+// Cromos: personas nuevas (no están en «Los de dentro»). Sin foto todavía: inicial + icono, y póster neutro en el visor
+const iconosCromo: Record<string, string> = {
+  contenido: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><circle cx="12" cy="11" r="2.6"/><path d="M10.5 18.5h3"/></svg>',
+  animacion: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5z"/><path d="M3.5 7.25L12 12l8.5-4.75M12 12v9.5"/></svg>',
+  ciber: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6z"/><rect x="9" y="10.5" width="6" height="5" rx="1"/><path d="M10 10.5V9a2 2 0 0 1 4 0v1.5"/></svg>',
+};
+const posterCromo = (inicial: string) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><rect width="900" height="600" fill="#24201c"/><text x="450" y="370" font-family="Arial,sans-serif" font-size="260" font-weight="700" fill="#c8f53b" text-anchor="middle">${inicial}</text></svg>`)}`;
+const cromos = q.pasos[2].cromos!.map((c, n) => ({
+  ...c,
+  camino: q.pasos[1].ramas![n].tipo,
+  i: undefined as number | undefined,
+  r: { edad: c.edad, foto: null as null | ImageMetadata, profesion: c.profesion, cita: c.cita, duracion: c.duracion, grande: posterCromo(c.nombre[0]), video: '', subtitulos: '', camino: c.camino, estudios: c.estudios, primerTrabajo: c.primerTrabajo, martes: c.martes },
+}));
+// Tambor 3D (móvil): 6 posiciones, cada cromo aparece dos veces
+const tambor = [0, 1, 2, 3, 4, 5].map((k) => ({ ...cromos[k % 3], k: k % 3, copia: k >= 3 }));
+// «La uni no es el único camino»: trayectorias sin foto (no repiten a nadie de la home)
+const trayectorias = historiasUni.personas;
+
+// «¿Qué es NextYou?»: collage de profesiones para probar
+const collage = [
+  { foto: reels[0].foto, eti: '¿Diseño?' },
+  { foto: reels[1].foto, eti: '¿Sonido?' },
+  { foto: reels[2].foto, eti: '¿Datos?' },
+];
+
+// Vídeo de fondo de la portada (public/videos): una versión para móvil y otra para escritorio
+const VIDEO = `${BASE}videos/`;
+
+// Iconos de trazo fino del mapa de «Cómo funciona»
+const ICONOS_MAPA: Record<string, string> = {
+  test: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="4" width="12" height="16" rx="1.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>',
+  caminos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6M10 12c3 0 4-5 8-5M10 12c3 0 4 5 8 5M10 12h8"/></svg>',
+  persona: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 19c1.2-3.2 3.7-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
+  coach: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M5 6h14v9H10l-4 3.5V15H5z"/><path d="M9 10.5h6"/></svg>',
+};
+
+// Paso 2: icono de cada destino del mapa (mismo orden que las ramas)
+const iconosRamas = [
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M3 8l2.5-4h15L18 8M8 4l-2.5 4M13 4l-2.5 4M18 4l-2.5 4"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 9l4 7-2-.5-1 2.5z"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>',
+];
+
+// Demo de «¿Qué es NextYou?»: pastillas de tiempo propias de la v3 y la v4 (las de home.ts las usan la v1 y la v2)
+const tiempos = ['8 min · 12 preguntas', 'al momento', 'según tus resultados'];
+const UNIVERSIDAD = '#universidad';
+
+// Palabra destacada en cursiva dentro de un titular.
+const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>${palabra}</em>`);
+---
+
+<V5 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato" soloBachillerato ruta="">
+    <main id="contenido">
+      <!-- Barra para cambiar de versión (fija arriba) -->
+      <div class="comparar" role="group" aria-label="Versión de «Cómo funciona»">
+        <span class="comparar__eti">Comparar «Cómo funciona»:</span>
+        <button type="button" data-op="a" aria-pressed="true">A · La línea</button>
+        <button type="button" data-op="b" aria-pressed="false">B · La actual</button>
+        <span class="comparar__sep" aria-hidden="true"></span>
+        <button type="button" class="comparar__pal" data-elegir="d" aria-pressed="false" aria-label="Paleta Lima"><i><b style="background:#161412"></b><b style="background:#c8f53b"></b></i></button>
+        <button type="button" class="comparar__pal" data-elegir="a" aria-pressed="false" aria-label="Paleta Azul y lima"><i><b style="background:#161412"></b><b style="background:#3b5bff"></b><b style="background:#c8f53b"></b></i></button>
+        <button type="button" class="comparar__pal" data-elegir="f" aria-pressed="false" aria-label="Paleta Original (Figma)"><i><b style="background:#1a1512"></b><b style="background:#c93b22"></b><b style="background:#f6f1e8"></b></i></button>
+      </div>
+      <div class="op op--a" data-version="a">
+        <ComoFuncionaLinea />
+      </div>
+      <div class="op op--b" data-version="b" hidden>
+      <section id="como-funciona-b" class="v7como" aria-labelledby="como-titulo">
+        <div class="ancho">
+          <!-- Cabecera: etiqueta fina, la frase como titular y el mapa de pasos (animado) -->
+          <header class="v7como__cab" data-aparece>
+            <p class="v7como__eti"><span aria-hidden="true"></span>{comoV7.titulo}</p>
+            <h2 id="como-titulo" class="v7como__frase" set:html={cursiva(comoV7.frase, comoV7.resaltado)} />
+            <ol class="v7mapa" aria-label="Los cuatro pasos" data-mapa>
+              <li class="v7mapa__tu" aria-hidden="true" style="--i: 0"><span class="v7mapa__nodo">Tú</span></li>
+              {comoV7.indice.map((p, i) => (
+                <li class="v7mapa__paso" style={`--i: ${i + 1}`}>
+                  <a href={`#paso-${i + 1}`}>
+                    <span class="v7mapa__nodo" aria-hidden="true" set:html={ICONOS_MAPA[p.ic]} />
+                    <span class="v7mapa__t">{p.t}</span>
+                    <span class="v7mapa__d">{p.d}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+            <p class="v7como__mail"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3.5 6.5l8.5 6.5 8.5-6.5" /></svg>{comoV7.email}</p>
+          </header>
+          <div class="v7demo">
+            <ol class="v7pasos" role="list" aria-label="Cómo funciona, en cuatro pasos">
+            <li class="v7paso" id="paso-1" data-paso={0}>
+              <div class="v7paso__texto" data-aparece>
+                <span class="v7paso__n" aria-hidden="true">01</span>
+                <h3>{comoV7.pasos[0].titulo}</h3>
+                <p class="v7paso__p">{comoV7.pasos[0].texto}</p>
+                <span class="v7paso__meta">{comoV7.pasos[0].meta}</span>
+              </div>
+              <!-- En móvil, cada paso enseña su pantalla; en escritorio se usa el móvil fijo de la derecha -->
+              <div class="v7paso__movil"><div class="v7tel v7tel--paso" aria-hidden="true"><span class="v7tel__estado" aria-hidden="true"><span>9:41</span><span class="v7tel__bat"></span></span><div class="v7tel__pant">
+                  <div class="v7pant v7pant--0" data-pant="0">
+                    <p class="v7pant__cab"><span>Brújula interior</span><span>3 de 12</span></p>
+                    <span class="v7pant__barra"><span style="width:25%"></span></span>
+                    <p class="v7pant__preg">¿Cómo describirías tu energía natural?</p>
+                    <div class="v7pant__ops">
+                      <span class="sel"><b>Creador/a</b>Imaginas y construyes cosas nuevas</span>
+                      <span><b>Estratega</b>Planificas y resuelves problemas</span>
+                      <span><b>Conector/a</b>Unes personas e ideas</span>
+                      <span><b>Explorador/a</b>Buscas lo desconocido</span>
+                    </div>
+                    <span class="v7pant__sig">Siguiente →</span>
+                  </div>
+                </div></div></div>
+            </li>
+            <li class="v7paso" id="paso-2" data-paso={1}>
+              <div class="v7paso__texto" data-aparece>
+                <span class="v7paso__n" aria-hidden="true">02</span>
+                <h3>{comoV7.pasos[1].titulo}</h3>
+                <p class="v7paso__p">{comoV7.pasos[1].texto}</p>
+                <span class="v7paso__meta">{comoV7.pasos[1].meta}</span>
+              </div>
+              <!-- En móvil, cada paso enseña su pantalla; en escritorio se usa el móvil fijo de la derecha -->
+              <div class="v7paso__movil"><div class="v7tel v7tel--paso" aria-hidden="true"><span class="v7tel__estado" aria-hidden="true"><span>9:41</span><span class="v7tel__bat"></span></span><div class="v7tel__pant">
+                  <div class="v7pant v7pant--1" data-pant="1">
+                    <p class="v7pant__cab"><span>Tus recorridos</span><span>3</span></p>
+                    <!-- De «Tú» salen tres caminos finos, uno hacia cada recorrido (el del salto, punteado) -->
+                    <p class="v7cam__intro">Según tus respuestas, estos son tus caminos:</p>
+                    <div class="v7cam">
+                      <span class="v7cam__tu">Tú</span>
+                      <svg class="v7cam__lineas" viewBox="0 0 100 300" preserveAspectRatio="none" aria-hidden="true">
+                        <path class="v7cam__l v7cam__l--1" d="M36 0 C36 30 50 50 100 50" />
+                        <path class="v7cam__l v7cam__l--2" d="M36 0 C36 90 50 150 100 150" />
+                        <path class="v7cam__l v7cam__l--3" d="M36 0 C36 150 50 250 100 250" />
+                      </svg>
+                      <ol class="v7cam__lista">
+                        {q.pasos[1].ramas!.map((r, i) => (
+                          <li class:list={['v7cam__op', `v7cam__op--${i + 1}`]}><span>{r.tipo}</span><b>{r.ejemplo}</b><small>{r.nota}</small></li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                  <!-- Paso 3: un vídeo de «Los de dentro» dentro del móvil (PLACEHOLDER: persona de muestra) -->
+                  <div class="v7pant v7pant--2 v7reel" data-pant="2" data-reel>
+                    {reels.map((r, n) => (
+                      <div class:list={['v7reel__diapo', { activa: n === 0 }]} data-reel-diapo={n}>
+                        <Image src={r.foto} alt="" width={540} height={960} quality={65} class="v7reel__foto" loading="lazy" />
+                        <div class="v7reel__pie">
+                          <p class="v7reel__gancho"><span>«{r.cita}»</span></p>
+                          <p class="v7reel__nom">{r.nombre}, {r.edad}</p>
+                          <p class="v7reel__camino">{r.camino.join(' → ')}</p>
+                          <span class="v7reel__ver">▶ Ver su día · {r.duracion}</span>
+                        </div>
+                      </div>
+                    ))}
+                    <div class="v7reel__barras" aria-hidden="true">{reels.map((_, n) => <i data-reel-barra={n}><b></b></i>)}</div>
+                    <p class="v7reel__eti">Los de dentro</p>
+                  </div>
+                </div></div></div>
+            </li>
+            <li class="v7paso" id="paso-3" data-paso={2}>
+              <div class="v7paso__texto" data-aparece>
+                <span class="v7paso__n" aria-hidden="true">03</span>
+                <h3>{comoV7.pasos[2].titulo}</h3>
+                <p class="v7paso__p">{comoV7.pasos[2].texto}</p>
+                <span class="v7paso__meta">{comoV7.pasos[2].meta}</span>
+              </div>
+              <!-- En móvil, cada paso enseña su pantalla; en escritorio se usa el móvil fijo de la derecha -->
+              <div class="v7paso__movil"><div class="v7tel v7tel--paso" aria-hidden="true"><span class="v7tel__estado" aria-hidden="true"><span>9:41</span><span class="v7tel__bat"></span></span><div class="v7tel__pant">
+                  <div class="v7pant v7pant--2 v7reel" data-pant="2" data-reel>
+                    {reels.map((r, n) => (
+                      <div class:list={['v7reel__diapo', { activa: n === 0 }]} data-reel-diapo={n}>
+                        <Image src={r.foto} alt="" width={540} height={960} quality={65} class="v7reel__foto" loading="lazy" />
+                        <div class="v7reel__pie">
+                          <p class="v7reel__gancho"><span>«{r.cita}»</span></p>
+                          <p class="v7reel__nom">{r.nombre}, {r.edad}</p>
+                          <p class="v7reel__camino">{r.camino.join(' → ')}</p>
+                          <span class="v7reel__ver">▶ Ver su día · {r.duracion}</span>
+                        </div>
+                      </div>
+                    ))}
+                    <div class="v7reel__barras" aria-hidden="true">{reels.map((_, n) => <i data-reel-barra={n}><b></b></i>)}</div>
+                    <p class="v7reel__eti">Los de dentro</p>
+                  </div>
+                </div></div></div>
+            </li>
+            <li class="v7paso" id="paso-4" data-paso={3}>
+              <div class="v7paso__texto" data-aparece>
+                <span class="v7paso__n" aria-hidden="true">04</span>
+                <h3>{comoV7.pasos[3].titulo}</h3>
+                <p class="v7paso__p">{comoV7.pasos[3].texto}</p>
+                <span class="v7paso__meta">{comoV7.pasos[3].meta}</span>
+                <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, duración y frecuencia de las sesiones -->" />
+              </div>
+              <!-- En móvil, cada paso enseña su pantalla; en escritorio se usa el móvil fijo de la derecha -->
+              <div class="v7paso__movil"><div class="v7tel v7tel--paso" aria-hidden="true"><span class="v7tel__estado" aria-hidden="true"><span>9:41</span><span class="v7tel__bat"></span></span><div class="v7tel__pant">
+                  <div class="v7pant v7pant--3" data-pant="3">
+                    <p class="v7pant__cab"><span>Sesión con tu coach</span><span class="v7pant__vivo">● En directo</span></p>
+                    <div class="v7llam">
+                      <div class="v7llam__ella"><svg class="v7llam__silueta" viewBox="0 0 200 170" aria-hidden="true"><circle cx="100" cy="66" r="36" /><path d="M24 170c0-46 34-72 76-72s76 26 76 72z" /></svg></div>
+                      <span class="v7llam__nom">{q.pasos[3].coach!.nombre} · coach</span>
+                      <div class="v7llam__tu">Tú</div>
+                    </div>
+                    <p class="v7llam__burbuja">{comoV7.pregunta}</p>
+                    <div class="v7llam__ctrl"><i></i><i></i><i class="rojo"></i></div>
+                  </div>
+                </div></div></div>
+            </li>
+            </ol>
+            <div class="v7demo__fijo" aria-hidden="true"><div class="v7tel v7tel--fijo" aria-hidden="true"><span class="v7tel__estado" aria-hidden="true"><span>9:41</span><span class="v7tel__bat"></span></span><div class="v7tel__pant">
+                  <div class="v7pant v7pant--0 activa" data-pant="0">
+                    <p class="v7pant__cab"><span>Brújula interior</span><span>3 de 12</span></p>
+                    <span class="v7pant__barra"><span style="width:25%"></span></span>
+                    <p class="v7pant__preg">¿Cómo describirías tu energía natural?</p>
+                    <div class="v7pant__ops">
+                      <span class="sel"><b>Creador/a</b>Imaginas y construyes cosas nuevas</span>
+                      <span><b>Estratega</b>Planificas y resuelves problemas</span>
+                      <span><b>Conector/a</b>Unes personas e ideas</span>
+                      <span><b>Explorador/a</b>Buscas lo desconocido</span>
+                    </div>
+                    <span class="v7pant__sig">Siguiente →</span>
+                  </div>
+                  <div class="v7pant v7pant--1" data-pant="1">
+                    <p class="v7pant__cab"><span>Tus recorridos</span><span>3</span></p>
+                    <!-- De «Tú» salen tres caminos finos, uno hacia cada recorrido (el del salto, punteado) -->
+                    <p class="v7cam__intro">Según tus respuestas, estos son tus caminos:</p>
+                    <div class="v7cam">
+                      <span class="v7cam__tu">Tú</span>
+                      <svg class="v7cam__lineas" viewBox="0 0 100 300" preserveAspectRatio="none" aria-hidden="true">
+                        <path class="v7cam__l v7cam__l--1" d="M36 0 C36 30 50 50 100 50" />
+                        <path class="v7cam__l v7cam__l--2" d="M36 0 C36 90 50 150 100 150" />
+                        <path class="v7cam__l v7cam__l--3" d="M36 0 C36 150 50 250 100 250" />
+                      </svg>
+                      <ol class="v7cam__lista">
+                        {q.pasos[1].ramas!.map((r, i) => (
+                          <li class:list={['v7cam__op', `v7cam__op--${i + 1}`]}><span>{r.tipo}</span><b>{r.ejemplo}</b><small>{r.nota}</small></li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                  <!-- Paso 3: un vídeo de «Los de dentro» dentro del móvil (PLACEHOLDER: persona de muestra) -->
+                  <div class="v7pant v7pant--2 v7reel" data-pant="2" data-reel>
+                    {reels.map((r, n) => (
+                      <div class:list={['v7reel__diapo', { activa: n === 0 }]} data-reel-diapo={n}>
+                        <Image src={r.foto} alt="" width={540} height={960} quality={65} class="v7reel__foto" loading="lazy" />
+                        <div class="v7reel__pie">
+                          <p class="v7reel__gancho"><span>«{r.cita}»</span></p>
+                          <p class="v7reel__nom">{r.nombre}, {r.edad}</p>
+                          <p class="v7reel__camino">{r.camino.join(' → ')}</p>
+                          <span class="v7reel__ver">▶ Ver su día · {r.duracion}</span>
+                        </div>
+                      </div>
+                    ))}
+                    <div class="v7reel__barras" aria-hidden="true">{reels.map((_, n) => <i data-reel-barra={n}><b></b></i>)}</div>
+                    <p class="v7reel__eti">Los de dentro</p>
+                  </div>
+                  <div class="v7pant v7pant--3" data-pant="3">
+                    <p class="v7pant__cab"><span>Sesión con tu coach</span><span class="v7pant__vivo">● En directo</span></p>
+                    <div class="v7llam">
+                      <div class="v7llam__ella"><svg class="v7llam__silueta" viewBox="0 0 200 170" aria-hidden="true"><circle cx="100" cy="66" r="36" /><path d="M24 170c0-46 34-72 76-72s76 26 76 72z" /></svg></div>
+                      <span class="v7llam__nom">{q.pasos[3].coach!.nombre} · coach</span>
+                      <div class="v7llam__tu">Tú</div>
+                    </div>
+                    <p class="v7llam__burbuja">{comoV7.pregunta}</p>
+                    <div class="v7llam__ctrl"><i></i><i></i><i class="rojo"></i></div>
+                  </div>
+                </div></div></div>
+          </div>
+
+          <!-- Paso 3 · las personas, en formato videollamada horizontal (móvil: carrusel con el dedo).
+               PLACEHOLDER: personas de muestra; PENDIENTE: sus fotos -->
+          <div class="v7gente" data-aparece>
+            <p class="v7gente__eti">Algunas de las personas con las que puedes hablar</p>
+            <ul class="v7gente__lista" role="list">
+              {cromos.map((c, n) => (
+                <li class="v7gente__item">
+                  <div class="v7vid" data-k={n}>
+                    <span class="v7vid__ic" aria-hidden="true" set:html={iconosCromo[c.icono]} />
+                    <span class="v7vid__ini" aria-hidden="true">{c.nombre[0]}</span>
+                    <span class="v7vid__tag">Entrevista · {c.r.duracion}</span>
+                  </div>
+                  <p class="v7gente__nom"><strong>{c.nombre}, {c.edad}</strong> · {c.prof}</p>
+                  <p class="v7gente__tray">{c.r.camino.join(' → ')}</p>
+                  <button
+                    type="button"
+                    class="v7gente__ver"
+                    data-visor-abrir
+                    aria-haspopup="dialog"
+                    aria-label={`Ver la entrevista de ${c.nombre}, ${c.r.duracion}`}
+                    data-nombre={`${c.nombre}, ${c.edad}`}
+                    data-profesion={c.profesion}
+                    data-cita={c.cita}
+                    data-duracion={c.r.duracion}
+                    data-img={c.r.grande}
+                    data-video=""
+                    data-camino={c.r.camino.join('|')}
+                    data-estudios={c.estudios}
+                    data-trabajo={c.primerTrabajo}
+                    data-martes={c.martes}
+                  >▶ Ver la entrevista</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="v7como__pie" data-aparece>
+            <ul class="v7nopasa" role="list" aria-label="Lo que no va a pasar">
+              {q.noVaAPasar.map((t) => <li>{t}</li>)}
+            </ul>
+            <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
+            <a href={CTA_PRINCIPAL.href} class="boton boton--grande">{hero.boton} <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+      </div>
+      <dialog class="visor" aria-labelledby="visor-nombre">
+        <div class="visor__caja">
+          <button type="button" class="visor__cerrar" aria-label="Cerrar">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </button>
+          <div class="visor__media">
+            <img class="visor__img" alt="" />
+            <video class="visor__video" controls playsinline preload="metadata" hidden></video>
+            <p class="visor__aviso">Aquí irá el vídeo · <span data-visor="duracion"></span></p>
+          </div>
+          <div class="visor__texto">
+            <p id="visor-nombre" class="visor__nombre" data-visor="nombre"></p>
+            <span class="etiqueta-marco" data-visor="profesion"></span>
+            <p class="visor__cita">«<span data-visor="cita"></span>»</p>
+            <!-- Ficha mientras no haya vídeo (PLACEHOLDER: datos de ejemplo) -->
+            <div class="visor__ficha" data-visor="ficha">
+              <ol class="visor__camino" data-visor="camino" aria-label="Su camino"></ol>
+              <dl class="visor__datos">
+                <div><dt>Qué estudió</dt><dd data-visor="estudios"></dd></div>
+                <div><dt>Su primer trabajo</dt><dd data-visor="trabajo"></dd></div>
+                <div><dt>Cómo es un martes</dt><dd data-visor="martes"></dd></div>
+              </dl>
+            </div>
+            <a href={CTA_PRINCIPAL.href} class="boton visor__cta">¿Te ves aquí? Haz el test</a>
+            <div class="visor__nav" data-visor="nav">
+              <button type="button" class="flecha" data-visor-mover="-1" aria-label="Profesional anterior">←</button>
+              <span class="visor__cuenta" aria-live="polite"><span data-visor="actual"></span> / {reels.length}</span>
+              <button type="button" class="flecha" data-visor-mover="1" aria-label="Siguiente profesional">→</button>
+            </div>
+          </div>
+        </div>
+      </dialog>
+    </main>
+
+
+</V5>
+
+<script>
+  // Cambio de versión A/B
+  {
+    const botones = [...document.querySelectorAll<HTMLButtonElement>('.comparar [data-op]')];
+    const versiones = [...document.querySelectorAll<HTMLElement>('[data-version]')];
+    const poner = (op: string, guardar: boolean) => {
+      if (op !== 'a' && op !== 'b') op = 'a';
+      versiones.forEach((v) => (v.hidden = v.dataset.version !== op));
+      botones.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.op === op)));
+      document.documentElement.dataset.op = op;
+      if (guardar) { const u = new URL(location.href); u.searchParams.set('op', op); history.replaceState(null, '', u); }
+      window.scrollTo({ top: 0 });
+      window.dispatchEvent(new Event('resize'));
+    };
+    botones.forEach((b) => b.addEventListener('click', () => poner(b.dataset.op!, true)));
+    poner(new URLSearchParams(location.search).get('op') ?? 'a', false);
+  }
+      // Visor de «Los de dentro»: vídeo si lo hay; si no, foto y ficha. Flechas para pasar de profesional.
+      const visor = document.querySelector<HTMLDialogElement>('.visor');
+      if (visor) {
+        const img = visor.querySelector<HTMLImageElement>('.visor__img')!;
+        const video = visor.querySelector<HTMLVideoElement>('.visor__video')!;
+        const aviso = visor.querySelector<HTMLElement>('.visor__aviso')!;
+        const campo = (k: string) => visor.querySelector<HTMLElement>(`[data-visor="${k}"]`)!;
+        const tarjetas = [...document.querySelectorAll<HTMLButtonElement>('.reel__abrir[data-indice]')];
+        let actual = -1;
+        const mostrar = (b: HTMLButtonElement) => {
+          const d = b.dataset;
+          actual = d.indice ? Number(d.indice) : -1;
+          campo('nombre').textContent = d.nombre ?? '';
+          campo('profesion').textContent = d.profesion ?? '';
+          campo('cita').textContent = d.cita ?? '';
+          campo('duracion').textContent = d.duracion ?? '';
+          img.src = d.img ?? '';
+          const hayVideo = Boolean(d.video);
+          video.hidden = !hayVideo;
+          img.hidden = hayVideo;
+          aviso.hidden = hayVideo;
+          // Ficha solo para profesionales y mientras no haya vídeo
+          const ficha = !hayVideo && Boolean(d.camino);
+          campo('ficha').hidden = !ficha;
+          if (ficha) {
+            campo('camino').replaceChildren(...d.camino!.split('|').map((paso) => Object.assign(document.createElement('li'), { textContent: paso })));
+            campo('estudios').textContent = d.estudios ?? '';
+            campo('trabajo').textContent = d.trabajo ?? '';
+            campo('martes').textContent = d.martes ?? '';
+          }
+          campo('nav').hidden = actual < 0;
+          campo('actual').textContent = String(actual + 1);
+          video.pause();
+          video.querySelectorAll('track').forEach((tr) => tr.remove());
+          if (hayVideo) {
+            video.poster = d.img ?? '';
+            video.src = d.video!;
+            if (d.subtitulos) {
+              const pista = document.createElement('track');
+              Object.assign(pista, { kind: 'subtitles', srclang: 'es', label: 'Español', src: d.subtitulos, default: true });
+              video.append(pista);
+            }
+            video.play().catch(() => {});
+          } else video.removeAttribute('src');
+          visor.querySelector('.visor__caja')!.scrollTop = 0;
+        };
+        document.querySelectorAll<HTMLButtonElement>('[data-visor-abrir]').forEach((b) =>
+          b.addEventListener('click', () => { mostrar(b); visor.showModal(); })
+        );
+        visor.querySelectorAll<HTMLButtonElement>('[data-visor-mover]').forEach((f) =>
+          f.addEventListener('click', () => {
+            if (actual < 0) return;
+            const n = (actual + Number(f.dataset.visorMover) + tarjetas.length) % tarjetas.length;
+            mostrar(tarjetas[n]);
+          })
+        );
+        visor.addEventListener('keydown', (e) => {
+          if (actual < 0) return;
+          if (e.key === 'ArrowRight') mostrar(tarjetas[(actual + 1) % tarjetas.length]);
+          if (e.key === 'ArrowLeft') mostrar(tarjetas[(actual - 1 + tarjetas.length) % tarjetas.length]);
+        });
+        const cerrar = () => visor.close();
+        visor.querySelector('.visor__cerrar')!.addEventListener('click', cerrar);
+        visor.addEventListener('click', (e) => { if (e.target === visor) cerrar(); });
+        // El botón del test cierra el visor antes de abrir el aviso
+        visor.querySelector('.visor__cta')!.addEventListener('click', cerrar);
+        visor.addEventListener('close', () => { video.pause(); video.removeAttribute('src'); });
+      }
+
+      // Vídeo de la portada (sin botón de pausa, a petición de Jenifer): con «reducir movimiento» no se reproduce y queda el póster; si falla, póster
+      const portadaV = document.querySelector<HTMLElement>('.v7hero');
+      const videoHero = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+      if (portadaV && videoHero) {
+        const sinVideo = () => portadaV.classList.add('hero--sin-video');
+        const fuentes = videoHero.querySelectorAll('source');
+        fuentes[fuentes.length - 1].addEventListener('error', sinVideo);
+        videoHero.addEventListener('error', sinVideo);
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          videoHero.pause();
+          portadaV.classList.add('hero--quieto');
+        }
+      }
+
+      // Botón fijo en móvil: visible cuando ni la portada ni el pie están en pantalla
+      const fijo = document.querySelector<HTMLElement>('.fijo');
+      const portada = document.querySelector('.v7hero');
+      const pieWeb = document.querySelector('.pie');
+      if (fijo && portada && pieWeb && 'IntersectionObserver' in window) {
+        const vistos = new Set<Element>();
+        const actualizar = () => {
+          const mostrar = vistos.size === 0;
+          fijo.classList.toggle('visible', mostrar);
+          fijo.toggleAttribute('inert', !mostrar);
+          fijo.setAttribute('aria-hidden', String(!mostrar));
+        };
+        const ob = new IntersectionObserver((es) => {
+          es.forEach((e) => (e.isIntersecting ? vistos.add(e.target) : vistos.delete(e.target)));
+          actualizar();
+        });
+        ob.observe(portada);
+        const intro = document.querySelector('.intro');
+        if (intro) ob.observe(intro);
+        const tarjetasDentro = document.querySelector('.dentro');
+        if (tarjetasDentro) ob.observe(tarjetasDentro);
+        const cierre = document.querySelector('.cierre');
+        if (cierre) ob.observe(cierre);
+        document.querySelectorAll('.cta-grande').forEach((el) => ob.observe(el));
+        // Universidad y familias ya llevan su propio botón
+        ['universidad', 'familias'].forEach((id) => { const el = document.getElementById(id); if (el) ob.observe(el); });
+        ob.observe(pieWeb);
+      }
+
+      // Efectos de «Los de dentro»: entrada al llegar, movimiento solo mientras se ve, inclinación con el ratón
+      const reelsFx = document.querySelector<HTMLElement>('[data-reels]');
+      if (reelsFx && 'IntersectionObserver' in window) {
+        new IntersectionObserver((es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting && !reelsFx.classList.contains('en-vista')) {
+              reelsFx.classList.add('en-vista');
+              setTimeout(() => reelsFx.classList.add('listo'), 1800);
+            }
+            reelsFx.classList.toggle('moviendo', e.isIntersecting);
+          });
+        }, { threshold: 0.2 }).observe(reelsFx);
+      } else reelsFx?.classList.add('en-vista', 'listo');
+      const quietos = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!quietos && window.matchMedia('(hover: hover)').matches) {
+        document.querySelectorAll<HTMLElement>('.reel').forEach((r) => {
+          r.addEventListener('pointermove', (e) => {
+            const c = r.getBoundingClientRect();
+            const x = (e.clientX - c.left) / c.width, y = (e.clientY - c.top) / c.height;
+            r.classList.add('inclinada');
+            r.style.setProperty('--ry', `${(x - 0.5) * 14}deg`);
+            r.style.setProperty('--rx', `${(0.5 - y) * 14}deg`);
+            r.style.setProperty('--mx', `${x * 100}%`);
+            r.style.setProperty('--my', `${y * 100}%`);
+          });
+          r.addEventListener('pointerleave', () => {
+            r.classList.remove('inclinada');
+            r.style.setProperty('--rx', '0deg');
+            r.style.setProperty('--ry', '0deg');
+          });
+        });
+      }
+
+      // v7 · móvil continuo: la pantalla del móvil fijo cambia según el paso que cruza el centro de la ventana
+      const pasosV7 = document.querySelectorAll<HTMLElement>('.v7paso');
+      const capasV7 = document.querySelectorAll<HTMLElement>('.v7tel--fijo .v7pant');
+      if (pasosV7.length && capasV7.length && 'IntersectionObserver' in window) {
+        const activarV7 = (n: number) => {
+          capasV7.forEach((c) => c.classList.toggle('activa', Number(c.dataset.pant) === n));
+          pasosV7.forEach((p) => p.classList.toggle('activo', Number(p.dataset.paso) === n));
+        };
+        activarV7(0);
+        const obsV7 = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) activarV7(Number((e.target as HTMLElement).dataset.paso)); }), { rootMargin: '-50% 0px -50% 0px' });
+        pasosV7.forEach((p) => obsV7.observe(p));
+      }
+
+      // v7 · mapa de «Cómo funciona»: se dibuja al llegar y luego el lima va pasando de paso en paso
+      const mapaV7 = document.querySelector<HTMLElement>('[data-mapa]');
+      if (mapaV7) {
+        const nodos = [...mapaV7.querySelectorAll<HTMLElement>(':scope > li')];
+        const quietoM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let paso = 0, reloj = 0;
+        const marcar = () => nodos.forEach((n, i) => n.classList.toggle('aqui', i === paso));
+        if (quietoM || !('IntersectionObserver' in window)) { mapaV7.classList.add('dibujado'); paso = nodos.length - 1; marcar(); }
+        else new IntersectionObserver((es) => es.forEach((e) => {
+          window.clearInterval(reloj);
+          if (!e.isIntersecting) return;
+          mapaV7.classList.add('dibujado');
+          reloj = window.setInterval(() => { paso = (paso + 1) % nodos.length; marcar(); }, 1600);
+          marcar();
+        }), { threshold: 0.5 }).observe(mapaV7);
+      }
+
+      // v7 · paso 3: las historias de «Los de dentro» pasan solas dentro del móvil
+      document.querySelectorAll<HTMLElement>('[data-reel]').forEach((reel) => {
+        const diapos = [...reel.querySelectorAll<HTMLElement>('[data-reel-diapo]')];
+        const barras = [...reel.querySelectorAll<HTMLElement>('[data-reel-barra]')];
+        if (diapos.length < 2) return;
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let actual = 0, temporizador = 0;
+        const pintar = () => {
+          diapos.forEach((d, i) => d.classList.toggle('activa', i === actual));
+          barras.forEach((b, i) => { b.classList.toggle('hecha', i < actual); b.classList.toggle('ahora', i === actual); });
+          // reinicia la animación de la barra activa
+          const b = barras[actual].firstElementChild as HTMLElement; b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+        };
+        const siguiente = () => { actual = (actual + 1) % diapos.length; pintar(); };
+        pintar();
+        if (quieto || !('IntersectionObserver' in window)) return;
+        new IntersectionObserver((es) => es.forEach((e) => {
+          window.clearInterval(temporizador);
+          if (e.isIntersecting) temporizador = window.setInterval(siguiente, 4000);
+        }), { threshold: 0.3 }).observe(reel);
+      });
+
+      // Paso 1: demo del test (3 preguntas de muestra → adelanto del perfil)
+      const test = document.querySelector<HTMLElement>('[data-test]');
+      if (test) {
+        const datos = JSON.parse(test.querySelector('[data-test-datos]')!.textContent || '{}');
+        const pasosT = [...test.querySelectorAll<HTMLElement>('[data-test-paso]')];
+        const barraT = test.querySelector<HTMLElement>('[data-test-barra]')!;
+        const cntT2 = test.querySelector('[data-test-cnt]')!;
+        const volverT = test.querySelector<HTMLButtonElement>('[data-test-volver]')!;
+        const repetirT = test.querySelector<HTMLButtonElement>('[data-test-repetir]')!;
+        const quietoTest = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const resp: number[] = [];
+        let actualT = 0;
+        const irT = (n: number, foco = false) => {
+          pasosT.forEach((p, k) => { p.hidden = k !== n; p.classList.toggle('entra', k === n && !quietoTest()); });
+          actualT = n;
+          barraT.style.width = `${(n / 3) * 100}%`;
+          cntT2.textContent = n < 3 ? `${n + 1} de 3` : 'listo';
+          volverT.disabled = n === 0;
+          volverT.hidden = n === 3;
+          repetirT.hidden = n !== 3;
+          if (n === 3) {
+            const r = datos.energias[resp[0]];
+            test.querySelector('[data-test-tit]')!.textContent = r.t;
+            test.querySelector('[data-test-frase]')!.textContent = r.f;
+            test.querySelector('[data-test-r1]')!.textContent = datos.mueve[resp[1]];
+            test.querySelector('[data-test-r2]')!.textContent = datos.arranca[resp[2]];
+          } else {
+            pasosT[n].querySelectorAll<HTMLButtonElement>('.tt-op').forEach((o) => {
+              const sel = resp[n] === Number(o.dataset.v);
+              o.classList.toggle('sel', sel);
+              o.setAttribute('aria-pressed', String(sel));
+            });
+          }
+          // con teclado, el foco pasa a la pregunta (o al resultado) nueva
+          if (foco) pasosT[n].querySelector<HTMLElement>('[tabindex="-1"]')?.focus();
+        };
+        pasosT.slice(0, 3).forEach((p, n) => p.querySelectorAll<HTMLButtonElement>('.tt-op').forEach((o) => o.addEventListener('click', (e) => {
+          p.querySelectorAll('.tt-op').forEach((x) => { x.classList.remove('sel'); x.setAttribute('aria-pressed', 'false'); });
+          test.querySelectorAll('.tt-op--pista').forEach((x) => x.classList.remove('tt-op--pista'));
+          o.classList.add('sel'); o.setAttribute('aria-pressed', 'true');
+          resp[n] = Number(o.dataset.v);
+          barraT.style.width = `${((n + 1) / 3) * 100}%`;
+          const teclado = (e as MouseEvent).detail === 0;
+          window.setTimeout(() => irT(n + 1, teclado), quietoTest() ? 0 : 420);
+        })));
+        volverT.addEventListener('click', () => { if (actualT > 0) irT(actualT - 1, true); });
+        repetirT.addEventListener('click', () => {
+          resp.length = 0;
+          test.querySelectorAll<HTMLButtonElement>('.tt-op').forEach((o) => { o.classList.remove('sel'); o.setAttribute('aria-pressed', 'false'); });
+          irT(0, true);
+        });
+        irT(0);
+      }
+
+      // Paso 3 · escritorio: el abanico de cromos se reparte al entrar en pantalla
+      const grupoCromos = document.querySelector<HTMLElement>('[data-cromos]');
+      if (grupoCromos) {
+        if ('IntersectionObserver' in window) {
+          const obsC = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { grupoCromos.classList.add('repartido'); obsC.disconnect(); } }), { threshold: 0.4 });
+          obsC.observe(grupoCromos);
+        } else grupoCromos.classList.add('repartido');
+      }
+
+      // Paso 3 · móvil: tambor 3D. 6 posiciones a 60°; el de delante a tamaño real
+      const zonaT = document.querySelector<HTMLElement>('[data-tambor]');
+      if (zonaT) {
+        const cartasT = [...zonaT.querySelectorAll<HTMLElement>('.tcromo')];
+        const puntosT = [...document.querySelectorAll<HTMLButtonElement>('[data-tambor-ir]')];
+        const cntT = document.querySelector('[data-tambor-cnt]')!;
+        const quietoT = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const N = 6, PASO = 60, RADIO = 230;
+        let ang = 0, rafT = 0, ultimo = -1;
+        const frente = () => (((Math.round(-ang / PASO)) % N) + N) % N;
+        const pintarT = () => {
+          cartasT.forEach((el, i) => {
+            const a = i * PASO + ang;
+            el.style.transform = `rotateY(${a}deg) translateZ(${RADIO}px)`;
+            const n = (((a % 360) + 540) % 360) - 180;
+            el.classList.toggle('atras', Math.abs(n) > 20);
+          });
+          const k = frente() % 3;
+          if (k !== ultimo) {
+            ultimo = k;
+            cntT.textContent = `${k + 1} / 3`;
+            puntosT.forEach((b, i) => (i === k ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current')));
+          }
+        };
+        const suave = (p: number) => 1 - Math.pow(1 - p, 4);
+        const irA = (dest: number, dur: number) => {
+          cancelAnimationFrame(rafT);
+          if (quietoT || dur === 0) { ang = dest; pintarT(); return; }
+          const a0 = ang, t0 = performance.now();
+          const f = (t: number) => { const p = Math.min(1, (t - t0) / dur); ang = a0 + (dest - a0) * suave(p); pintarT(); if (p < 1) rafT = requestAnimationFrame(f); };
+          rafT = requestAnimationFrame(f);
+        };
+        const mover = (d: number) => irA(-(Math.round(-ang / PASO) + d) * PASO, 550);
+        // arrastrar con inercia (no se arrastra desde el botón «Ver su día»)
+        let x0: number | null = null, a0 = 0, xU = 0, tU = 0, vel = 0, movido = false;
+        zonaT.addEventListener('pointerdown', (e) => {
+          if ((e.target as HTMLElement).closest('button')) return;
+          cancelAnimationFrame(rafT); x0 = e.clientX; a0 = ang; xU = e.clientX; tU = performance.now(); vel = 0; movido = false;
+          zonaT.setPointerCapture(e.pointerId);
+        });
+        zonaT.addEventListener('pointermove', (e) => {
+          if (x0 === null) return;
+          if (Math.abs(e.clientX - x0) > 6) movido = true;
+          ang = a0 + (e.clientX - x0) * 0.35;
+          const t = performance.now(); vel = ((e.clientX - xU) / (t - tU || 16)) * 0.35 * 16; xU = e.clientX; tU = t;
+          pintarT();
+        });
+        const soltarT = (e: PointerEvent) => {
+          if (x0 === null) return;
+          x0 = null;
+          if (!movido) {
+            // toque en un cromo de los lados: gira hasta él
+            const c = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>('.tcromo');
+            if (c) { const i = cartasT.indexOf(c); const cur = Math.round(-ang / PASO); let d = (((i - cur) % N) + N) % N; if (d > N / 2) d -= N; if (d !== 0) { irA(-(cur + d) * PASO, 500); return; } }
+          }
+          if (Math.abs(vel) > 1.5 && !quietoT) irA(Math.round((ang + vel * 14) / PASO) * PASO, 900);
+          else irA(Math.round(ang / PASO) * PASO, 450);
+        };
+        zonaT.addEventListener('pointerup', soltarT);
+        zonaT.addEventListener('pointercancel', soltarT);
+        // un botón «Ver su día» de un cromo de lado no abre el vídeo: primero gira hasta él
+        zonaT.addEventListener('click', (e) => {
+          const c = (e.target as HTMLElement).closest<HTMLElement>('.tcromo');
+          if (!c || !(e.target as HTMLElement).closest('button')) return;
+          const i = cartasT.indexOf(c);
+          if (i !== frente()) { e.preventDefault(); e.stopImmediatePropagation(); const cur = Math.round(-ang / PASO); let d = (((i - cur) % N) + N) % N; if (d > N / 2) d -= N; irA(-(cur + d) * PASO, 500); }
+        }, true);
+        puntosT.forEach((b, i) => b.addEventListener('click', () => { const k = frente() % 3; let d = (i - k + 3) % 3; if (d === 2) d = -1; mover(d); }));
+        document.querySelector('[data-tambor-siguiente]')?.addEventListener('click', () => mover(1));
+        zonaT.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); mover(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); mover(-1); } });
+        pintarT();
+        // al verse por primera vez: gira solo, frena y se para en el primer cromo
+        if (!quietoT && 'IntersectionObserver' in window) {
+          new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { o.disconnect(); ang = PASO * N * 1.5; pintarT(); irA(0, 2800); } }), { threshold: 0.4 }).observe(zonaT);
+        }
+      }
+
+      // Paso 2: el punto recorre la carretera del destino elegido (al pasar el ratón o pulsar una señal)
+      const mapaR = document.querySelector<HTMLElement>('[data-ramas]');
+      if (mapaR) {
+        const puntosGps = mapaR.querySelectorAll<SVGPathElement>('.mapa__gps');
+        const senales = mapaR.querySelectorAll<HTMLButtonElement>('[data-ruta]');
+        const quietoR = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let elegida = 1, inicio = performance.now(), activo = false;
+        const situar = (k: number) => {
+          const via = mapaR.querySelector<SVGPathElement>(`[data-via="${elegida}"]`)!;
+          const pt = via.getPointAtLength(via.getTotalLength() * k);
+          puntosGps.forEach((g) => g.setAttribute('d', `M${pt.x} ${pt.y} l0 0.01`));
+        };
+        const elegir = (n: number) => {
+          elegida = n; mapaR.dataset.sel = String(n); inicio = performance.now();
+          senales.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.ruta) === n)));
+          if (quietoR) situar(1);
+        };
+        senales.forEach((b) => {
+          b.addEventListener('click', () => elegir(Number(b.dataset.ruta)));
+          b.addEventListener('mouseenter', () => elegir(Number(b.dataset.ruta)));
+        });
+        const vuelta = (ahora: number) => {
+          if (!activo) return;
+          const dur = 2600, pausa = 700;
+          const k = Math.min(1, ((ahora - inicio) % (dur + pausa)) / dur);
+          situar(k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
+          requestAnimationFrame(vuelta);
+        };
+        if (quietoR || !('IntersectionObserver' in window)) situar(1);
+        else new IntersectionObserver((es) => es.forEach((e) => {
+          // solo se mueve mientras el mapa está en pantalla
+          if (e.isIntersecting && !activo) { activo = true; inicio = performance.now() + 900; requestAnimationFrame(vuelta); }
+          if (!e.isIntersecting) activo = false;
+        })).observe(mapaR);
+      }
+
+      // En móvil, cada teléfono de paso se marca al entrar en pantalla (dispara la animación de los caminos)
+      const movilesPaso = document.querySelectorAll<HTMLElement>('.movil--paso, [data-ramas]');
+      if ('IntersectionObserver' in window) {
+        const obsMovil = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('en-vista'); obsMovil.unobserve(e.target); } }), { threshold: 0.45 });
+        movilesPaso.forEach((m) => obsMovil.observe(m));
+      } else movilesPaso.forEach((m) => m.classList.add('en-vista'));
+
+      // Demo de «¿Qué es NextYou?»: el móvil fijo muestra la pantalla del paso que cruza el centro de la ventana
+      const pasosDemo = document.querySelectorAll<HTMLElement>('.paso3');
+      const capas = document.querySelectorAll<HTMLElement>('.movil__capa');
+      if (pasosDemo.length && 'IntersectionObserver' in window) {
+        const activar = (n: number) => {
+          capas.forEach((c) => c.classList.toggle('activa', Number(c.dataset.capa) === n));
+          pasosDemo.forEach((p) => p.classList.toggle('activo', Number(p.dataset.paso) === n));
+        };
+        activar(0);
+        const obs = new IntersectionObserver((es) => {
+          es.forEach((e) => { if (e.isIntersecting) activar(Number((e.target as HTMLElement).dataset.paso)); });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        pasosDemo.forEach((p) => obs.observe(p));
+      }
+
+      // Carrusel de «Los de dentro»: flechas, contador y puntos sobre un scroll nativo.
+      const pista = document.querySelector<HTMLElement>('.reels');
+      const botones = document.querySelectorAll<HTMLButtonElement>('[data-mover]');
+      const actual = document.querySelector('[data-actual]');
+      const puntos = document.querySelectorAll('.puntos span');
+      if (pista) {
+        const items = [...pista.children] as HTMLElement[];
+        const paso = () => items[1].offsetLeft - items[0].offsetLeft;
+        const indice = () => Math.round(pista.scrollLeft / paso());
+        const pintar = () => {
+          const i = Math.min(indice(), items.length - 1);
+          if (actual) actual.textContent = String(i + 1);
+          puntos.forEach((p, n) => p.classList.toggle('activo', n === i));
+          const fin = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
+          botones[0].disabled = pista.scrollLeft <= 4;
+          botones[1].disabled = fin;
+        };
+        botones.forEach((b) =>
+          b.addEventListener('click', () => pista.scrollBy({ left: paso() * Number(b.dataset.mover), behavior: 'smooth' }))
+        );
+        pista.addEventListener('scroll', () => requestAnimationFrame(pintar), { passive: true });
+        pintar();
+      }
+</script>
+
+<style is:global>
+      /* Más aire entre bloques en la v5 (antes 4,5–7,5 rem) */
+      :root:root { --aire: clamp(6.5rem, 4.5rem + 6vw, 11rem); }
+
+      /* ---------- Portada: vídeo a pantalla completa, poco texto (referencia: Roadtrip Nation) ---------- */
+      .hero { position: relative; isolation: isolate; overflow: hidden; display: grid; align-items: end; min-height: calc(100svh - 125px); background: var(--negro); color: var(--crema); }
+      .hero__tu { opacity: 0; }
+      @media (prefers-reduced-motion: no-preference) { .hero__tu { opacity: 1; } }
+      .hero__rutas { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; }
+      .hero__rutas--movil { display: none; }
+      @media (max-width: 47.99rem) {
+        .hero__rutas--escritorio { display: none; }
+        .hero__rutas--movil { display: block; }
+        .hero__rutas--movil .ruta__firme { stroke-width: 16; }
+        .hero__rutas--movil .ruta--1 .ruta__firme { stroke-width: 22; }
+        .hero__rutas--movil .ruta__linea { stroke-width: 2; stroke-dasharray: 9 11; }
+        .hero__rutas--movil .ruta__sendero { stroke-width: 7; stroke-dasharray: 0.1 18; }
+      }
+      .hero__rutas path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .ruta__firme { stroke: rgb(246 241 232 / 0.85); stroke-width: 26; }
+      .ruta__linea { stroke: var(--negro); stroke-width: 2.5; stroke-dasharray: 14 16; }
+      .ruta--1 .ruta__firme { stroke: var(--acento); stroke-width: 34; }
+      .ruta--1 .ruta__linea { stroke: var(--acento-txt); }
+      .ruta__sendero { stroke: rgb(246 241 232 / 0.85); stroke-width: 10; stroke-dasharray: 0.1 26; }
+      .hero__tu { position: absolute; left: 50%; top: 50%; z-index: 1; translate: -50% -50%; pointer-events: none; display: grid; place-items: center; width: 4.5rem; height: 4.5rem; border-radius: 50%; background: var(--negro); color: var(--crema); font-family: var(--titular); font-weight: 800; font-size: var(--t3); box-shadow: 0 0 0 8px color-mix(in srgb, var(--acento) 70%, transparent); }
+      .hero__fondo { position: absolute; inset: 0; z-index: -1; }
+      .hero__poster, .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+      .hero--quieto .hero__video, .hero--sin-video .hero__video { display: none; }
+      /* Degradado abajo, donde va el texto (AA) */
+      .hero__fondo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(22 20 18 / 0.3) 0%, rgb(22 20 18 / 0) 26%, rgb(22 20 18 / 0.5) 52%, rgb(22 20 18 / 0.88) 76%, rgb(22 20 18 / 0.96) 100%); }
+      .hero__marco { position: relative; z-index: 2; display: grid; justify-items: start; gap: 1.25rem; padding-block: 8rem 2.25rem; }
+      .hero__titulo { display: grid; gap: 1.125rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; letter-spacing: -0.035em; }
+      .hero__pregunta { font-size: clamp(2.75rem, 0.9rem + 6.6vw, 7.5rem); line-height: 0.92; text-wrap: balance; }
+      .hero__explora { display: block; color: var(--acento-texto); }
+      .hero__resto { max-width: 34rem; font-family: var(--sans); font-stretch: 100%; font-size: var(--t3); font-weight: 600; line-height: 1.4; letter-spacing: 0; }
+      .hero__resto b { font-weight: 800; color: var(--acento-texto); }
+      .hero__boton span { margin-left: 0.4em; }
+      /* Pausa: círculo claro encima del titular, como en la referencia */
+      @media (min-width: 64rem) {
+        /* Titular a todo el ancho, como la referencia: una línea por frase */
+        .hero__marco { padding-block: 10rem 3.5rem; }
+        .hero__pregunta { font-size: clamp(3.5rem, 6.1vw, 7.25rem); line-height: 0.95; }
+        .hero__linea { display: block; white-space: nowrap; }
+        .hero__resto { max-width: 40rem; }
+        .hero__accion { position: absolute; right: 0; bottom: 3.5rem; }
+        .hero__fondo::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0.3) 0%, rgb(22 20 18 / 0) 20%, rgb(22 20 18 / 0.5) 40%, rgb(22 20 18 / 0.82) 60%, rgb(22 20 18 / 0.94) 100%); }
+        .hero__poster, .hero__video { object-position: 50% 35%; }
+      }
+      /* Apertura: la ventana se abre a pantalla completa y después entra el texto. Sin JS también funciona; con «reducir movimiento», nada se mueve */
+      @media (prefers-reduced-motion: no-preference) {
+        .ruta { animation: hero-ruta 0.9s cubic-bezier(0.65, 0, 0.35, 1) both; }
+        .ruta--2 { animation-delay: 0.12s; }
+        .ruta--3 { animation-delay: 0.24s; }
+        .hero__tu { animation: hero-tu 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both, hero-tu-fuera 0.45s ease 1.25s forwards; }
+        .hero__fondo { animation: hero-circulo 1.3s cubic-bezier(0.76, 0, 0.24, 1) 1s both; }
+        .hero__marco > * { animation: hero-texto 0.8s cubic-bezier(0.23, 1, 0.32, 1) both; animation-delay: calc(1.9s + var(--o, 0) * 0.12s); }
+        .hero__marco > :nth-child(2) { --o: 1; }
+        .hero__marco > :nth-child(3) { --o: 2; }
+      }
+      @keyframes hero-ruta { from { clip-path: circle(0% at 50% 50%); } to { clip-path: circle(75% at 50% 50%); } }
+      @keyframes hero-tu { from { scale: 0; } }
+      @keyframes hero-tu-fuera { to { opacity: 0; scale: 1.4; } }
+      @keyframes hero-circulo { from { clip-path: circle(0% at 50% 50%); } to { clip-path: circle(75% at 50% 50%); } }
+      @keyframes hero-texto { from { opacity: 0; translate: 0 1.25rem; } }
+
+      /* ---------- Qué es (bajo la portada) ---------- */
+
+      /* ---------- Qué es (bloque explicativo bajo la portada) ---------- */
+      .intro { background: var(--papel); color: var(--negro); padding-block: var(--aire); overflow: hidden; }
+      .intro__rejilla { display: grid; gap: clamp(2.5rem, 2rem + 2vw, 3.5rem); align-items: center; }
+      .intro__izq { display: grid; gap: 1.5rem; }
+      .intro__titulo { display: grid; gap: 0.75rem; font-size: var(--t5); font-family: var(--titular); font-weight: 800; font-stretch: 105%; letter-spacing: -0.025em; }
+      .intro__pregunta { font-size: var(--t5); line-height: 1.02; }
+      .intro__resto { font-size: var(--t4); line-height: 1.2; letter-spacing: -0.015em; max-width: 30ch; }
+      .intro__texto { font-size: var(--t3); line-height: 1.55; color: var(--gris-oscuro); max-width: 34rem; }
+
+      /* El pase del test */
+      .pase { position: relative; justify-self: center; width: min(100%, 24rem); display: grid; gap: 1.25rem; padding: 1.75rem 1.5rem 1.5rem; border-radius: 22px; background: var(--negro); color: var(--crema); box-shadow: 0 30px 50px -28px rgb(22 20 18 / 0.7), 0 0 90px -20px color-mix(in srgb, var(--acento) 45%, transparent); rotate: 2deg; }
+      .pase__cabeza { display: flex; justify-content: space-between; align-items: end; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--linea); }
+      .pase__nombre { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.1; }
+      .pase__tiempo { font-size: var(--t2); color: var(--gris); white-space: nowrap; }
+      .pase__tiempo strong { font-family: var(--titular); font-weight: 800; font-size: var(--t5); line-height: 0.9; color: var(--acento-texto); margin-right: 0.15em; }
+      .pase__lista { display: grid; gap: 0.75rem; }
+      .pase__lista li { display: flex; gap: 0.75rem; align-items: center; font-weight: 600; }
+      .pase__check { display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--acento); color: var(--acento-txt); }
+      /* Línea de corte con muescas, como un pase o una entrada */
+      .pase__corte { position: relative; height: 0; margin-inline: -1.5rem; border-top: 2px dashed rgb(246 241 232 / 0.22); }
+      .pase__corte::before, .pase__corte::after { content: ''; position: absolute; top: -13px; width: 24px; height: 24px; border-radius: 50%; background: var(--papel); }
+      .pase__corte::before { left: -12px; }
+      .pase__corte::after { right: -12px; }
+      .pase__boton { width: 100%; }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .pase { transition: rotate 300ms cubic-bezier(0.23, 1, 0.32, 1), translate 300ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .pase:hover { rotate: 0deg; translate: 0 -4px; }
+      }
+      @media (min-width: 60rem) {
+        .intro__rejilla { grid-template-columns: 1.2fr 0.8fr; gap: 5rem; }
+        .pase { justify-self: end; }
+      }
+
+      /* La portada clara y «¿Qué es NextYou?» comparten fondo: un solo aire entre ambas, no dos */
+      .intro + .que { padding-top: 0; }
+
+      /* ---------- ¿Qué es NextYou? (v5): título, lema y la frase «no te decimos… / te permitimos…» ---------- */
+      .quees { display: grid; gap: clamp(1.75rem, 1.25rem + 2vw, 3rem); }
+      .quees__rejilla { display: grid; gap: clamp(2rem, 1.5rem + 2vw, 3rem); align-items: start; }
+      .quees__texto { display: grid; justify-items: start; gap: 0.5rem; }
+      .quees__lema { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.2; letter-spacing: -0.015em; max-width: 20ch; text-wrap: balance; margin-bottom: 1.25rem; }
+      .quees__no { font-size: var(--t2); color: var(--gris-oscuro); text-decoration: line-through; text-decoration-color: var(--negro); text-decoration-thickness: 2px; }
+      .quees__si { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.3; letter-spacing: -0.015em; text-wrap: balance; max-width: 20ch; }
+      .quees__pegatina { display: inline-block; margin-inline: 0.1em; padding: 0 0.3em 0.05em; border-radius: 6px; background: var(--acento); color: var(--acento-txt); font-family: var(--mano); font-weight: 400; font-size: 0.9em; rotate: -3deg; box-shadow: 2px 2px 0 var(--negro); }
+      .quees__boton { margin-top: 1.25rem; }
+      .quees__boton span { margin-left: 0.4em; }
+      /* Collage de polaroids */
+      .collage { position: relative; height: 23rem; }
+      .pol { position: absolute; width: 9.5rem; margin: 0; padding: 7px 7px 28px; background: #fff; box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.55); }
+      .pol__img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+      .pol figcaption { position: absolute; left: 0; right: 0; bottom: 3px; text-align: center; font-family: var(--mano); font-size: 1.05rem; color: var(--negro); }
+      .pol--1 { left: 0; top: 1rem; rotate: -8deg; }
+      .pol--2 { left: 50%; top: 4rem; translate: -45% 0; rotate: 5deg; z-index: 2; }
+      .pol--3 { right: 0; top: 0; rotate: 9deg; }
+      .sello { position: absolute; z-index: 3; left: 12%; bottom: 0.75rem; display: grid; place-items: center; width: 6.5rem; height: 6.5rem; border-radius: 50%; background: var(--acento); color: var(--acento-txt); font-family: var(--mano); font-size: 1.15rem; line-height: 1; text-align: center; rotate: -12deg; box-shadow: 4px 4px 0 var(--negro); }
+      @media (min-width: 64rem) {
+        .quees__rejilla { grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .collage { height: 26rem; }
+        .pol { width: 13rem; }
+        .sello { width: 7.5rem; height: 7.5rem; font-size: 1.3rem; }
+      }
+
+      /* ---------- Bifurcación a universidad ---------- */
+      .bifurca { background: var(--negro); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+      .bifurca__enlace { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; min-height: 64px; padding-block: 1rem; text-decoration: none; font-size: var(--t2); color: var(--crema); }
+      .bifurca__enlace strong { color: var(--acento-texto); font-weight: 800; white-space: nowrap; }
+      .bifurca__enlace:hover strong { text-decoration: underline; text-underline-offset: 0.2em; }
+
+      /* ---------- No eres el único ---------- */
+      .unico .cabecera { margin-bottom: clamp(2.5rem, 2rem + 2vw, 4.5rem); }
+      /* Título en una o dos líneas: más ancho y, en móvil, algo más pequeño */
+      .unico .cabecera--centro .titular--unico { max-width: 30ch !important; margin-inline: auto; font-size: clamp(1.5rem, 0.95rem + 2.5vw, 3.5rem); text-wrap: balance; }
+      .unico__lista { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: 0.875rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); padding-block: 1.25rem 2rem; scrollbar-width: none; }
+      .unico__lista::-webkit-scrollbar { display: none; }
+      .unico__lista .tarjeta { scroll-snap-align: start; }
+      .tarjeta { position: relative; display: grid; grid-template-rows: auto 1fr; border-radius: 6px; background: var(--crema); color: var(--negro); padding: 0.625rem 0.625rem 0; box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.7); }
+  .tarjeta__enlace { justify-self: start; margin-top: 0.25rem; font-size: var(--t1); font-weight: 800; color: var(--negro); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+  .tarjeta__enlace::after { content: ''; position: absolute; inset: 0; z-index: 2; }
+  .tarjeta::before { content: ''; position: absolute; z-index: 1; top: -10px; left: 50%; width: 76px; height: 22px; translate: -50% 0; rotate: -3deg; background: var(--acento); opacity: 0.85; }
+  .tarjeta:nth-child(odd) { rotate: -1.2deg; }
+  .tarjeta:nth-child(even) { rotate: 1.2deg; }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .tarjeta { transition: rotate 300ms cubic-bezier(.2,.7,.2,1), translate 300ms cubic-bezier(.2,.7,.2,1), box-shadow 300ms ease; }
+    .tarjeta:hover { rotate: 0deg; translate: 0 -6px; box-shadow: 0 28px 40px -20px rgb(0 0 0 / 0.75); }
+  }
+  .tarjeta__foto { border-radius: 3px; }
+  .tarjeta__firma { color: var(--gris-oscuro) !important; }
+      .tarjeta__foto { width: 100%; aspect-ratio: 8 / 7; object-fit: cover; }
+      .tarjeta__texto { display: grid; align-content: start; gap: 0.75rem; padding: 1.25rem 1.25rem 1.5rem; }
+      .tarjeta__cita { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.2; }
+      .tarjeta__firma { color: var(--gris); font-size: var(--t1); }
+      @media (min-width: 40rem) { .unico__lista { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; overflow: visible; margin-inline: 0; padding-inline: 0; padding-block: 0.75rem 0; } }
+      @media (min-width: 64rem) { .unico__lista { grid-template-columns: repeat(4, 1fr); } }
+
+      /* ---------- ¿Qué es NextYou? ---------- */
+      .que { background: var(--papel); color: var(--negro); }
+      /* Paso 2: los tres recorridos como un mapa. «Tú» arriba, carreteras que bajan y señales con icono.
+         Un punto recorre la carretera del destino elegido; las otras se suavizan */
+      .mapa { position: relative; display: grid; justify-items: center; width: 100%; max-width: 28rem; }
+      .mapa__tu { position: relative; z-index: 1; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--negro); color: var(--crema); font-weight: 800; font-size: var(--t2); box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 70%, transparent); }
+      .mapa__vias { display: block; width: 100%; height: clamp(7.5rem, 6rem + 4vw, 9.5rem); margin-top: -0.25rem; overflow: visible; }
+      .via { transition: opacity 300ms ease; }
+      .via path, .mapa__gps { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+      .via__firme { stroke: var(--negro); stroke-width: 14; }
+      .via__linea { stroke: var(--crema); stroke-width: 2; stroke-dasharray: 7 9; }
+      .via--1 .via__firme { stroke: var(--acento); stroke-width: 18; }
+      .via--1 .via__linea { stroke: var(--acento-txt); }
+      .via__sendero { stroke: var(--negro); stroke-width: 6; stroke-dasharray: 0.1 11; }
+      .mapa__gps--borde { stroke: var(--negro); stroke-width: 16; }
+      .mapa__gps--centro { stroke: var(--crema); stroke-width: 8; }
+      .mapa[data-sel='1'] :is(.via--2, .via--3), .mapa[data-sel='2'] :is(.via--1, .via--3), .mapa[data-sel='3'] :is(.via--1, .via--2) { opacity: 0.35; }
+      .mapa__destinos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.625rem; width: 100%; margin-top: 0.25rem; }
+      /* Señal: cartel con una muesca de flecha arriba, hacia la carretera que llega */
+      .senal { position: relative; display: grid; align-content: start; justify-items: center; gap: 0.2rem; padding: 1.1rem 0.5rem 0.75rem; border-radius: 12px; border: 1.5px solid var(--negro); background: var(--papel); color: var(--negro); font: inherit; text-align: center; cursor: pointer; transition: opacity 250ms ease, translate 250ms cubic-bezier(0.23, 1, 0.32, 1); }
+      .senal::before { content: ''; position: absolute; top: -11px; left: 50%; translate: -50% 0; width: 20px; height: 20px; rotate: 45deg; background: inherit; border-left: inherit; border-top: inherit; border-radius: 3px; }
+      .senal--1 { background: var(--acento); color: var(--acento-txt); box-shadow: 0 16px 28px -16px color-mix(in srgb, var(--acento) 70%, var(--negro)); }
+      .senal--3 { border-style: dashed; background: color-mix(in srgb, var(--papel) 70%, #e2d9ca); }
+      /* Elegida: sube y lleva doble borde. Las demás, más planas, pero con el texto a contraste completo */
+      .senal[aria-pressed='true'] { translate: 0 -4px; box-shadow: 0 0 0 2px var(--papel), 0 0 0 4px var(--negro), 0 14px 24px -16px rgb(22 20 18 / 0.5); }
+      .senal--1[aria-pressed='false'] { background: color-mix(in srgb, var(--acento) 45%, var(--papel)); box-shadow: none; }
+      .senal[aria-pressed='false'] .senal__icono { background: var(--gris-oscuro); }
+      .senal:focus-visible { outline: 3px solid var(--negro); outline-offset: 3px; }
+      .senal__icono { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--negro); color: var(--crema); }
+      .senal--1 .senal__icono { color: var(--acento); }
+      .senal__icono svg { width: 1.125rem; height: 1.125rem; }
+      .senal__tipo { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; color: var(--gris-oscuro); }
+      .senal--1 .senal__tipo, .senal--1 .senal__nota { color: var(--acento-txt); }
+      .senal__ejemplo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t2); line-height: 1.15; }
+      .senal__nota { font-size: 0.6875rem; line-height: 1.3; color: var(--gris-oscuro); }
+      @media (max-width: 47.99rem) {
+        .senal { padding: 1rem 0.35rem 0.65rem; }
+        .senal__icono { width: 1.875rem; height: 1.875rem; }
+        .senal__tipo { font-size: 0.625rem; letter-spacing: 0.05em; }
+        .senal__ejemplo { font-size: 0.875rem; hyphens: auto; overflow-wrap: anywhere; }
+        .senal__nota { display: none; }
+      }
+      /* Entrada: las carreteras se dibujan de arriba abajo desde «Tú» y aparecen las señales */
+      @media (prefers-reduced-motion: no-preference) {
+        .via { clip-path: inset(-24px) view-box; transition: clip-path 800ms cubic-bezier(0.65, 0, 0.35, 1), opacity 300ms ease; }
+        .via--1 { transition-delay: 250ms, 0ms; }
+        .via--2 { transition-delay: 380ms, 0ms; }
+        .via--3 { transition-delay: 510ms, 0ms; }
+        .mapa__tu { transition: scale 450ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .senal { transition: opacity 400ms ease, translate 500ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .js .mapa:not(.en-vista) .via { clip-path: inset(-24px -24px calc(100% + 24px) -24px) view-box; }
+        .js .mapa:not(.en-vista) .mapa__tu { scale: 0; }
+        .js .mapa:not(.en-vista) .senal { opacity: 0; translate: 0 0.75rem; }
+        .js .mapa:not(.en-vista) .mapa__gps { opacity: 0; }
+      }
+
+      /* Paso 3: una sesión con el coach, como una videollamada */
+      .llamada { display: grid; gap: 0.75rem; width: min(100%, 25rem); padding: 0.75rem; border-radius: 26px; background: color-mix(in srgb, var(--papel) 35%, #ffffff); border: 1px solid rgb(22 20 18 / 0.1); box-shadow: 0 40px 60px -35px rgb(22 20 18 / 0.45); rotate: -1.5deg; }
+      .llamada__barra { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.5rem 0; font-size: var(--t1); font-weight: 700; color: var(--gris-oscuro); }
+      .llamada__punto { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #2fbf71; box-shadow: 0 0 0 3px rgb(47 191 113 / 0.2); }
+      .llamada__video { position: relative; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; display: grid; place-items: end center; background: radial-gradient(80% 70% at 50% 30%, #4a423b, var(--negro)); }
+      .llamada__silueta { width: 62%; fill: #7a6f64; }
+      .llamada__nombre { position: absolute; left: 0.75rem; top: 0.75rem; padding: 0.3rem 0.65rem; border-radius: 999px; background: rgb(0 0 0 / 0.55); color: var(--crema); font-size: 0.75rem; font-weight: 700; }
+      .llamada__tu { position: absolute; right: 0.75rem; top: 0.75rem; display: grid; place-items: center; width: 24%; aspect-ratio: 3 / 4; border-radius: 12px; border: 2px solid rgb(246 241 232 / 0.75); background: linear-gradient(160deg, #6b6158, #2b2622); color: var(--crema); font-size: 0.75rem; font-weight: 800; }
+      .llamada__burbuja { position: relative; z-index: 1; justify-self: start; max-width: 88%; margin: -2.25rem 0 0 0.75rem; padding: 0.75rem 1rem; border-radius: 16px 16px 16px 4px; background: var(--acento); color: var(--acento-txt); font-size: var(--t2); font-weight: 700; line-height: 1.35; box-shadow: 0 12px 24px -14px rgb(22 20 18 / 0.5); }
+      .llamada__reto { display: grid; gap: 0.15rem; padding: 0.75rem 1rem; border-radius: 14px; border: 1.5px dashed rgb(22 20 18 / 0.35); }
+      .llamada__reto span { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris-oscuro); }
+      .llamada__reto strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.2; color: var(--negro); }
+      .llamada__controles { display: flex; justify-content: center; gap: 0.75rem; padding-bottom: 0.25rem; }
+      .llamada__controles span { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: rgb(22 20 18 / 0.08); color: var(--negro); }
+      .llamada__controles .llamada__colgar { background: #d8452b; color: #ffffff; }
+
+      /* Paso 3: cromos de quien ya está ahí. Móvil: mazo para deslizar. Escritorio: abanico que se reparte */
+      .cromos { position: relative; width: 100%; height: 30rem; }
+      .cromo { position: absolute; left: 50%; top: 0.5rem; display: grid; width: 13.5rem; padding: 0.5rem; border-radius: 20px; background: var(--negro); color: var(--crema); box-shadow: 0 24px 34px -20px rgb(22 20 18 / 0.6); translate: -50% 0; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+      /* Cromo sin foto todavía: inicial grande e icono de la profesión */
+      .foto-hueco { position: relative; display: grid; place-items: center; width: 100%; height: 100%; aspect-ratio: 1 / 1; background: radial-gradient(circle at 30% 25%, #3a342e, #1d1a17); color: var(--acento); }
+      .foto-hueco[data-k='1'] { background: radial-gradient(circle at 70% 25%, #34302b, #1d1a17); }
+      .foto-hueco[data-k='2'] { background: radial-gradient(circle at 50% 80%, #2e2b33, #1d1a17); }
+      .foto-hueco__ini { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 6rem; line-height: 1; opacity: 0.18; color: var(--crema); }
+      .foto-hueco__ic { position: absolute; display: grid; place-items: center; width: 4.5rem; height: 4.5rem; border-radius: 50%; background: rgb(200 245 59 / 0.12); }
+      .foto-hueco__ic svg { width: 2.5rem; height: 2.5rem; }
+      .cromo__foto { aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; border: 2px solid var(--acento); }
+      .cromo__img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+      .cromo__info { display: grid; gap: 0.25rem; padding: 0.625rem 0.25rem 0.125rem; }
+      .cromo__cab { display: flex; justify-content: space-between; align-items: baseline; }
+      .cromo__cab strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1; }
+      .cromo__edad { color: var(--acento-texto); font-weight: 800; font-size: var(--t1); }
+      .cromo__prof { color: var(--gris); font-size: 0.8125rem; }
+      .cromo__consejo { display: grid; gap: 0.1rem; margin-block: 0.25rem; padding: 0.5rem 0.625rem; border-radius: 10px; background: var(--acento); color: var(--acento-txt); font-weight: 700; font-size: 0.8125rem; line-height: 1.3; }
+      .cromo__consejo span { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+      .cromo__datos { display: grid; gap: 0.1rem; font-size: 0.75rem; }
+      .cromo__datos div { display: flex; gap: 0.5rem; }
+      .cromo__datos dt { flex-shrink: 0; width: 3.1rem; color: var(--gris); }
+      .cromo__datos dd { font-weight: 700; }
+      .cromo__ver { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 0.5rem; min-height: 44px; border: 0; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font: inherit; font-weight: 800; font-size: 0.8125rem; cursor: pointer; }
+      .cromo__ver:focus-visible { outline: 3px solid var(--crema); outline-offset: 2px; }
+      /* Móvil y tableta: tambor 3D. El abanico solo existe en escritorio */
+      .cromos { display: none; }
+      .tambor-bloque { width: 100%; }
+      .tambor-cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+      .tambor-cab p { display: grid; }
+      .tambor-cab p span { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris-oscuro); }
+      .tambor-cab strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); }
+      .tambor-cnt { font-size: 0.75rem; font-weight: 700; color: var(--gris-oscuro); }
+      .tambor { position: relative; height: 24rem; margin-top: 0.375rem; perspective: 900px; touch-action: pan-y; cursor: grab; }
+      .tambor:active { cursor: grabbing; }
+      .tambor:focus-visible { outline: 3px solid var(--negro); outline-offset: 4px; border-radius: 16px; }
+      .tambor__anillo { position: absolute; left: 50%; top: 0.875rem; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(-230px); }
+      .tcromo { position: absolute; left: -112px; top: 0; width: 224px; padding: 7px; border-radius: 18px; background: #fbf8f3; box-shadow: 0 20px 36px -20px rgb(0 0 0 / 0.6); backface-visibility: hidden; transition: filter 300ms ease; user-select: none; -webkit-user-select: none; }
+      .tcromo.atras { filter: brightness(0.75); }
+      .tcromo__foto { position: relative; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; }
+      .tcromo__img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+      .tcromo__foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgb(0 0 0 / 0.72)); }
+      .tcromo__camino { position: absolute; z-index: 1; top: 8px; left: 8px; padding: 4px 8px; border-radius: 999px; background: var(--negro); color: var(--crema); font-size: 0.625rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+      .tcromo[data-k='0'] .tcromo__camino { background: var(--acento); color: var(--acento-txt); }
+      .tcromo[data-k='2'] .tcromo__camino { background: #fff; color: var(--negro); box-shadow: inset 0 0 0 1.5px var(--negro); }
+      .tcromo__edad { position: absolute; z-index: 1; right: 8px; bottom: 8px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--negro); background: var(--acento); color: var(--acento-txt); font-family: var(--titular); font-weight: 800; font-size: 0.875rem; }
+      .tcromo__nombre { position: absolute; z-index: 1; left: 10px; bottom: 8px; display: grid; color: #fff; }
+      .tcromo__nombre strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.3rem; line-height: 1; }
+      .tcromo__nombre span { font-size: 0.75rem; }
+      .tcromo__consejo { display: grid; margin: 8px 2px 0; padding: 7px 10px; border-radius: 10px; background: var(--acento); color: var(--acento-txt); font-family: 'Caveat', var(--mano), cursive; font-weight: 700; font-size: 1.2rem; line-height: 1.05; }
+      .tcromo__consejo span { font-family: var(--sans); font-size: 0.625rem; font-weight: 800; letter-spacing: 0.14em; line-height: 1.6; text-transform: uppercase; }
+      .tcromo__ver { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 4px); min-height: 44px; margin: 8px 2px 2px; border: 0; border-radius: 999px; background: var(--negro); color: var(--crema); font: inherit; font-weight: 800; font-size: 0.8125rem; cursor: pointer; }
+      .tcromo__ver:focus-visible { outline: 3px solid var(--acento-texto); outline-offset: 2px; }
+      .tcromo__play { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--acento); color: var(--acento-txt); font-size: 0.5rem; }
+      .tambor-pie { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+      .tambor-puntos { display: flex; gap: 0.25rem; }
+      .tambor-puntos button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; }
+      .tambor-puntos button::before { content: ''; width: 8px; height: 8px; border-radius: 8px; background: #a39886; transition: width 250ms ease, background 250ms ease; }
+      .tambor-puntos button[aria-current='true']::before { width: 24px; background: var(--negro); }
+      .tambor-ayuda { font-size: var(--t1); color: var(--gris-oscuro); }
+      .tambor-siguiente { min-height: 44px; padding: 0 1.25rem; border: 0; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font: inherit; font-size: var(--t1); font-weight: 800; cursor: pointer; }
+      @media (min-width: 64rem) {
+        .cromos { display: block; }
+        .tambor-bloque { display: none; }
+      }
+      /* Escritorio: abanico. Se reparte al llegar; la carta bajo el ratón (o con el foco) sube al frente */
+      @media (min-width: 64rem) {
+        .cromos { height: 31rem; }
+        .cromo { transform-origin: 50% 130%; transition: rotate 600ms cubic-bezier(0.23, 1, 0.32, 1), translate 600ms cubic-bezier(0.23, 1, 0.32, 1), scale 250ms ease; transition-delay: calc(var(--n) * 70ms); }
+        .cromo:nth-child(1) { rotate: -9deg; translate: calc(-50% - 7.75rem) 1.25rem; }
+        .cromo:nth-child(2) { z-index: 2; }
+        .cromo:nth-child(3) { rotate: 9deg; translate: calc(-50% + 7.75rem) 1.25rem; }
+        .cromo:hover, .cromo:focus-within { z-index: 5; scale: 1.05; transition-delay: 0ms; }
+        .cromo:nth-child(1):hover, .cromo:nth-child(1):focus-within { rotate: -5deg; }
+        .cromo:nth-child(3):hover, .cromo:nth-child(3):focus-within { rotate: 5deg; }
+        .js .cromos:not(.repartido) .cromo { rotate: 0deg; translate: -50% 0; }
+        .js .cromos:not(.repartido) .cromo:nth-child(1) { rotate: -3deg; }
+        .js .cromos:not(.repartido) .cromo:nth-child(3) { rotate: 3deg; }
+      }
+      @media (prefers-reduced-motion: reduce) { .cromo { transition: none !important; } }
+
+      /* ---------- Paso 1: el test se prueba en la página ---------- */
+      .pasos3 { container-type: inline-size; }
+      .paso3--test { min-width: 0; }
+      .tt-prueba { display: flex; gap: 0.5rem; align-items: center; font-family: 'Caveat', var(--mano), cursive; font-weight: 700; font-size: 1.5rem; line-height: 1; color: var(--negro); }
+      .tt-prueba svg { flex: none; }
+      .tt-marco { position: relative; width: 100%; min-width: 0; }
+      .tt-nav { display: none; }
+      .tt-pant { position: relative; display: flex; flex-direction: column; min-height: 27.5rem; padding: 1.25rem 1rem 1.125rem; border-radius: 26px; background: var(--negro); color: var(--crema); overflow: hidden; overflow: clip; box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.6); }
+      .tt-pant::before { content: ''; position: absolute; right: -40%; bottom: -50%; width: 340px; height: 340px; background: radial-gradient(circle, color-mix(in srgb, var(--acento) 16%, transparent), transparent 65%); pointer-events: none; }
+      .tt-cab { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris); }
+      .tt-demo { color: var(--acento-texto); }
+      .tt-barra { height: 5px; margin-top: 0.5625rem; border-radius: 5px; background: #3a342e; overflow: hidden; }
+      .tt-barra span { display: block; width: 0; height: 100%; border-radius: 5px; background: var(--acento); transition: width 500ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+      .tt-paso { position: relative; display: flex; flex-direction: column; flex: 1; margin-top: 1.125rem; }
+      .tt-paso[hidden] { display: none; }
+      .tt-preg { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.375rem; line-height: 1.12; outline: none; }
+      .tt-ops { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5625rem; margin-top: 1rem; }
+      .tt-op { display: flex; flex-direction: column; gap: 0.25rem; min-height: 5.75rem; padding: 0.75rem 0.75rem 0.8rem; border: 1.5px solid #3a342e; border-radius: 15px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background 200ms ease, border-color 200ms ease, transform 150ms ease; -webkit-tap-highlight-color: transparent; }
+      .tt-op b { font-size: 0.9375rem; font-weight: 800; }
+      .tt-op span { font-size: 0.8125rem; line-height: 1.3; color: var(--gris); }
+      .tt-op:hover { border-color: #6d655b; }
+      .tt-op:active { transform: scale(0.97); }
+      .tt-op:focus-visible { outline: 3px solid var(--acento-texto); outline-offset: 2px; }
+      .tt-op.sel { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+      .tt-op.sel span { color: var(--acento-txt); }
+      .tt-nota { margin-top: 0.875rem; font-size: 0.8125rem; text-align: center; color: var(--gris); }
+      .tt-pie { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; font-size: 0.8125rem; font-weight: 700; }
+      .tt-volver, .tt-repetir { min-height: 44px; padding: 0 0.25rem; border: 0; background: none; color: var(--gris); font: inherit; cursor: pointer; }
+      .tt-volver[disabled] { opacity: 0; pointer-events: none; }
+      .tt-volver[hidden], .tt-repetir[hidden] { display: none; }
+      .tt-repetir { margin-inline: auto; text-decoration: underline; text-underline-offset: 3px; }
+      .tt-volver:focus-visible, .tt-repetir:focus-visible { outline: 3px solid var(--acento-texto); outline-offset: 2px; }
+      /* Resultado */
+      .tt-res__mini { font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--acento-texto); }
+      .tt-res__tit { margin-top: 0.375rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.875rem; line-height: 1.02; outline: none; }
+      .tt-res__frase { margin-top: 0.375rem; font-family: 'Caveat', var(--mano), cursive; font-weight: 700; font-size: 1.5rem; line-height: 1.05; color: var(--acento-texto); }
+      .tt-rasgos { display: grid; gap: 0.4375rem; margin-top: 0.875rem; }
+      .tt-rasgos div { display: flex; justify-content: space-between; gap: 0.625rem; padding-top: 0.5rem; border-top: 1px solid #3a342e; font-size: 0.8125rem; }
+      .tt-rasgos dt { color: var(--gris); }
+      .tt-rasgos dd { font-weight: 800; text-align: right; }
+      .tt-caminos { position: relative; margin-top: 1rem; }
+      .tt-caminos__eti { margin-bottom: 0.5rem; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gris); }
+      .tt-cams { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.375rem; }
+      .tt-cam { display: flex; flex-direction: column; justify-content: space-between; min-height: 3.875rem; padding: 0.5625rem 0.5rem; border-radius: 11px; background: #2a2521; }
+      .tt-cam i { font-style: normal; font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); }
+      .tt-cam b { display: block; width: 85%; height: 9px; border-radius: 5px; background: #4a433c; }
+      .tt-cam b + b { width: 55%; margin-top: 4px; }
+      .tt-candado { display: table; margin: 0.5625rem auto 0; padding: 0.375rem 0.6875rem; border-radius: 999px; background: var(--crema); color: var(--negro); font-size: 0.75rem; font-weight: 800; white-space: nowrap; box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.6); }
+      .tt-cta { display: flex; justify-content: center; align-items: center; gap: 0.5rem; min-height: 52px; margin-top: 1rem; padding: 0.9rem 1.1rem; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font-weight: 800; font-size: 1rem; text-decoration: none; }
+      .tt-cta:focus-visible { outline: 3px solid var(--crema); outline-offset: 3px; }
+      @media (prefers-reduced-motion: no-preference) {
+        .tt-paso.entra .tt-op { animation: tt-entra 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        .tt-paso.entra .tt-op:nth-child(2) { animation-delay: 60ms; }
+        .tt-paso.entra .tt-op:nth-child(3) { animation-delay: 120ms; }
+        .tt-paso.entra .tt-op:nth-child(4) { animation-delay: 180ms; }
+        .tt-op--pista { animation: tt-latido 1.6s ease-in-out 1s 3; }
+        .tt-res.entra > * { animation: tt-entra 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        .tt-res.entra > :nth-child(2) { animation-delay: 80ms; }
+        .tt-res.entra > :nth-child(3) { animation-delay: 160ms; }
+        .tt-res.entra > :nth-child(4) { animation-delay: 240ms; }
+        .tt-res.entra > :nth-child(5) { animation-delay: 320ms; }
+        .tt-res.entra > :nth-child(6) { animation-delay: 400ms; }
+      }
+      @media (prefers-reduced-motion: reduce) { .tt-barra span, .tt-op { transition: none; } }
+      @keyframes tt-entra { from { opacity: 0; transform: translateY(12px); } }
+      @keyframes tt-latido { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acento) 0%, transparent); } 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 35%, transparent); } }
+      /* Escritorio (por ancho del contenedor): dos columnas y el test dentro de un móvil, con el mismo marco que el resto de la página */
+      @container (min-width: 760px) {
+        .pasos3 .paso3--test { grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .tt-marco { justify-self: center; display: grid; width: 21.5rem; aspect-ratio: 71.6 / 147.6; padding: 0.6rem; border-radius: 52px; isolation: isolate; rotate: 2deg;
+          background: linear-gradient(145deg, #5b554e 0%, #2b2724 18%, #1a1715 50%, #2b2724 82%, #4d4741 100%);
+          box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22), inset 0 0 0 4px #0b0a09, 0 50px 70px -35px rgb(22 20 18 / 0.75), 0 18px 30px -18px rgb(22 20 18 / 0.5); }
+        .tt-marco::after { content: ''; position: absolute; inset: -60px; z-index: -1; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--acento) 28%, transparent), transparent 62%); pointer-events: none; }
+        /* Isla, barra de estado y botones laterales */
+        .tt-marco::before { content: ''; position: absolute; z-index: 4; top: 1.15rem; left: 50%; width: 5.25rem; height: 1.4rem; translate: -50% 0; border-radius: 999px; background: #000; }
+        .tt-nav { display: block; position: absolute; z-index: 3; top: 1.25rem; left: 2rem; right: 1.75rem; height: 1.2rem; }
+        .tt-nav i, .tt-url { display: none; }
+        .tt-nav::before { content: '9:41'; color: var(--crema); font-size: 0.75rem; font-weight: 700; }
+        .tt-nav::after { content: ''; position: absolute; right: 0; top: 0.2rem; width: 1.4rem; height: 0.65rem; border-radius: 3px; border: 1.5px solid rgb(246 241 232 / 0.7); background: linear-gradient(90deg, var(--crema) 70%, transparent 70%) content-box; padding: 1px; }
+        .tt-pant { min-height: 0; height: 100%; padding: 3.25rem 1rem 1.5rem; border-radius: 44px; box-shadow: none; }
+        .tt-paso:not(.tt-res) { justify-content: center; }
+        .tt-pant::after { content: ''; position: absolute; left: 50%; bottom: 0.6rem; width: 6rem; height: 4px; translate: -50% 0; border-radius: 999px; background: rgb(246 241 232 / 0.55); }
+      }
+
+
+      .como__cabecera { margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem); }
+      .como__sub { font-size: var(--t3); line-height: 1.45; color: var(--gris-oscuro); max-width: 34rem; }
+      .que__cabecera { display: grid; gap: 1.25rem; margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem); }
+      /* El logo manda: «¿Qué es» un punto por debajo de t5 y el logo a la altura de sus mayúsculas */
+      .que__pregunta { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); line-height: 1.04; letter-spacing: -0.025em; }
+      .que__lead { font-weight: 600; font-size: var(--t3); line-height: 1.4; max-width: 36ch; text-wrap: balance; }
+  .que__pregunta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
+  .que__marca { display: inline-flex; align-items: center; white-space: nowrap; }
+  /* Paleta lima: el logo sobre crema lleva subrayado lima, como el resto de destacados */
+  [data-paleta='d'] .que .logo--grande { padding-bottom: 0.1em; background: var(--subrayado-oscuro) no-repeat 100% 100% / 46% 0.2em; }
+  .que .logo--grande { height: 1.3em; width: auto; margin-right: -0.1em; color: var(--negro); --logo-you: var(--logo-you-claro); translate: 0 0.04em; }
+      .pastilla.pastilla--contorno { background: none; color: var(--negro); border: 1px solid var(--negro); }
+      /* ---------- Lo que no va a pasar ---------- */
+      .promesa { display: grid; gap: 2rem; margin-top: clamp(3rem, 2rem + 3vw, 5rem); padding: clamp(1.75rem, 1.25rem + 2.5vw, 3rem); border-radius: 24px; background: var(--negro); color: var(--crema); }
+      .promesa__texto { display: grid; gap: 1.25rem; }
+      .promesa__titulo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.1; letter-spacing: -0.02em; }
+      .promesa__lista { display: grid; gap: 0.875rem 2.5rem; }
+      .promesa__lista li { display: flex; gap: 0.75rem; align-items: center; font-weight: 600; }
+      .promesa__x { display: grid; place-items: center; flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgb(246 241 232 / 0.45); color: var(--crema); }
+      .promesa__accion { display: grid; justify-items: start; gap: 0.75rem; }
+      .promesa__accion span { font-size: var(--t1); color: var(--gris); }
+      @media (min-width: 48rem) { .promesa__lista { grid-template-columns: repeat(2, auto); justify-content: start; } }
+      @media (min-width: 64rem) {
+        .promesa { grid-template-columns: 1fr auto; align-items: center; gap: 4rem; }
+        .promesa__accion { justify-items: center; text-align: center; }
+      }
+
+      /* ---------- Demo vertical ---------- */
+      .pasos3 { overflow-x: clip; padding-block: 1rem; margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); display: grid; gap: clamp(4.5rem, 3.5rem + 4vw, 6.5rem); margin-top: clamp(1.5rem, 1rem + 2vw, 3rem); }
+      .paso3 { display: grid; gap: 1.75rem; align-items: center; }
+      .paso3__texto { display: grid; justify-items: start; gap: 1rem; max-width: 30rem; }
+      .paso3__n { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t6); line-height: 0.9; letter-spacing: -0.04em; color: var(--acento-oscuro); }
+      [data-paleta='d'] .paso3__n { padding: 0.08em 0.18em 0; border-radius: 12px; background: #c8f53b; color: var(--negro); }
+      .paso3__lead { font-size: var(--t3); line-height: 1.5; color: var(--gris-oscuro); max-width: 28rem; }
+      /* Lo que te llevas en cada paso: una línea aparte, con una raya de acento, para que el recorrido se lea de un vistazo */
+      .paso3__llevas { max-width: 28rem; padding-left: 0.875rem; border-left: 3px solid var(--acento); font-size: var(--t2); line-height: 1.45; color: var(--negro); }
+      .paso3__llevas strong { font-weight: 800; }
+      .paso3 h3 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.05; letter-spacing: -0.025em; }
+
+      /* Pantalla de móvil */
+      /* El móvil: marco metálico con bisel, isla, barra de estado, botones laterales y reflejo. Que se lea como un teléfono, no como una tarjeta */
+      /* Proporción de un teléfono real (unos 71,6 × 147,6 mm): alto ≈ 2,06 veces el ancho */
+      .movil { position: relative; justify-self: center; display: grid; width: min(100%, 17rem); aspect-ratio: 71.6 / 147.6; padding: 0.55rem; border-radius: 46px;
+        background: linear-gradient(145deg, #5b554e 0%, #2b2724 18%, #1a1715 50%, #2b2724 82%, #4d4741 100%);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22), inset 0 0 0 4px #0b0a09, 0 2px 0 rgb(255 255 255 / 0.04), 0 50px 70px -35px rgb(22 20 18 / 0.75), 0 18px 30px -18px rgb(22 20 18 / 0.5);
+        rotate: 2deg; }
+      .movil::before { content: ''; position: absolute; z-index: -1; inset: 12% -14% 8%; border-radius: 50%; background: var(--acento); opacity: 0.22; filter: blur(40px); }
+      /* Isla */
+      .movil::after { content: ''; position: absolute; z-index: 4; top: 1.05rem; left: 50%; width: 5rem; height: 1.35rem; translate: -50% 0; border-radius: 999px; background: #000; box-shadow: inset -0.9rem 0 0 -0.55rem #1c2230; }
+      .movil__estado { position: absolute; z-index: 3; top: 1.15rem; left: 1.75rem; right: 1.5rem; display: flex; justify-content: space-between; align-items: center; color: var(--crema); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.01em; pointer-events: none; }
+      .movil__iconos { display: flex; gap: 0.3rem; align-items: center; }
+      .movil__home { position: absolute; z-index: 3; bottom: 1rem; left: 50%; width: 6rem; height: 4px; translate: -50% 0; border-radius: 999px; background: rgb(246 241 232 / 0.55); pointer-events: none; }
+      /* Botones: volumen a la izquierda y encendido a la derecha */
+      .movil__lateral { position: absolute; inset: 0; pointer-events: none; }
+      .movil__lateral::before, .movil__lateral::after { content: ''; position: absolute; width: 3px; border-radius: 2px; background: linear-gradient(90deg, #3d3833, #1a1715); }
+      .movil__lateral::before { left: -3px; top: 22%; height: 2.4rem; box-shadow: 0 3rem 0 0 #2a2622; }
+      .movil__lateral::after { right: -3px; top: 30%; height: 3.8rem; }
+      .movil__pantalla { position: relative; display: flex; flex-direction: column; min-height: 0; height: 100%; padding: 3.1rem 0.95rem 2.25rem; gap: 0.5rem; border-radius: 38px;
+        background: radial-gradient(120% 55% at 50% 0%, #2b2622 0%, var(--negro) 70%); color: var(--crema); font-size: 0.8125rem; overflow: hidden; }
+      /* Reflejo suave sobre el cristal */
+      .movil__pantalla::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(115deg, rgb(255 255 255 / 0.07) 0%, rgb(255 255 255 / 0) 32%); pointer-events: none; }
+
+      /* Pantalla 2: los tres caminos como un esquema que se dibuja */
+      .m-ramas { position: relative; display: grid; grid-template-columns: 2.25rem 1fr; margin-top: 0.25rem; }
+      .m-ramas__lineas { grid-column: 1; grid-row: 1; width: 100%; height: 100%; overflow: visible; }
+      .m-l { fill: none; stroke: rgb(246 241 232 / 0.6); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+      .m-l--1 { stroke: var(--acento); stroke-width: 3; }
+      .m-l--3 { stroke-dasharray: 2 5; }
+      .m-ramas__tu { position: absolute; left: -0.3rem; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-size: 0.6875rem; font-weight: 800; box-shadow: 0 0 0 4px rgb(246 241 232 / 0.12); }
+      .m-ramas__lista { grid-column: 2; grid-row: 1; display: grid; grid-auto-rows: 1fr; gap: 0.45rem; }
+      .m-rama { display: grid; align-content: center; gap: 0.1rem; padding: 0.55rem 0.7rem; border-radius: 14px; border: 1px solid var(--linea); background: var(--tarjeta); }
+      .m-rama strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 0.9375rem; line-height: 1.15; }
+      .m-rama__tipo { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+      .m-rama--1 { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); box-shadow: 0 0 24px -6px var(--acento); }
+      .m-rama--1 .m-rama__tipo { color: var(--acento-txt); }
+      .m-rama--3 { border-style: dashed; border-color: rgb(246 241 232 / 0.4); background: transparent; }
+      /* Se anima al aparecer la pantalla: en escritorio cuando la capa está activa; en móvil, al entrar en pantalla */
+      @media (prefers-reduced-motion: no-preference) {
+        .m-l { transition: clip-path 700ms cubic-bezier(0.23, 1, 0.32, 1) 250ms; clip-path: inset(0 0 0 0); }
+        .m-l--2 { transition-delay: 400ms; }
+        .m-l--3 { transition-delay: 550ms; }
+        .m-ramas__tu { transition: scale 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms; }
+        .m-rama { transition: opacity 450ms ease, translate 500ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: calc(600ms + var(--d) * 150ms); }
+        .js :is(.movil__capa:not(.activa), .movil--paso:not(.en-vista)) .m-l { clip-path: inset(0 100% 0 0); transition-delay: 0ms; }
+        .js :is(.movil__capa:not(.activa), .movil--paso:not(.en-vista)) .m-ramas__tu { scale: 0; transition-delay: 0ms; }
+        .js :is(.movil__capa:not(.activa), .movil--paso:not(.en-vista)) .m-rama { opacity: 0; translate: -0.75rem 0; transition-delay: 0ms; }
+        .js :is(.movil__capa.activa, .movil--paso.en-vista) .m-rama--1 { animation: m-brillo 2.4s ease-in-out 1.4s infinite; }
+      }
+      @keyframes m-brillo { 50% { box-shadow: 0 0 34px -2px var(--acento); } }
+      .m-cabecera { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; }
+      .m-progreso { height: 6px; border-radius: 999px; background: var(--tarjeta); overflow: hidden; }
+      .m-progreso span { display: block; height: 100%; border-radius: inherit; background: var(--acento-texto); }
+      .m-pregunta, .m-titulo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.125rem; line-height: 1.15; margin-top: 0.5rem; }
+      .m-sub { color: var(--gris); margin-top: -0.25rem; }
+      .m-tarea { display: flex; gap: 0.75rem; align-items: center; padding: 0.75rem; border-radius: 16px; background: var(--tarjeta); border: 1px solid var(--linea); font-weight: 700; font-size: 0.9375rem; line-height: 1.3; }
+      .m-tarea svg { flex-shrink: 0; color: var(--acento-texto); }
+      .m-energias { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+      .m-energias span { display: grid; align-content: start; gap: 0.2rem; padding: 0.6rem 0.625rem; border-radius: 12px; border: 1px solid var(--linea); font-size: 0.6875rem; line-height: 1.3; color: var(--gris); }
+      .m-energias strong { font-size: 0.8125rem; color: var(--crema); }
+      .m-energias span.sel { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+      .m-energias span.sel strong { color: var(--acento-txt); }
+      .m-respuestas { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+      .m-respuestas span { padding: 0.55rem 0.5rem; border-radius: 12px; border: 1px solid var(--linea); text-align: center; font-weight: 700; }
+      .m-respuestas span.sel { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+      .m-pie { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.75rem; color: var(--gris); font-weight: 600; }
+      .m-siguiente { padding: 0.5rem 0.875rem; border-radius: 999px; background: var(--crema); color: var(--negro); }
+      .m-camino { display: grid; gap: 0.1rem; padding: 0.5rem 0.75rem; border-radius: 16px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .m-camino--uno { border-color: var(--acento-texto); }
+      .m-camino__tipo { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acento-texto); }
+      .m-camino strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1rem; }
+      .m-camino__motivo { color: var(--gris); line-height: 1.35; }
+      .m-nota { text-align: center; font-size: 0.75rem; color: var(--gris); }
+      .m-chat__cabecera { display: flex; gap: 0.625rem; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--linea); }
+      .m-chat__cabecera div { display: grid; line-height: 1.2; }
+      .m-chat__cabecera div span { font-size: 0.75rem; color: var(--acento-texto); }
+      .m-avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--acento); color: var(--acento-txt); font-weight: 800; }
+      .m-burbuja { justify-self: start; max-width: 85%; padding: 0.625rem 0.875rem; border-radius: 16px 16px 16px 4px; background: var(--tarjeta); border: 1px solid var(--linea); line-height: 1.35; }
+      .m-burbuja--tu { justify-self: end; border-radius: 16px 16px 4px 16px; background: var(--acento); border-color: var(--acento); color: var(--acento-txt); font-weight: 600; }
+      .m-sesion3 { display: grid; justify-items: start; gap: 0.25rem; padding: 0.875rem; border-radius: 16px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .m-sesion3 .m-avatar { margin-bottom: 0.375rem; }
+      .m-sesion3 .m-titulo { margin-top: 0; }
+      .m-reto { display: grid; gap: 0.2rem; padding: 0.875rem; border-radius: 16px; border: 1px dashed rgb(246 241 232 / 0.25); }
+      .m-reto span { font-size: 0.75rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+      .m-sesion { display: grid; gap: 0.125rem; margin-top: auto; padding: 0.875rem 1rem; border-radius: 16px; border: 1px dashed rgb(246 241 232 / 0.25); }
+      .m-sesion span { font-size: 0.75rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+      .m-video { display: flex; gap: 0.625rem; align-items: center; padding: 0.5rem; border-radius: 14px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .m-video__mini { display: grid; place-items: center; flex-shrink: 0; width: 3.25rem; aspect-ratio: 9 / 12; border-radius: 9px; color: var(--crema); }
+      .m-video__mini--a { background: linear-gradient(160deg, #3a332c, var(--negro)); }
+      .m-video__mini--b { background: linear-gradient(160deg, var(--acento), var(--negro) 85%); }
+      .m-video__mini--c { background: linear-gradient(160deg, #5a524a, var(--tarjeta)); }
+      .m-video__texto { display: grid; gap: 0.15rem; line-height: 1.25; }
+      .m-video__texto span { color: var(--gris); font-size: 0.75rem; }
+      .paso3__pastillas { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+      /* Pasos en vertical (móvil y tableta): móviles al 75 % */
+      .paso3__visual { display: grid; place-items: center; padding-block: 0.5rem; }
+      .paso3__visual .movil { width: min(100%, 15.5rem); }
+
+      /* Escritorio: móvil fijo en una columna que cambia de pantalla según el paso a la vista */
+      @media (min-width: 64rem) {
+        .pasos3 { gap: clamp(7rem, 5rem + 5vw, 10rem); }
+        .paso3 { grid-template-columns: 1fr 1fr; gap: 4rem; }
+        .paso3__visual .movil { width: 17rem; }
+        .paso3__texto { position: relative; padding-left: 1.5rem; }
+        .paso3__texto::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 999px; background: var(--acento); transform: scaleY(0); transform-origin: top; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .paso3.activo .paso3__texto::before { transform: scaleY(1); }
+        [data-paleta='d'] .paso3__texto::before { background: var(--negro); }
+        .movil__capa { grid-area: 1 / 1; opacity: 0; transform: scale(0.97); filter: blur(4px); pointer-events: none;
+          transition: opacity 320ms cubic-bezier(0.23, 1, 0.32, 1), transform 320ms cubic-bezier(0.23, 1, 0.32, 1), filter 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .movil__capa.activa { opacity: 1; transform: none; filter: none; }
+      }
+      /* Menos movimiento: solo fundido de opacidad, sin escala ni desenfoque */
+      @media (min-width: 64rem) and (prefers-reduced-motion: reduce) {
+        .movil__capa { transform: none; filter: none; transition: opacity 180ms ease; }
+        .paso3__texto::before { transition: none; }
+      }
+
+      @media (min-width: 48rem) {
+      }
+      @media (min-width: 64rem) {
+      }
+
+      /* ---------- La uni no es el único camino: fondo de acento para romper el ritmo entre los bloques claros y los oscuros ---------- */
+      .uni-no { background: var(--acento); color: var(--acento-txt); }
+      .uni-no__rejilla { display: grid; gap: clamp(2.5rem, 2rem + 2vw, 4rem); align-items: center; }
+      .uni-no__texto { display: grid; justify-items: start; gap: 1.25rem; max-width: 36rem; }
+      .uni-no__titulo { max-width: 14ch; }
+      .uni-no .uni-no__titulo em { font-style: normal; background: none; padding: 0; box-shadow: inset 0 -0.14em 0 currentColor; }
+      .uni-no__lead { font-size: var(--t3); line-height: 1.5; }
+      .uni-no__rutas { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .uni-no__rutas li { padding: 0.4rem 0.875rem; border-radius: 999px; border: 1.5px solid currentColor; font-size: var(--t2); font-weight: 700; }
+      .uni-no__historias { display: grid; gap: 0.75rem; }
+      .trayecto { display: flex; gap: 1rem; align-items: center; padding: 0.875rem; border-radius: 20px; background: var(--negro); color: var(--crema); }
+      .trayecto__ini { display: grid; place-items: center; flex-shrink: 0; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--acento); color: var(--acento-txt); font-family: var(--titular); font-weight: 800; font-size: var(--t4); }
+      .trayecto__texto { display: grid; gap: 0.5rem; }
+      .trayecto__quien { font-size: var(--t2); color: var(--gris); }
+      .trayecto__quien strong { color: var(--crema); }
+      .trayecto__camino { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.375rem; font-weight: 700; line-height: 1.3; }
+      .trayecto__camino li { display: flex; align-items: center; gap: 0.375rem; }
+      .trayecto__camino li + li::before { content: '→'; color: var(--acento-texto); font-weight: 800; }
+      .trayecto__camino li:last-child { color: var(--acento-texto); }
+      @media (min-width: 64rem) { .uni-no__rejilla { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+
+      /* ---------- Los de dentro ---------- */
+      .boton--pronto { gap: 0.5rem; cursor: default; opacity: 0.8; }
+  .boton--pronto:hover { transform: none; box-shadow: none; filter: none; background: none; color: var(--crema); }
+  .boton--pronto small { padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid currentColor; font-size: var(--t1); text-transform: none; letter-spacing: 0.04em; }
+  .cierre { background: radial-gradient(60% 90% at 50% 100%, color-mix(in srgb, var(--acento) 16%, transparent), transparent 70%), var(--negro); color: var(--crema); padding-block: var(--aire); border-block: 1px solid var(--linea); }
+  .cierre__caja { display: grid; justify-items: center; gap: 1.5rem; text-align: center; }
+  .cierre .titular { max-width: 16ch; }
+  .cierre__meta { font-size: var(--t1); color: var(--gris); }
+  .nota-mano { color: var(--acento-texto); font-size: var(--t1); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .dentro { background: var(--negro-2); }
+      /* Sin flechas en ningún tamaño: en móvil se desliza y se ven los puntos; en escritorio caben todas */
+      [data-solo-carrusel] { display: none !important; }
+      .dentro__nav { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-block: 2rem 1.5rem; }
+      .dentro__cuenta { color: var(--gris); font-size: var(--t1); min-width: 3rem; text-align: center; }
+      .flecha { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--crema); background: none; color: var(--crema); font-size: var(--t3); cursor: pointer; }
+      .flecha:disabled { border-color: var(--linea); color: rgb(246 241 232 / 0.3); cursor: default; }
+      .reels { display: grid; grid-auto-flow: column; grid-auto-columns: min(72vw, 17.5rem); gap: 0.875rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); padding-inline: var(--margen); padding-bottom: 0.5rem; scrollbar-width: none; }
+      .reels::-webkit-scrollbar { display: none; }
+      .reel { position: relative; aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; scroll-snap-align: start; background: var(--tarjeta); box-shadow: 0 24px 40px -24px rgb(0 0 0 / 0.8); }
+      .reel__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 500ms cubic-bezier(.2,.7,.2,1); }
+      .reel__abrir { position: absolute; inset: 0; z-index: 3; border: 0; background: none; color: var(--crema); cursor: pointer; border-radius: inherit; }
+      .reel__abrir:focus-visible { outline: 3px solid var(--acento-texto); outline-offset: -3px; }
+      .reel__play { display: none; }
+
+      /* Visor */
+      .visor { padding: 0; border: 0; background: none; color: var(--crema); max-width: none; max-height: none; width: 100%; height: 100%; }
+      .visor::backdrop { background: rgb(0 0 0 / 0.85); backdrop-filter: blur(6px); }
+      .visor[open] { display: grid; place-items: center; }
+      .visor__caja { position: relative; display: grid; gap: 1.25rem; width: min(100% - 2rem, 58rem); max-height: calc(100svh - 2rem); padding: 1rem; border-radius: 18px; background: var(--negro-2); border: 1px solid var(--linea); overflow: auto; }
+      .visor__media { position: relative; aspect-ratio: 9 / 16; max-height: 70svh; justify-self: center; height: 70svh; border-radius: 12px; overflow: hidden; background: var(--negro); }
+      .visor__img, .visor__video { width: 100%; height: 100%; object-fit: cover; }
+      .visor__aviso { position: absolute; left: 50%; bottom: 1rem; translate: -50% 0; white-space: nowrap; padding: 0.375rem var(--t1); border-radius: 999px; background: rgb(0 0 0 / 0.65); font-size: var(--t1); }
+      .visor__texto { display: grid; justify-items: start; align-content: center; gap: 0.875rem; }
+      .visor__nombre { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1; }
+      .visor__cita { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.25; color: rgb(246 241 232 / 0.9); }
+      .visor__ficha { display: grid; gap: 1.25rem; width: 100%; }
+      .visor__ficha[hidden], .visor__nav[hidden] { display: none; }
+      .visor__camino { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem; counter-reset: paso; }
+      .visor__camino li { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--tarjeta); border: 1px solid var(--linea); font-size: var(--t1); font-weight: 600; }
+      .visor__camino li:last-child { background: var(--acento); color: var(--acento-txt); border-color: var(--acento); }
+      .visor__camino li + li::before { content: '→'; margin-right: 0.375rem; margin-left: -0.125rem; color: var(--gris); }
+      .visor__camino li:last-child::before { color: var(--acento-txt); }
+      .visor__datos { display: grid; gap: 0.875rem; }
+      .visor__datos dt { font-size: var(--t1); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--acento-texto); }
+      .visor__datos dd { margin: 0.2rem 0 0; color: rgb(246 241 232 / 0.88); line-height: 1.5; }
+      .visor__cta { margin-top: 0.25rem; }
+      .visor__nav { display: flex; align-items: center; gap: 0.875rem; margin-top: 0.25rem; }
+      .visor__cuenta { font-size: var(--t1); color: var(--gris); min-width: 3rem; text-align: center; }
+      .visor__cerrar { position: absolute; z-index: 1; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea); background: rgb(0 0 0 / 0.6); color: var(--crema); cursor: pointer; }
+      @media (min-width: 48rem) {
+        .visor__caja { grid-template-columns: auto 1fr; gap: 2rem; padding: 1.5rem; }
+        .visor__media { height: min(78svh, 40rem); max-height: none; }
+      }
+      @media (max-width: 47.99rem) {
+        .visor__media { height: 42svh; }
+        .visor__nombre { font-size: var(--t4); }
+        .visor__cita { font-size: var(--t3); }
+      }
+      .reel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgb(0 0 0 / 0.45) 58%, rgb(0 0 0 / 0.92)); }
+      /* Frase gancho: texto sobre cajita clara, como los subtítulos de TikTok */
+      .reel__gancho { justify-self: start; margin-bottom: 0.75rem; text-align: left; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t2); line-height: 1.6; letter-spacing: -0.01em; rotate: -2deg; transform-origin: left bottom; }
+      .reel__gancho span { padding: 0.15em 0.4em; border-radius: 6px; background: var(--crema); color: var(--negro); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+      .reel__pie { position: absolute; z-index: 1; left: 1rem; right: 1rem; bottom: 1rem; display: grid; justify-items: start; gap: 0.25rem; }
+      .reel__nombre { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); letter-spacing: -0.02em; line-height: 1.05; }
+      .reel__camino { font-size: var(--t2); font-weight: 600; line-height: 1.35; color: var(--crema); text-shadow: 0 1px 8px rgb(0 0 0 / 0.6); }
+      .reel__ver { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 0.625rem; min-height: 40px; padding: 0.4rem 1rem; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font-weight: 600; font-size: var(--t1); transition: transform 200ms ease; }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .reel { transition: translate 300ms cubic-bezier(.2,.7,.2,1); }
+        .reel:hover { translate: 0 -6px; }
+        .reel:hover .reel__ver { transform: translateX(4px); }
+      }
+      /* ---- Efectos de «Los de dentro» (desactivados si se piden menos animaciones) ---- */
+      @media (prefers-reduced-motion: no-preference) {
+        /* 1. Entrada en cascada: suben y se enderezan una tras otra */
+        .js [data-reels] .reel { transition: opacity 600ms ease, translate 700ms cubic-bezier(.2,.8,.2,1), rotate 700ms cubic-bezier(.2,.8,.2,1), transform 450ms cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i) * 110ms); }
+        .js [data-reels].listo .reel { transition-delay: 0ms; transition-duration: 300ms, 300ms, 300ms, 450ms; }
+        .js [data-reels]:not(.en-vista) .reel { opacity: 0; translate: 0 60px; rotate: calc(-4deg + var(--i) * 2.5deg); }
+        /* La frase aparece con un barrido, como un subrayador */
+        .reel__gancho span { background: linear-gradient(var(--crema), var(--crema)) no-repeat 0 0 / 100% 100%; transition: background-size 550ms cubic-bezier(.6,0,.2,1), color 200ms ease; transition-delay: calc(var(--i) * 110ms + 550ms), calc(var(--i) * 110ms + 950ms); }
+        .js [data-reels]:not(.en-vista) .reel__gancho span { background-size: 0% 100%; color: transparent; }
+        /* 2. Movimiento de vídeo: zoom lento y continuo mientras la sección está a la vista */
+        [data-reels].en-vista.moviendo .reel__foto { animation: reel-vivo 16s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -4s); }
+        @keyframes reel-vivo { from { scale: 1.02; translate: 1% 0; } to { scale: 1.14; translate: -2% -2.5%; } }
+      }
+      /* 3. Inclinación 3D con reflejo al pasar el ratón (solo escritorio) */
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .reel { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+        .js [data-reels] .reel.inclinada, .reel.inclinada { transition: transform 80ms linear, translate 300ms ease; }
+        .reel::before { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.22), transparent 45%); opacity: 0; transition: opacity 250ms ease; }
+        .reel:hover::before { opacity: 1; }
+      }
+
+      /* Escritorio: las cuatro a la vista, escalonadas como en la versión 1; sin flechas ni puntos */
+      @media (min-width: 64rem) {
+        .reels { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; overflow: visible; width: min(100% - 2 * var(--margen), 78rem); margin-inline: auto; padding: 1rem 0 2rem; }
+        .reel:nth-child(even) { margin-top: 1.75rem; margin-bottom: -1.75rem; }
+        .dentro .puntos { display: none; }
+      }
+      .puntos { display: flex; gap: 0.5rem; margin-top: 2rem; }
+      .puntos span { width: 6px; height: 6px; border-radius: 999px; background: rgb(246 241 232 / 0.3); transition: width 200ms ease; }
+      .puntos span.activo { width: 24px; background: var(--acento-texto); }
+
+      /* ---------- Sara ---------- */
+      .sara { background: var(--negro); color: var(--crema); padding-block: var(--aire); border-top: 1px solid var(--linea); }
+      .sara__rejilla { display: grid; gap: 3rem; align-items: center; }
+      .sara__texto { display: grid; justify-items: start; gap: 1.25rem; }
+      .sara__texto > p:not([class]) { color: rgb(246 241 232 / 0.82); max-width: 33rem; line-height: 1.7; }
+      .firma { font-family: var(--mano); font-size: var(--t4); color: var(--acento-texto); line-height: 1; margin-block: 0.75rem 0.5rem; }
+      .sara__polaroid { position: relative; justify-self: center; width: min(100%, 19rem); padding: 0.75rem 0.75rem 0; border-radius: 6px; background: var(--crema); color: var(--negro); box-shadow: 0 24px 40px -22px rgb(0 0 0 / 0.8); rotate: 2.5deg; }
+      .sara__polaroid::before { content: ''; position: absolute; top: -11px; left: 50%; width: 84px; height: 24px; translate: -50% 0; rotate: -4deg; background: var(--acento); opacity: 0.85; }
+      .sara__hueco { aspect-ratio: 1; display: grid; place-content: center; justify-items: center; gap: 0.5rem; border-radius: 3px; background: var(--tarjeta); color: var(--gris); font-size: var(--t1); text-align: center; }
+      .sara__pie { padding: 0.875rem 0.25rem 1.125rem; font-size: var(--t1); color: var(--gris-oscuro); text-align: center; }
+      .sara__polaroid strong { color: var(--negro); font-weight: 800; }
+      @media (min-width: 56rem) { .sara__rejilla { grid-template-columns: 1.3fr 1fr; gap: 5rem; } .sara__polaroid { justify-self: end; margin-right: 0.5rem; } }
+
+      /* ---------- Familias ---------- */
+      /* ---------- Universidad y FP ---------- */
+      .uni5 { background: var(--negro); border-top: 1px solid var(--linea); }
+      .uni5__cabecera { display: grid; gap: 1rem; max-width: 46rem; margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem); }
+      .uni5__lead { font-size: var(--t3); line-height: 1.5; color: var(--gris); }
+      .uni5__caminos { display: grid; gap: 1rem; }
+      .uni5__caminos li { display: grid; gap: 0.5rem; align-content: start; padding: 1.5rem; border-radius: 18px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .uni5__caminos h3 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); color: var(--acento-texto); letter-spacing: -0.02em; }
+      .uni5__caminos p { color: var(--gris); }
+      .uni5__historias { display: grid; gap: 1rem; margin-top: 1.5rem; }
+      .uni5__historias li { display: grid; gap: 0.5rem; padding: 1.25rem 1.5rem; border-left: 3px solid var(--acento-texto); }
+      .uni5__cita { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.3; }
+      .uni5__quien { color: var(--gris); }
+      .uni5__quien strong { color: var(--crema); }
+      .uni5__accion { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-top: 2rem; }
+      .uni5__accion span { font-size: var(--t1); color: var(--gris); }
+      @media (min-width: 48rem) { .uni5__caminos { grid-template-columns: repeat(3, 1fr); } .uni5__historias { grid-template-columns: 1fr 1fr; } }
+
+      /* Dos formas de empezar (dentro del bloque de familias, sobre verde musgo) */
+      .fam5 { margin-top: clamp(3rem, 2rem + 3vw, 4.5rem); padding-top: clamp(2rem, 1.5rem + 2vw, 3rem); border-top: 1px solid var(--f-linea); }
+      .fam5__cabecera { display: grid; gap: 0.5rem 4rem; align-items: end; margin-bottom: 1.75rem; }
+      .fam5__titulo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.1; letter-spacing: -0.02em; color: var(--f-txt); }
+      .fam5__cabecera p { color: var(--f-suave); max-width: 28rem; }
+      .fam5__modos { position: relative; display: grid; gap: 1rem; }
+      .fam5__modo { position: relative; display: grid; align-content: start; justify-items: start; gap: 0.75rem; padding: clamp(1.25rem, 1rem + 1.5vw, 2rem); border-radius: 18px; background: var(--papel); color: var(--negro); border: 1.5px solid rgb(22 20 18 / 0.14); transition: border-color 200ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+      .fam5__icono { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--negro); color: var(--crema); }
+      .fam5__modo h4 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.2; }
+      .fam5__modo > p { color: var(--gris-oscuro); }
+      .fam5__datos { display: grid; gap: 0.375rem; width: 100%; padding-top: 0.75rem; border-top: 1px solid rgb(22 20 18 / 0.12); }
+      .fam5__datos li { display: flex; gap: 0.5rem; align-items: center; font-size: var(--t1); font-weight: 600; }
+      .fam5__datos svg { flex-shrink: 0; color: var(--negro); }
+      .fam5__enlace { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; font-weight: 800; color: var(--negro); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.25em; }
+      .fam5__enlace::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+      .fam5__enlace span { transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .fam5__modo:hover { transform: translateY(-3px); border-color: var(--negro); }
+        .fam5__modo:hover .fam5__enlace span { transform: translateX(3px); }
+      }
+      @media (min-width: 48rem) {
+        .fam5__cabecera { grid-template-columns: 1fr auto; }
+        .fam5__modos { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+        .fam5__modos::after { content: 'o'; position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--negro); color: var(--crema); font-family: var(--titular); font-weight: 800; font-size: var(--t3); }
+      }
+      .familias__futuro { font-size: var(--t1); color: var(--f-suave); }
+      .familias__futuro button { min-height: 44px; padding: 0 0.25rem; border: 0; background: none; color: var(--f-txt); font-weight: 800; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
+      .familias { background: var(--papel); color: var(--negro); border-top: 1px solid var(--linea); --f-txt: var(--negro); --f-suave: var(--gris-oscuro); --f-linea: rgb(22 20 18 / 0.14); --f-check-bg: var(--negro); --f-check-txt: var(--crema); --f-boton: var(--negro); --f-boton-txt: var(--crema); padding-block: var(--aire); }
+      .familias__caja { display: grid; gap: 2rem; align-items: center; }
+      .familias__texto { display: grid; gap: 0.75rem; max-width: 36rem; }
+      .familias__para { font-size: var(--t1); font-weight: 600; color: var(--f-suave); }
+      .familias h2 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t5); line-height: 1.04; letter-spacing: -0.025em; color: var(--f-txt); text-wrap: balance; }
+      .familias__texto > p:last-child { font-size: var(--t3); line-height: 1.45; color: var(--f-suave); }
+      .familias__lado { display: grid; gap: 1.5rem; justify-items: start; }
+      .familias__lista { display: grid; width: 100%; border-top: 1px solid var(--f-linea); }
+      .familias__lista li { display: flex; gap: 0.75rem; align-items: center; padding-block: 0.875rem; border-bottom: 1px solid var(--f-linea); font-weight: 600; color: var(--f-txt); }
+      .familias__check { display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--f-check-bg); color: var(--f-check-txt); }
+      .familias .familias__boton { gap: 0.5rem; background: var(--f-boton); color: var(--f-boton-txt); }
+      .familias__boton span { display: inline-block; transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) { .familias__boton:hover span { transform: translateX(3px); } }
+      @media (min-width: 56rem) { .familias__caja { grid-template-columns: 1.3fr 1fr; gap: 4rem; } }
+
+      /* ---------- Botón fijo (solo móvil) ---------- */
+      .fijo { display: none; }
+      @media (max-width: 47.99rem) {
+        .fijo { position: fixed; z-index: 25; left: 0.75rem; right: 0.75rem; bottom: max(0.75rem, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.875rem 0.5rem 0.5rem; border-radius: 999px; background: rgb(22 20 18 / 0.88); border: 1px solid var(--linea); backdrop-filter: blur(12px); box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.6); translate: 0 140%; transition: translate 300ms cubic-bezier(.2,.7,.2,1); }
+        .fijo.visible { translate: 0 0; }
+        .fijo .boton { flex: 1; min-height: 48px; padding-inline: 1rem; }
+        .fijo span { flex-shrink: 0; font-size: var(--t1); color: var(--gris); }
+      }
+      @media (max-width: 47.99rem) and (prefers-reduced-motion: reduce) { .fijo { transition: none; } }
+
+</style>
+
+<style is:global>
+      /* ===================== v7 · correcciones de la reunión ===================== */
+      /* Bastante más aire entre bloques */
+      :root:root { --aire: clamp(7rem, 4.5rem + 8vw, 13rem); }
+
+      /* ---------- Portada: vídeo a pantalla completa y texto centrado con «se explora» a rotulador ---------- */
+      .v7hero { position: relative; isolation: isolate; display: grid; place-items: center; min-height: calc(100svh - 125px); overflow: hidden; background: var(--negro); color: var(--crema); }
+      .v7hero__video { position: absolute; inset: 0; z-index: -1; }
+      .v7hero__poster, .v7hero__vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+      /* Velo oscuro uniforme y más denso en el centro, donde va el texto (AA) */
+      .v7hero__video::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgb(22 20 18 / 0.72), rgb(22 20 18 / 0.45) 70%, rgb(22 20 18 / 0.35)), linear-gradient(to bottom, rgb(22 20 18 / 0) 70%, var(--negro)); }
+      .v7hero__texto { display: grid; justify-items: center; gap: 1.75rem; padding-block: 4rem; text-align: center; }
+      .v7hero__titulo { display: grid; gap: 1.25rem; justify-items: center; }
+      .v7hero__lema { max-width: 16ch; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: clamp(2.4rem, 1.2rem + 4.6vw, 5rem); line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance; }
+      .v7hero__explora { font-family: var(--mano); font-weight: 400; font-stretch: normal; letter-spacing: 0; color: var(--acento-texto); font-size: 1.08em; }
+      .v7hero__sub { max-width: 30rem; font-size: var(--t3); font-weight: 500; line-height: 1.45; color: var(--crema); }
+
+      /* ---------- No eres el único: espacio negro tras el vídeo y doble entre el título y los chicos ---------- */
+      .v7unico { padding-top: calc(var(--aire) * 1.4); }
+      .v7unico .cabecera { margin-bottom: clamp(5rem, 4rem + 4vw, 9rem); }
+
+      /* ---------- ¿Qué es NextYou?: fondo negro ---------- */
+      .v7que { background: var(--negro); color: var(--crema); padding-block: var(--aire); }
+      .v7que__rejilla { display: grid; gap: clamp(3rem, 2rem + 4vw, 5rem); align-items: center; }
+      .v7que__texto { display: grid; justify-items: start; gap: 1.5rem; max-width: 34rem; }
+      .v7que__tit { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); line-height: 1.04; letter-spacing: -0.025em; display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
+      .v7que .logo--grande { height: 1.3em; width: auto; color: var(--crema); --logo-you: var(--logo-you-pie, var(--acento)); translate: 0 0.04em; }
+      .v7que__lema { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.25; letter-spacing: -0.015em; text-wrap: balance; }
+      .v7que__lema em { font-style: normal; background: var(--subrayado-oscuro) no-repeat left bottom / 100% 0.28em; padding-bottom: 0.08em; }
+      .v7que__p { font-size: var(--t3); line-height: 1.6; color: var(--gris); max-width: 32rem; }
+      .v7que__collage .pol figcaption { color: var(--negro); }
+      @media (min-width: 64rem) { .v7que__rejilla { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+
+      /* ---------- Cómo funciona: 3 pasos con móvil continuo ---------- */
+      .v7como { background: var(--papel); color: var(--negro); padding-block: var(--aire); }
+      .v7como__cab { display: grid; gap: 1rem; max-width: 36rem; margin-bottom: clamp(3rem, 2rem + 4vw, 6rem); }
+      .v7como__sub { font-size: var(--t3); line-height: 1.5; color: var(--gris-oscuro); }
+      .v7pasos { display: grid; gap: clamp(5rem, 4rem + 4vw, 7rem); }
+      .v7paso { display: grid; gap: 2.5rem; }
+      .v7paso__texto { display: grid; justify-items: start; gap: 1rem; max-width: 28rem; }
+      /* Número discreto: sin caja amarilla */
+      .v7paso__n { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t5); line-height: 1; color: var(--gris-oscuro); padding-bottom: 0.5rem; border-bottom: 2px solid var(--negro); min-width: 3ch; }
+      .v7paso h3 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.1; letter-spacing: -0.02em; }
+      .v7paso__p { font-size: var(--t3); line-height: 1.55; color: var(--gris-oscuro); }
+      .v7paso__meta { font-size: var(--t1); font-weight: 600; color: var(--gris-oscuro); padding: 0.3rem 0.75rem; border-radius: 999px; border: 1px solid rgb(22 20 18 / 0.25); }
+      .v7paso__movil { display: grid; justify-items: center; }
+      .v7demo__fijo { display: none; }
+
+      /* El móvil (mismo marco en móvil y escritorio) */
+      .v7tel { position: relative; width: min(100%, 16.5rem); aspect-ratio: 71.6 / 147.6; padding: 0.55rem; border-radius: 46px;
+        background: linear-gradient(145deg, #5b554e 0%, #2b2724 18%, #1a1715 50%, #2b2724 82%, #4d4741 100%);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22), inset 0 0 0 4px #0b0a09, 0 40px 60px -32px rgb(22 20 18 / 0.6); }
+      .v7tel::after { content: ''; position: absolute; z-index: 4; top: 1.05rem; left: 50%; width: 4.75rem; height: 1.3rem; translate: -50% 0; border-radius: 999px; background: #000; }
+      .v7tel__estado { position: absolute; z-index: 3; top: 1.15rem; left: 1.75rem; right: 1.6rem; display: flex; justify-content: space-between; align-items: center; color: var(--crema); font-size: 0.7rem; font-weight: 700; }
+      .v7tel__bat { width: 1.3rem; height: 0.6rem; border-radius: 3px; border: 1.5px solid rgb(246 241 232 / 0.7); background: linear-gradient(90deg, var(--crema) 70%, transparent 70%) content-box; padding: 1px; }
+      .v7tel__pant { position: relative; display: grid; height: 100%; border-radius: 38px; background: var(--negro); color: var(--crema); overflow: hidden; }
+      .v7pant { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 0.6rem; padding: 2.9rem 0.9rem 1.4rem; font-size: 0.75rem; }
+      .v7pant__cab { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gris); }
+      .v7pant__barra { height: 4px; border-radius: 4px; background: #3a342e; overflow: hidden; }
+      .v7pant__barra span { display: block; height: 100%; background: var(--crema); }
+      .v7pant__preg { margin-top: 0.6rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.05rem; line-height: 1.15; }
+      .v7pant__ops { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+      .v7pant__ops span { display: grid; gap: 0.15rem; align-content: start; min-height: 4.4rem; padding: 0.55rem; border-radius: 12px; border: 1px solid #3a342e; color: var(--gris); font-size: 0.62rem; line-height: 1.3; }
+      .v7pant__ops b { font-size: 0.75rem; color: var(--crema); }
+      .v7pant__ops .sel { border-color: var(--crema); box-shadow: inset 0 0 0 1px var(--crema); }
+      .v7pant__sig { align-self: flex-end; margin-top: auto; padding: 0.45rem 0.8rem; border-radius: 999px; background: var(--crema); color: var(--negro); font-weight: 800; font-size: 0.7rem; }
+      /* Pantalla 2: los tres recorridos, con líneas finas */
+      .v7rec { position: relative; margin-top: 0.75rem; padding-left: 0.8rem; }
+      .v7rec__tu { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; margin-left: -0.8rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-size: 0.55rem; font-weight: 800; }
+      /* Línea fina que baja desde «Tú» y se bifurca hacia cada recorrido */
+      .v7rec__lista { position: relative; display: grid; gap: 0.6rem; margin-left: 0; padding: 0.9rem 0 0 1.1rem; border-left: 1.5px solid rgb(246 241 232 / 0.45); }
+      .v7rec__op { position: relative; }
+      .v7rec__op::before { content: ''; position: absolute; left: -1.15rem; top: 50%; width: 1.1rem; height: 1.5px; background: rgb(246 241 232 / 0.45); }
+      .v7rec__op { display: grid; align-content: center; gap: 0.15rem; padding: 0.7rem 0.75rem; border-radius: 12px; border: 1px solid #3a342e; }
+      .v7rec__op span { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+      .v7rec__op b { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 0.85rem; }
+      .v7rec__op--1 { border-color: var(--acento); }
+      /* Pantalla 3: videollamada */
+      .v7pant__vivo { color: #ff6b5a; letter-spacing: 0.06em; }
+      .v7llam { position: relative; flex: 1; min-height: 0; border-radius: 16px; overflow: hidden; background: radial-gradient(80% 60% at 50% 35%, #4a423b, #1d1a17); }
+      .v7llam__ella { position: absolute; inset: 0; display: grid; place-items: center; }
+      .v7llam__ini { font-family: var(--titular); font-weight: 800; font-size: 4.5rem; color: rgb(246 241 232 / 0.25); }
+      .v7llam__nom { position: absolute; left: 0.5rem; top: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 999px; background: rgb(0 0 0 / 0.55); font-size: 0.6rem; font-weight: 700; }
+      .v7llam__tu { position: absolute; right: 0.5rem; top: 0.5rem; display: grid; place-items: center; width: 2.6rem; height: 3.4rem; border-radius: 8px; border: 1.5px solid rgb(246 241 232 / 0.7); background: #2b2622; font-size: 0.6rem; font-weight: 800; }
+      .v7llam__burbuja { align-self: flex-start; max-width: 92%; margin-top: -1.6rem; position: relative; padding: 0.55rem 0.7rem; border-radius: 12px 12px 12px 3px; background: var(--crema); color: var(--negro); font-weight: 700; font-size: 0.72rem; line-height: 1.3; }
+      .v7llam__ctrl { display: flex; justify-content: center; gap: 0.5rem; }
+      .v7llam__ctrl i { width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #3a342e; }
+      .v7llam__ctrl .rojo { background: #d8452b; }
+
+      /* Escritorio: el móvil se queda fijo a la derecha y cambia de pantalla */
+      @media (min-width: 64rem) {
+        .v7demo { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+        .v7pasos { gap: 0; }
+        .v7paso { min-height: 70vh; align-content: center; }
+        .v7paso__movil { display: none; }
+        .v7paso__texto { position: relative; padding-left: 1.5rem; transition: opacity 300ms ease; }
+        .v7paso:not(.activo) .v7paso__texto { opacity: 0.35; }
+        .v7demo__fijo { display: grid; place-items: center; position: sticky; top: max(5.5rem, calc(50vh - 19rem)); }
+        .v7tel--fijo { width: 17.5rem; }
+        .v7tel--fijo .v7pant { opacity: 0; transform: translateY(14px); transition: opacity 400ms cubic-bezier(0.23, 1, 0.32, 1), transform 400ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .v7tel--fijo .v7pant.activa { opacity: 1; transform: none; }
+      }
+      @media (prefers-reduced-motion: reduce) { .v7tel--fijo .v7pant, .v7paso__texto { transition: none !important; } }
+
+      /* Personas del paso 3: videollamada horizontal. Móvil: carrusel con el dedo */
+      .v7gente { margin-top: clamp(5rem, 4rem + 4vw, 8rem); }
+      .v7gente__eti { margin-bottom: 1.5rem; font-size: var(--t1); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gris-oscuro); }
+      .v7gente__lista { display: grid; grid-auto-flow: column; grid-auto-columns: 82%; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); scroll-padding-inline: var(--margen); }
+      .v7gente__lista::-webkit-scrollbar { display: none; }
+      .v7gente__item { display: grid; gap: 0.5rem; align-content: start; scroll-snap-align: start; }
+      .v7vid { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 10; border-radius: 18px; overflow: hidden; background: radial-gradient(circle at 30% 30%, #3a342e, #1a1715); color: var(--crema); }
+      .v7vid[data-k='1'] { background: radial-gradient(circle at 70% 30%, #36312c, #1a1715); }
+      .v7vid[data-k='2'] { background: radial-gradient(circle at 50% 80%, #302c33, #1a1715); }
+      .v7vid__ini { position: absolute; font-family: var(--titular); font-weight: 800; font-size: 6rem; color: rgb(246 241 232 / 0.12); }
+      .v7vid__ic { position: relative; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: rgb(246 241 232 / 0.08); }
+      .v7vid__ic svg { width: 1.9rem; height: 1.9rem; }
+      .v7vid__tag { position: absolute; left: 0.75rem; bottom: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 999px; background: rgb(0 0 0 / 0.55); font-size: 0.7rem; font-weight: 700; }
+      .v7gente__nom { margin-top: 0.5rem; font-size: var(--t2); }
+      .v7gente__nom strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; }
+      .v7gente__tray { font-size: var(--t1); color: var(--gris-oscuro); }
+      .v7gente__ver { justify-self: start; min-height: 44px; padding: 0 1rem; margin-top: 0.25rem; border: 1px solid var(--negro); border-radius: 999px; background: none; color: var(--negro); font: inherit; font-size: var(--t1); font-weight: 700; cursor: pointer; }
+      .v7gente__ver:focus-visible { outline: 3px solid var(--negro); outline-offset: 2px; }
+      @media (min-width: 48rem) { .v7gente__lista { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow: visible; margin-inline: 0; padding-inline: 0; gap: 1.5rem; } }
+
+      /* Cierre de la sección: sin caja, solo una línea y el botón */
+      .v7como__pie { display: grid; justify-items: center; gap: 2rem; margin-top: clamp(5rem, 4rem + 4vw, 8rem); text-align: center; }
+      .v7nopasa { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 2rem; font-size: var(--t2); color: var(--gris-oscuro); }
+      .v7nopasa li::before { content: '✓ '; font-weight: 800; color: var(--negro); }
+
+      /* La uni no es el único camino: sin fondo amarillo */
+      .v7uni { background: var(--papel); color: var(--negro); border-top: 1px solid rgb(22 20 18 / 0.1); }
+      .v7uni .uni-no__titulo em { box-shadow: none; background: var(--subrayado-claro, var(--subrayado-oscuro)) no-repeat left bottom / 100% 0.28em; padding-bottom: 0.08em; }
+      .v7uni .uni-no__rutas li { border-width: 1px; }
+
+      /* Menos amarillo en general: etiquetas en contorno */
+      .pastilla { background: none; color: inherit; border: 1px solid currentColor; }
+
+      .v7hero .boton span { margin-left: 0.4em; }
+      .v7pant--1 .v7rec { margin-block: auto; }
+      .v7que .boton span, .v7como__pie .boton span { margin-left: 0.4em; }
+
+      /* Pantalla 3: el email con consejos y la entrevista */
+      .v7mail { display: grid; gap: 0.55rem; margin-block: auto; padding: 0.75rem; border-radius: 14px; background: #f6f1e8; color: var(--negro); }
+      .v7mail__de { display: flex; gap: 0.5rem; align-items: center; font-size: 0.62rem; color: var(--gris-oscuro); }
+      .v7mail__de b { display: block; font-size: 0.72rem; color: var(--negro); }
+      .v7mail__av { display: grid; place-items: center; flex-shrink: 0; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--negro); color: var(--crema); font-weight: 800; font-size: 0.7rem; }
+      .v7mail__asunto { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 0.9rem; line-height: 1.15; }
+      .v7mail__lista { display: grid; gap: 0.3rem; padding-left: 1rem; font-size: 0.66rem; line-height: 1.3; }
+      .v7mail__video { display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; border-radius: 10px; background: var(--negro); color: var(--crema); font-size: 0.6rem; }
+      .v7mail__video b { display: block; font-size: 0.7rem; }
+      .v7mail__play { display: grid; place-items: center; flex-shrink: 0; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-size: 0.55rem; }
+
+      /* Opción premium: coach */
+      .v7premium { display: grid; gap: 2.5rem; align-items: center; margin-top: clamp(5rem, 4rem + 4vw, 8rem); padding-top: clamp(4rem, 3rem + 3vw, 6rem); border-top: 1px solid rgb(22 20 18 / 0.15); }
+      .v7premium__texto { display: grid; justify-items: start; gap: 1rem; max-width: 30rem; }
+      .v7premium__eti { padding: 0.3rem 0.75rem; border-radius: 999px; border: 1px solid var(--negro); font-size: var(--t1); font-weight: 700; }
+      .v7premium h3 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.1; letter-spacing: -0.02em; }
+      .v7premium p { font-size: var(--t3); line-height: 1.55; color: var(--gris-oscuro); }
+      .v7premium__llamada { justify-self: center; rotate: 0deg; }
+      .v7premium .llamada__burbuja { background: var(--crema); color: var(--negro); border: 1px solid rgb(22 20 18 / 0.15); }
+      @media (min-width: 64rem) { .v7premium { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+
+      /* Pantalla 4: videollamada con el coach */
+      .v7llam__silueta { width: 60%; margin-top: 30%; fill: #7a6f64; }
+
+      /* Pantalla 2: de «Tú» salen tres caminos finos hacia tres recorridos en lista */
+      .v7cam__intro { margin-top: 0.4rem; font-size: 0.72rem; line-height: 1.3; color: var(--crema); }
+      .v7cam { position: relative; display: grid; grid-template-columns: 2.6rem 1fr; grid-template-rows: auto 1fr; margin-block: auto; }
+      .v7cam__tu { grid-column: 1; grid-row: 1; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-size: 0.62rem; font-weight: 800; }
+      .v7cam__lineas { grid-column: 1; grid-row: 2; width: 100%; height: 100%; overflow: visible; }
+      .v7cam__l { fill: none; stroke: rgb(246 241 232 / 0.55); stroke-width: 1.25; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+      .v7cam__l--1 { stroke: var(--acento); stroke-width: 1.5; }
+      .v7cam__l--3 { stroke-dasharray: 1 5; }
+      .v7cam__lista { grid-column: 2; grid-row: 2; display: grid; grid-template-rows: repeat(3, 1fr); gap: 0.5rem; }
+      .v7cam__op { display: grid; align-content: center; gap: 0.12rem; padding: 0.55rem 0.65rem; border-radius: 12px; border: 1px solid #3a342e; }
+      .v7cam__op--1 { border-color: var(--acento); }
+      .v7cam__op--3 { border-style: dashed; }
+      .v7cam__op span { font-size: 0.52rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+      .v7cam__op b { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 0.82rem; line-height: 1.15; }
+      .v7cam__op small { font-size: 0.6rem; line-height: 1.3; color: var(--gris); }
+      /* Móvil: el texto abajo, sobre un degradado oscuro, para dejar ver la cara y leerse bien */
+      @media (max-width: 47.99rem) {
+        .v7hero { place-items: end center; }
+        .v7hero__texto { padding-block: 0 2.5rem; gap: 1.25rem; }
+        .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0.15) 0%, rgb(22 20 18 / 0.3) 30%, rgb(22 20 18 / 0.86) 55%, var(--negro) 100%); }
+      }
+      /* Escritorio: el texto también abajo (centrado), sobre un degradado que sube desde el pie */
+      @media (min-width: 48rem) {
+        .v7hero { place-items: end center; }
+        .v7hero__texto { padding-block: 0 clamp(3rem, 2rem + 3vw, 5rem); gap: 1.5rem; }
+        .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0.1) 0%, rgb(22 20 18 / 0.2) 35%, rgb(22 20 18 / 0.78) 62%, var(--negro) 100%); }
+      }
+      /* Frase más alargada: en escritorio, en una o dos líneas anchas */
+      @media (min-width: 48rem) {
+        .v7hero__lema { max-width: 26ch; }
+        .v7hero__sub { max-width: 40rem; }
+        .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0.1) 0%, rgb(22 20 18 / 0.25) 35%, rgb(22 20 18 / 0.85) 58%, var(--negro) 100%); }
+      }
+      @media (min-width: 64rem) {
+        .v7hero__lema { max-width: none; white-space: nowrap; font-size: min(4.2rem, 4.5vw); }
+        .v7hero__sub { max-width: 48rem; }
+      }
+      /* Degradado más ligero: solo la franja de abajo, donde va el texto */
+      .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0) 0%, rgb(22 20 18 / 0) 45%, rgb(22 20 18 / 0.55) 68%, rgb(22 20 18 / 0.8) 100%); }
+      @media (min-width: 48rem) {
+        .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0) 0%, rgb(22 20 18 / 0) 50%, rgb(22 20 18 / 0.55) 72%, rgb(22 20 18 / 0.8) 100%); }
+      }
+      .v7hero__lema, .v7hero__sub { text-shadow: 0 2px 18px rgb(0 0 0 / 0.35); }
+      .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0) 0%, rgb(22 20 18 / 0) 38%, rgb(22 20 18 / 0.72) 66%, rgb(22 20 18 / 0.9) 100%); }
+      @media (min-width: 48rem) {
+        .v7hero__video::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0) 0%, rgb(22 20 18 / 0) 42%, rgb(22 20 18 / 0.72) 68%, rgb(22 20 18 / 0.88) 100%); }
+      }
+
+      /* Cabecera de «Cómo funciona»: título grande y mapa de pasos con línea fina */
+      .v7como__cab { display: grid; gap: clamp(2.5rem, 2rem + 2vw, 3.5rem); max-width: none; }
+      .v7como__izq { display: grid; gap: 1rem; }
+      .v7como__tit { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: clamp(3rem, 1.5rem + 5.5vw, 6.5rem); line-height: 0.95; letter-spacing: -0.035em; }
+      .v7como__sub { max-width: 34rem; font-size: var(--t3); line-height: 1.5; color: var(--gris-oscuro); }
+      /* Mapa: «Tú» y cuatro nodos sobre una línea fina (en móvil, en vertical) */
+      .v7mapa { position: relative; display: grid; gap: 1.75rem; }
+      .v7mapa::before { content: ''; position: absolute; left: 1.4rem; top: 1.4rem; bottom: 1.4rem; width: 1.5px; background: var(--negro); }
+      .v7mapa li { position: relative; }
+      .v7mapa__nodo { position: relative; z-index: 1; display: grid; place-items: center; flex-shrink: 0; width: 2.8rem; height: 2.8rem; border-radius: 50%; border: 1.5px solid var(--negro); background: var(--papel); color: var(--negro); font-size: var(--t1); font-weight: 800; }
+      .v7mapa__nodo :is(svg) { width: 1.35rem; height: 1.35rem; }
+      .v7mapa__tu .v7mapa__nodo { background: var(--negro); color: var(--crema); }
+      .v7mapa__paso--fin .v7mapa__nodo { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+      .v7mapa a { display: grid; grid-template-columns: 2.8rem 1fr; column-gap: 1rem; align-items: center; color: var(--negro); text-decoration: none; }
+      .v7mapa a .v7mapa__nodo { grid-row: 1 / span 2; }
+      .v7mapa__t { align-self: end; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.15; }
+      .v7mapa__d { align-self: start; font-size: var(--t2); color: var(--gris-oscuro); }
+      .v7mapa a:hover .v7mapa__t { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+      .v7mapa a:focus-visible { outline: 2px solid var(--negro); outline-offset: 4px; border-radius: 8px; }
+      /* Desde tableta: en horizontal, como un trazado de izquierda a derecha */
+      @media (min-width: 48rem) {
+        .v7mapa { grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: 0; align-items: start; }
+        .v7mapa::before { left: 1.4rem; right: 0; top: 1.4rem; bottom: auto; width: auto; height: 1.5px; }
+        .v7mapa a { grid-template-columns: 1fr; justify-items: center; text-align: center; row-gap: 0.25rem; padding-inline: 0.25rem; }
+        .v7mapa a .v7mapa__nodo { grid-row: auto; margin-bottom: 0.75rem; }
+        .v7mapa__d { font-size: var(--t1); }
+      }
+      @media (min-width: 64rem) {
+        .v7como__cab { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); column-gap: 4rem; align-items: center; }
+      }
+      html { scroll-behavior: smooth; }
+      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+      .v7paso { scroll-margin-top: 7rem; }
+
+      /* Pantalla 3: un vídeo de «Los de dentro», como un reel */
+      .v7reel { position: relative; padding: 0; gap: 0; }
+      .v7reel__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .v7reel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(0 0 0 / 0.45), transparent 22%, transparent 45%, rgb(0 0 0 / 0.85)); }
+      .v7reel__barras { position: absolute; z-index: 1; top: 2.75rem; left: 0.9rem; right: 0.9rem; display: flex; gap: 0.25rem; }
+      .v7reel__barras i { flex: 1; height: 2px; border-radius: 2px; background: rgb(246 241 232 / 0.35); }
+      .v7reel__barras .hecha { background: var(--crema); }
+      .v7reel__barras .ahora { background: linear-gradient(90deg, var(--crema) 40%, rgb(246 241 232 / 0.35) 40%); }
+      .v7reel__eti { position: absolute; z-index: 1; top: 3.4rem; left: 0.9rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--crema); }
+      .v7reel__pie { position: absolute; z-index: 1; left: 0.9rem; right: 0.9rem; bottom: 1.4rem; display: grid; justify-items: start; gap: 0.3rem; }
+      .v7reel__gancho { margin-bottom: 0.3rem; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 0.95rem; line-height: 1.2; }
+      .v7reel__gancho span { padding: 0.05em 0.3em; background: var(--crema); color: var(--negro); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+      .v7reel__nom { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.1rem; color: var(--crema); }
+      .v7reel__camino { font-size: 0.62rem; line-height: 1.3; color: rgb(246 241 232 / 0.85); }
+      .v7reel__ver { margin-top: 0.35rem; padding: 0.4rem 0.75rem; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font-size: 0.68rem; font-weight: 800; }
+
+      /* Historias que pasan solas */
+      .v7reel { overflow: hidden; }
+      .v7reel::after { z-index: 1; pointer-events: none; }
+      .v7reel__diapo { position: absolute; inset: 0; opacity: 0; transition: opacity 500ms ease; }
+      .v7reel__diapo.activa { opacity: 1; }
+      .v7reel__diapo .v7reel__pie { z-index: 2; }
+      .v7reel__barras, .v7reel__eti { z-index: 2; }
+      .v7reel__barras i { position: relative; overflow: hidden; background: rgb(246 241 232 / 0.35); }
+      .v7reel__barras b { position: absolute; inset: 0; width: 0; background: var(--crema); }
+      .v7reel__barras i.hecha b { width: 100%; }
+      .v7reel__barras i.ahora b { animation: v7-barra 4s linear forwards; }
+      @keyframes v7-barra { to { width: 100%; } }
+      @media (prefers-reduced-motion: reduce) { .v7reel__barras i.ahora b { animation: none; width: 100%; } .v7reel__diapo { transition: none; } }
+      /* La línea del mapa termina en el último paso: un tramo por paso, desde el anterior hasta su centro */
+      @media (min-width: 48rem) {
+        .v7mapa::before { display: none; }
+        .v7mapa__paso::before { content: ''; position: absolute; top: 1.4rem; left: -50%; right: 50%; height: 1.5px; background: var(--negro); }
+        .v7mapa__tu + .v7mapa__paso::before { left: -1.4rem; }
+      }
+
+      /* Cabecera recuperada: etiqueta fina + frase titular + mapa + email */
+      .v7como__cab { display: grid; gap: clamp(1.5rem, 1rem + 1.5vw, 2.5rem); }
+      .v7como__frase { max-width: 18ch; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t5); line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
+      .v7como__frase em { font-style: normal; background: var(--subrayado-claro, var(--subrayado-oscuro)) no-repeat left 95% / 100% 0.14em; padding-bottom: 0.06em; }
+      .v7mapa { margin-top: 0.5rem; }
+      @media (min-width: 64rem) {
+        .v7como__cab { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); column-gap: 4rem; align-items: center; }
+        .v7como__eti { grid-column: 1 / -1; }
+        .v7como__frase { grid-column: 1; grid-row: 2 / span 2; }
+        .v7mapa { grid-column: 2; grid-row: 2; margin-top: 0; }
+        .v7como__mail { grid-column: 2; grid-row: 3; justify-self: center; }
+      }
+      /* Animación del mapa: el lima marca dónde estás; al llegar, la línea se dibuja y los nodos aparecen */
+      .v7mapa__nodo { transition: background 350ms ease, border-color 350ms ease, color 350ms ease, transform 350ms cubic-bezier(0.25, 1, 0.5, 1); }
+      .v7mapa__tu .v7mapa__nodo { background: var(--papel); color: var(--negro); }
+      .v7mapa li.aqui .v7mapa__nodo { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); transform: scale(1.12); }
+      .v7mapa__paso--fin .v7mapa__nodo { background: var(--papel); border-color: var(--negro); color: var(--negro); }
+      @media (prefers-reduced-motion: no-preference) {
+        .js .v7mapa li { opacity: 0; translate: 0 0.5rem; transition: opacity 400ms ease, translate 500ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: calc(var(--i) * 180ms); }
+        .js .v7mapa.dibujado li { opacity: 1; translate: none; }
+        .js .v7mapa::before, .js .v7mapa__paso::before { transform: scale(0); transition: transform 600ms cubic-bezier(0.65, 0, 0.35, 1); transition-delay: calc(var(--i) * 180ms); }
+        .js .v7mapa.dibujado::before, .js .v7mapa.dibujado .v7mapa__paso::before { transform: none; }
+        .v7mapa::before { transform-origin: top; }
+        .v7mapa__paso::before { transform-origin: left; }
+      }
+      .v7como__eti { display: flex; align-items: center; gap: 0.75rem; font-size: var(--t1); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gris-oscuro); }
+      .v7como__eti span { width: 2.5rem; height: 1px; background: currentColor; }
+      .v7como__mail { display: inline-flex; align-items: center; gap: 0.6rem; justify-self: start; font-size: var(--t2); color: var(--gris-oscuro); }
+      /* La frase es informativa, no titular: un nivel por debajo (t4) */
+      .v7como__frase { max-width: 22ch; font-size: var(--t4); line-height: 1.2; letter-spacing: -0.015em; }
+      .v7como__frase em { background-size: 100% 0.18em; }
+      @media (min-width: 64rem) { .v7como__cab { align-items: start; } .v7como__frase { grid-row: 2; } .v7como__mail { grid-column: 1; grid-row: 3; justify-self: start; } .v7mapa { grid-row: 2 / span 2; align-self: center; } }
+
+</style>
+
+<style is:global>
+  /* Página de comparación: sin pie y con la barra A/B fija arriba */
+  .pie { display: none !important; }
+  body { padding-top: 3rem; }
+  .comparar { position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; justify-content: center; gap: 0.5rem; height: 3rem; padding-inline: var(--margen); background: #ffffff; border-bottom: 1px solid rgb(0 0 0 / 0.12); font-family: var(--sans); }
+  .comparar__eti { margin-right: 0.25rem; font-size: 0.8125rem; font-weight: 600; color: #574e46; }
+  .comparar button { min-height: 36px; padding: 0 0.875rem; border-radius: 999px; border: 1px solid rgb(0 0 0 / 0.18); background: #fff; color: #161412; font: 600 0.8125rem var(--sans); cursor: pointer; white-space: nowrap; }
+  .comparar button[aria-pressed='true'] { background: #161412; color: #fff; border-color: #161412; }
+  .comparar button:focus-visible { outline: 2px solid #161412; outline-offset: 2px; }
+  @media (max-width: 47.99rem) { .comparar { gap: 0.3rem; justify-content: flex-start; overflow-x: auto; } .comparar__eti, .comparar__sep { display: none; } .comparar button { padding: 0 0.55rem; font-size: 0.72rem; } .comparar .comparar__pal { width: 32px; flex-shrink: 0; } }
+  /* Barra de paletas y menú, por debajo de la barra A/B */
+  /* Las paletas van dentro de la barra de comparar: fuera la barra blanca del layout */
+  .paletas { display: none !important; }
+  .menu, [data-selector='si'] .menu { top: 3rem !important; }
+  :root { --cfl-arriba: 8.5rem; }
+  .comparar__sep { width: 1px; height: 1.5rem; margin-inline: 0.5rem; background: rgb(0 0 0 / 0.15); }
+  .comparar .comparar__pal { display: grid; place-items: center; width: 36px; padding: 0; }
+  .comparar__pal i { display: flex; width: 22px; height: 22px; border-radius: 50%; overflow: hidden; border: 1px solid rgb(0 0 0 / 0.15); }
+  .comparar__pal i b { flex: 1; }
+  .comparar .comparar__pal[aria-pressed='true'] { background: #fff; border-color: #161412; box-shadow: 0 0 0 1px #161412; }
+</style>

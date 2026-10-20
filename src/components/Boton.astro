@@ -1,0 +1,90 @@
+---
+// Botón pill. Por defecto apunta al destino del CTA principal (src/config.ts).
+import { CTA_PRINCIPAL } from '../config';
+
+interface Props {
+  href?: string;
+  variante?: 'principal' | 'contorno' | 'oscuro'; // oscuro: para fondos claros, donde el lima no se ve
+  ancho?: boolean; // a todo el ancho en móvil
+  flecha?: boolean; // flecha que avanza al pasar el ratón
+  class?: string;
+}
+
+const { href = CTA_PRINCIPAL.href, variante = 'principal', ancho = false, flecha = false, class: clase } = Astro.props;
+---
+
+<a href={href} class:list={['boton', `boton--${variante}`, { 'boton--ancho': ancho }, clase]}>
+  <slot />
+  {flecha && <span class="boton__flecha" aria-hidden="true">→</span>}
+</a>
+
+<style>
+  .boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0.75rem 1.625rem;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: var(--t-2);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-decoration: none;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .boton__flecha {
+    transition: transform 150ms ease;
+  }
+
+  .boton:hover .boton__flecha {
+    transform: translateX(3px);
+  }
+
+  .boton:active {
+    transform: scale(0.98);
+  }
+
+  /* Negro sobre lima: 15:1 */
+  .boton--principal {
+    background: var(--lima);
+    color: var(--negro);
+  }
+
+  .boton--principal:hover {
+    background: color-mix(in srgb, var(--lima) 85%, var(--hueso));
+  }
+
+  /* Hueso sobre negro: 15:1. Para páginas y bloques claros. */
+  .boton--oscuro {
+    background: var(--negro);
+    color: var(--hueso);
+  }
+
+  .boton--oscuro:hover {
+    background: color-mix(in srgb, var(--negro) 82%, var(--hueso));
+  }
+
+  .boton--contorno {
+    border: 1.5px solid currentColor;
+    color: inherit;
+  }
+
+  .boton--contorno:hover {
+    background: var(--negro);
+    color: var(--hueso);
+    border-color: var(--negro);
+  }
+
+  @media (max-width: 47.99rem) {
+    .boton--ancho {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,222 @@
+---
+import Reel from './Reel.astro';
+import { losDeDentro as b } from '../data/home';
+import { resaltar } from '../utils/resaltar';
+const total = b.personas.length;
+---
+
+<section class="dentro bloque" aria-labelledby="dentro-titulo">
+  <header class="dentro__cabecera contenedor" data-aparece>
+    <div class="dentro__intro">
+      <p class="etiqueta">{b.etiqueta}</p>
+      <h2 id="dentro-titulo" set:html={resaltar(b.titulo, b.resaltado, 'mano-acento')} />
+      <p class="dentro__texto">{b.texto}</p>
+      <p class="nota dentro__nota" aria-hidden="true"><span class="solo-movil">desliza →</span><span class="solo-escritorio">dale al play ↓</span></p>
+    </div>
+
+    <div class="dentro__controles">
+      <button class="dentro__flecha" type="button" data-dir="-1" aria-controls="dentro-carril">
+        <span class="solo-lector">Anterior</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <p class="dentro__contador" aria-live="polite">
+        <span data-actual>1</span> / {total}
+      </p>
+      <button class="dentro__flecha" type="button" data-dir="1" aria-controls="dentro-carril">
+        <span class="solo-lector">Siguiente</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- PENDIENTE: vídeos de los profesionales. Cuando existan, cada tarjeta abre su vídeo. -->
+  <ul id="dentro-carril" class="dentro__carril carril" role="list" tabindex="0" aria-label="Profesionales">
+    {
+      b.personas.map((p) => (
+        <li>
+          <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+          <Reel persona={p} />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<script>
+  const carril = document.getElementById('dentro-carril');
+  const actual = document.querySelector('.dentro [data-actual]');
+  const flechas = document.querySelectorAll<HTMLButtonElement>('.dentro__flecha');
+
+  if (carril && actual) {
+    const items = Array.from(carril.children) as HTMLElement[];
+
+    const indice = () => {
+      const izq = carril.getBoundingClientRect().left + parseFloat(getComputedStyle(carril).paddingLeft);
+      let mejor = 0;
+      let dist = Infinity;
+      items.forEach((it, i) => {
+        const d = Math.abs(it.getBoundingClientRect().left - izq);
+        if (d < dist) {
+          dist = d;
+          mejor = i;
+        }
+      });
+      return mejor;
+    };
+
+    const controles = document.querySelector<HTMLElement>('.dentro__controles');
+    const actualizar = () => {
+      // Si todos los reels caben, las flechas sobran.
+      if (controles) controles.style.visibility = carril.scrollWidth > carril.clientWidth + 4 ? '' : 'hidden';
+      const i = indice();
+      actual.textContent = String(i + 1);
+      const fin = carril.scrollLeft + carril.clientWidth >= carril.scrollWidth - 4;
+      flechas.forEach((f) => {
+        f.disabled = f.dataset.dir === '-1' ? carril.scrollLeft <= 4 : fin;
+      });
+    };
+
+    flechas.forEach((f) =>
+      f.addEventListener('click', () => {
+        const destino = items[Math.min(items.length - 1, Math.max(0, indice() + Number(f.dataset.dir)))];
+        const izq = parseFloat(getComputedStyle(carril).paddingLeft);
+        carril.scrollTo({ left: destino.offsetLeft - izq, behavior: 'smooth' });
+      })
+    );
+
+    let espera: number | undefined;
+    carril.addEventListener('scroll', () => {
+      clearTimeout(espera);
+      espera = window.setTimeout(actualizar, 60);
+    });
+    window.addEventListener('resize', actualizar);
+    actualizar();
+  }
+</script>
+
+<style>
+  .dentro {
+    border-top: 1px solid var(--linea);
+    overflow: hidden;
+  }
+
+  .dentro__cabecera {
+    display: grid;
+    gap: var(--e-3);
+    margin-bottom: var(--e-4);
+  }
+
+  .dentro__intro {
+    display: grid;
+    gap: var(--e-2);
+  }
+
+  /* El titular más potente después del hero. */
+  .dentro__intro h2 {
+    font-size: clamp(2.125rem, 1.1rem + 3.6vw, 4.25rem);
+    line-height: 1;
+    max-width: 18ch;
+  }
+
+  .dentro__intro :global(.mano-acento) {
+    font-family: var(--mano);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--lima);
+    display: inline-block;
+    rotate: -3deg;
+    font-size: 1.05em;
+  }
+
+  .dentro__nota {
+    font-size: 1.25rem;
+    margin-top: var(--e-1);
+  }
+
+  .solo-escritorio {
+    display: none;
+  }
+
+  .dentro__texto {
+    font-size: var(--t-3);
+    max-width: 36rem;
+    color: var(--hueso-suave);
+  }
+
+  .dentro__controles {
+    display: none;
+  }
+
+  .dentro__carril {
+    grid-auto-columns: min(72%, 17rem);
+  }
+
+  @media (min-width: 48rem) {
+    .dentro__cabecera {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .dentro__controles {
+      display: flex;
+      align-items: center;
+      gap: var(--e-2);
+    }
+
+    .dentro__flecha {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border: 1.5px solid var(--linea);
+      border-radius: 999px;
+      background: none;
+      cursor: pointer;
+      transition: border-color 150ms ease, background-color 150ms ease;
+    }
+
+    .dentro__flecha:hover:not(:disabled) {
+      border-color: var(--hueso);
+    }
+
+    .dentro__flecha:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .dentro__contador {
+      min-width: 3.5rem;
+      text-align: center;
+      font-size: var(--t-1);
+      font-variant-numeric: tabular-nums;
+      color: var(--hueso-suave);
+    }
+
+    /* Escritorio: el carril arranca alineado con el contenedor y sangra a la derecha. */
+    .solo-movil {
+      display: none;
+    }
+
+    .solo-escritorio {
+      display: inline;
+    }
+
+    /* Feed escalonado: los reels pares bajan, como una columna de vídeos. */
+    .dentro__carril > li:nth-child(even) {
+      translate: 0 3rem;
+    }
+
+    .dentro__carril {
+      padding-bottom: 4rem;
+      /* Cuatro reels caben a lo ancho del contenedor en escritorio. */
+      grid-auto-columns: clamp(14rem, 20vw, 17.5rem);
+      gap: var(--e-3);
+      padding-inline: max(var(--margen), (100% - var(--ancho)) / 2);
+      scroll-padding-inline: max(var(--margen), (100% - var(--ancho)) / 2);
+    }
+  }
+</style>

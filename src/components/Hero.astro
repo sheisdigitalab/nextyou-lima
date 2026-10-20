@@ -1,0 +1,314 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Boton from './Boton.astro';
+import { hero } from '../data/home';
+
+const poster = hero.video ? await getImage({ src: hero.foto, width: 1440, format: 'webp' }) : null;
+---
+
+<section class="hero" aria-labelledby="hero-titulo">
+  <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+  <div class="hero__media" data-placeholder={hero.placeholder ? 'true' : undefined}>
+    {
+      hero.video ? (
+        <video
+          class="hero__video"
+          src={hero.video.src}
+          poster={poster?.src}
+          autoplay
+          muted
+          loop
+          playsinline
+          aria-label={`Vídeo de ${hero.nombre}, ${hero.edad} años`}
+        />
+      ) : (
+        <Picture
+          src={hero.foto}
+          formats={['avif', 'webp']}
+          widths={[480, 768, 1080, 1440, 2000]}
+          sizes="(min-width: 64rem) 54vw, 100vw"
+          alt={hero.alt}
+          loading="eager"
+          fetchpriority="high"
+          class="hero__foto"
+        />
+      )
+    }
+  </div>
+
+  <div class="hero__contenido contenedor">
+    {
+      hero.video && (
+        <div class="hero__controles">
+          <span class="pastilla hero__pastilla">
+            <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
+              <path d="M0 0l10 6-10 6z" fill="currentColor" />
+            </svg>
+            Ver a {hero.nombre} · {hero.video.duracion}
+          </span>
+          <button class="hero__sonido" type="button" aria-pressed="false">
+            <span class="solo-lector">Activar sonido</span>
+            <svg class="ico-mudo" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+              <path d="M17 9l5 6M22 9l-5 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+            </svg>
+            <svg class="ico-sonido" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+              <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      )
+    }
+
+    <figure class="hero__cita" data-placeholder={hero.placeholder ? 'true' : undefined}>
+      <blockquote>
+        <p><span class="hero__comilla">«</span>{hero.cita}<span class="hero__comilla">»</span></p>
+      </blockquote>
+      <figcaption>
+        <span class="hero__nombre">{hero.nombre}, {hero.edad}</span>
+        <span class="hero__detalle">{hero.detalle}</span>
+      </figcaption>
+    </figure>
+
+    <div class="hero__que">
+      <h1 id="hero-titulo" class="hero__h1">{hero.titular}</h1>
+      <p class="hero__texto">{hero.texto}</p>
+    </div>
+
+    <div class="hero__accion">
+      <Boton ancho flecha>{hero.boton}</Boton>
+      <Fragment set:html="<!-- PENDIENTE de decisión de la clienta: línea de precio bajo el botón -->" />
+      <ul class="hero__meta" role="list">
+        {hero.meta.map((m, i) => (
+          <li class:list={['pastilla', i === 0 ? 'pastilla--lima' : 'pastilla--contorno']}>{m}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>('.hero__video');
+  const sonido = document.querySelector<HTMLButtonElement>('.hero__sonido');
+  if (video) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) video.pause();
+    sonido?.addEventListener('click', () => {
+      video.muted = !video.muted;
+      if (!video.muted && video.paused) video.play();
+      sonido.setAttribute('aria-pressed', String(!video.muted));
+      sonido.querySelector('.solo-lector')!.textContent = video.muted ? 'Activar sonido' : 'Silenciar';
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    min-height: 100svh;
+    padding-top: 6rem;
+    padding-bottom: var(--e-4);
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero__media :global(picture) {
+    height: 100%;
+  }
+
+  .hero__media :global(img),
+  .hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+
+  /* Degradado de arriba abajo: legibilidad del menú arriba, del texto abajo. */
+  .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgb(22 20 18 / 0.55) 0%,
+      rgb(22 20 18 / 0) 18%,
+      rgb(22 20 18 / 0) 32%,
+      rgb(22 20 18 / 0.7) 55%,
+      var(--negro) 88%
+    );
+  }
+
+  .hero__contenido {
+    display: grid;
+    gap: var(--e-3);
+  }
+
+  .hero__controles {
+    display: flex;
+    align-items: center;
+    gap: var(--e-1);
+  }
+
+  .hero__pastilla {
+    background: rgb(246 241 232 / 0.9);
+  }
+
+  .hero__sonido {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(22 20 18 / 0.55);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+  }
+  .hero__sonido .ico-sonido,
+  .hero__sonido[aria-pressed='true'] .ico-mudo {
+    display: none;
+  }
+  .hero__sonido[aria-pressed='true'] .ico-sonido {
+    display: block;
+  }
+
+  .hero__cita {
+    display: grid;
+    gap: var(--e-2);
+  }
+
+  .hero__cita blockquote {
+    font-size: var(--t-6);
+    max-width: 14ch;
+  }
+
+  .hero__comilla {
+    color: var(--lima);
+  }
+
+  .hero__cita figcaption {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .hero__nombre {
+    font-family: var(--sans);
+    font-size: var(--t-3);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* Más grande y legible (comentario #3). */
+  .hero__detalle {
+    font-size: var(--t-2);
+    font-weight: 600;
+    color: var(--lima);
+  }
+
+  /* Qué es NextYou, junto y en un bloque: el h1 lo dice claro y el texto lo completa
+     (comentario #3 de Sara: que no quede «poco integrado»). */
+  .hero__que {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--lima);
+    max-width: 34rem;
+  }
+
+  .hero__h1 {
+    font-size: var(--t-4);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__texto {
+    font-family: var(--sans);
+    font-size: var(--t-2);
+    color: var(--hueso-suave);
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+    max-width: 34rem;
+    text-wrap: pretty;
+  }
+
+  .hero__accion {
+    display: grid;
+    justify-items: start;
+    gap: 0.75rem;
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 47.99rem) {
+    .hero__accion {
+      justify-items: stretch;
+    }
+
+    .hero__meta {
+      flex-wrap: nowrap;
+      gap: 0.375rem;
+    }
+
+    .hero__meta :global(.pastilla) {
+      padding-inline: 0.625rem;
+      font-size: 0.8125rem;
+    }
+    .hero__meta {
+      justify-content: center;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .hero {
+      min-height: min(100svh, 60rem);
+      padding-bottom: var(--e-5);
+    }
+
+    .hero__contenido > * {
+      max-width: 36rem;
+    }
+
+    .hero__contenido {
+      max-width: var(--ancho);
+    }
+
+    .hero__cita blockquote {
+      font-size: clamp(2.75rem, 1rem + 3.4vw, 4.5rem);
+      max-width: 12ch;
+    }
+  }
+
+  /* Escritorio: la foto ocupa la mitad derecha y el texto no tapa la cara. */
+  @media (min-width: 64rem) {
+    /* La foto empieza siempre después de la columna de texto (36rem) más un respiro,
+       medido desde el borde del contenedor, para que nunca se pisen. */
+    .hero__media {
+      left: calc(max(var(--margen), (100% - var(--ancho)) / 2) + 39rem);
+    }
+
+    .hero__media :global(img),
+    .hero__video {
+      object-position: 50% 30%;
+    }
+
+    .hero__media::after {
+      background:
+        linear-gradient(to right, var(--negro) 0%, rgb(22 20 18 / 0) 28%),
+        linear-gradient(to bottom, rgb(22 20 18 / 0.5) 0%, rgb(22 20 18 / 0) 20%, rgb(22 20 18 / 0) 70%, var(--negro) 100%);
+    }
+  }
+</style>

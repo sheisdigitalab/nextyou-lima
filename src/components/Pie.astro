@@ -1,0 +1,163 @@
+---
+import Logo from './Logo.astro';
+import Boton from './Boton.astro';
+import { ENLACES, BASE } from '../config';
+import { pie, hero } from '../data/home';
+
+interface Props {
+  cierre?: boolean; // el bloque final con botón; la página de familias tiene el suyo
+}
+const { cierre = true } = Astro.props;
+
+// El lema se parte en dos: la segunda frase va a mano, como el «YOU» del logo.
+const [lema1, lema2] = pie.lema.split(/(?<=\.)\s+/);
+
+const enlaces = [
+  { texto: 'Historias', href: ENLACES.historias },
+  { texto: 'Profesiones', href: ENLACES.profesiones },
+  { texto: 'Soy madre o padre', href: ENLACES.familias },
+  { texto: 'Quién hay detrás', href: ENLACES.acompanamiento },
+  { texto: 'Sobre Sara', href: ENLACES.sara },
+  { texto: 'Privacidad', href: ENLACES.privacidad },
+  { texto: 'Datos y menores', href: ENLACES.menores },
+];
+---
+
+<footer class="pie">
+  <div class="contenedor">
+    <!-- Cierre: quien llega hasta aquí tiene el botón a mano. -->
+    {cierre && (
+    <div class="pie__cierre">
+      <p class="pie__lema">{lema1} {lema2 && <span class="nota pie__mano">{lema2}</span>}</p>
+      <div class="pie__accion">
+        <Boton flecha>{hero.boton}</Boton>
+        <ul class="pie__meta" role="list">
+          {hero.meta.map((m, i) => (
+            <li class:list={['pastilla', i === 0 ? 'pastilla--lima' : 'pastilla--contorno']}>{m}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    )}
+
+    <div class="pie__arriba">
+      <a href={BASE} class="pie__logo" aria-label="NextYou, inicio"><Logo tam="pie" /></a>
+      <nav aria-label="Pie">
+        <ul class="pie__enlaces" role="list">
+          {
+            enlaces.map((e) => (
+              <li>
+                {e.href === '#' && <Fragment set:html="<!-- PENDIENTE: página fase posterior -->" />}
+                <a href={e.href} aria-current={e.href !== '#' && Astro.url.pathname.replace(/\/?$/, '/') === e.href ? 'page' : undefined}>{e.texto}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <p class="pie__legal">© {new Date().getFullYear()} NextYou</p>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    padding-block: var(--e-5) var(--e-3);
+  }
+
+  .pie__cierre {
+    display: grid;
+    gap: var(--e-4);
+    padding-bottom: var(--e-5);
+    margin-bottom: var(--e-4);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .pie__accion {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+  }
+
+  .pie__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .pie__arriba {
+    display: grid;
+    gap: var(--e-3);
+  }
+
+  .pie__logo {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    text-decoration: none;
+    justify-self: start;
+  }
+
+  .pie__enlaces {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--e-2);
+  }
+
+  .pie__enlaces a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--t-1);
+    color: var(--hueso-suave);
+    text-decoration: none;
+  }
+
+  .pie__enlaces a[aria-current='page'] {
+    color: var(--lima);
+  }
+
+  .pie__enlaces a:hover {
+    color: var(--hueso);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .pie__lema {
+    font-family: var(--sans);
+    font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+
+  .pie__mano {
+    font-size: 1.05em;
+  }
+
+  .pie__legal {
+    margin-top: var(--e-4);
+    font-size: var(--t-1);
+    color: var(--hueso-suave);
+  }
+
+  @media (min-width: 48rem) {
+    .pie__arriba {
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
+
+    .pie__enlaces {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0 var(--e-3);
+    }
+
+    .pie__lema {
+      max-width: 16ch;
+    }
+  }
+</style>

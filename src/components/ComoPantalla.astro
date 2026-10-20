@@ -1,0 +1,116 @@
+---
+// Pantallas de la «app» de NextYou que se ven dentro del móvil de «Cómo funciona».
+// n = 0 test · 1 tus 3 caminos · 2 gente real (consejos y entrevistas) · 3 coach.
+// Todo es de MUESTRA (personas y datos): PENDIENTE sustituir por contenido real.
+import { Image } from 'astro:assets';
+import noa from '../assets/muestra/noa.jpg';
+import leo from '../assets/muestra/leo.jpg';
+import aitana from '../assets/muestra/aitana.jpg';
+import leoV from '../assets/muestra/leo-v.jpg';
+import coachV from '../assets/muestra/coach-v.jpg';
+
+interface Props { n: 0 | 1 | 2 | 3 }
+const { n } = Astro.props;
+
+const ic = {
+  crear: '<svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.2L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.6-.8z"/></svg>',
+  resolver: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>',
+  conectar: '<svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c1-3 3-4 5-4s4 1 5 4M11 19c1-3 3-4 5-4s4 1 5 4"/></svg>',
+  explorar: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
+  inicio: '<svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg>',
+  caminos: '<svg viewBox="0 0 24 24"><path d="M12 21v-8M12 13L6 6M12 13l6-7M6 6v4M6 6h4M18 6v4M18 6h-4"/></svg>',
+  gente: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>',
+  coach: '<svg viewBox="0 0 24 24"><path d="M5 5h14v10H10l-5 4z"/></svg>',
+  play: '<svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  rep: '<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"/></svg>',
+};
+const nav = (activa: number) => [['Inicio', ic.inicio], ['Caminos', ic.caminos], ['Gente', ic.gente], ['Coach', ic.coach]].map(([t, i], k) => ({ t, i, on: k === activa }));
+---
+<div class={`cmo-pant cmo-pant--${n}`} data-pant={n}>
+  <div class="cmo-est"><span>9:41</span><i aria-hidden="true"></i></div>
+
+  {n === 0 && (
+    <div class="cmo-test">
+      <!-- Estado A: una pregunta del test -->
+      <div class="cmo-test__a">
+        <div class="cmo-top"><span class="cmo-x" aria-hidden="true">✕</span><span class="cmo-barra"><i></i></span><small>4 de 12</small></div>
+        <p class="cmo-chip cmo-chip--lima">Brújula interior</p>
+        <h4 class="cmo-preg">¿Qué te da más energía?</h4>
+        <div class="cmo-ops">
+          <span class="cmo-op cmo-op--1"><span class="cmo-ic" set:html={ic.crear} />Crear<small>Ideas nuevas</small></span>
+          <span class="cmo-op cmo-op--2"><span class="cmo-ic" set:html={ic.resolver} />Resolver<small>Problemas</small></span>
+          <span class="cmo-op cmo-op--3"><span class="cmo-ic" set:html={ic.conectar} />Conectar<small>Con la gente</small></span>
+          <span class="cmo-op cmo-op--4"><span class="cmo-ic" set:html={ic.explorar} />Explorar<small>Lo desconocido</small></span>
+        </div>
+        <p class="cmo-nota">Sin respuestas buenas ni malas</p>
+        <span class="cmo-btn">Continuar</span>
+      </div>
+      <!-- Estado B: lo que el test entiende de ti -->
+      <div class="cmo-test__b">
+        <div class="cmo-top"><span class="cmo-x" aria-hidden="true">✕</span><span class="cmo-barra cmo-barra--llena"><i></i></span><small>12 de 12</small></div>
+        <p class="cmo-chip cmo-chip--lila">Tu perfil de hoy</p>
+        <h4 class="cmo-preg">Esto es lo que te mueve</h4>
+        <ul class="cmo-rasgos">
+          <li><span>Motivación<b>Crear cosas nuevas</b></span><i style="--w: 86%"></i></li>
+          <li><span>Cómo trabajas<b>Con otras personas</b></span><i style="--w: 68%"></i></li>
+          <li><span>Qué buscas<b>Que tenga sentido</b></span><i style="--w: 78%"></i></li>
+        </ul>
+        <p class="cmo-rep"><span class="cmo-ic" set:html={ic.rep} />Puedes repetirlo cuando quieras</p>
+      </div>
+    </div>
+  )}
+
+  {n === 1 && (
+    <div class="cmo-cam">
+      <div class="cmo-cab"><small>Hola, Lucía</small><h4>Tus <em>3</em> caminos</h4><p>Son tres opciones, no un ranking. Explora las tres.</p></div>
+      <div class="cmo-lista">
+        <div class="cmo-cam__it cmo-cam__it--1">
+          <Image src={noa} alt="" width={200} height={134} quality={70} class="cmo-cam__f" loading="eager" />
+          <span class="cmo-cam__tx"><span class="cmo-tag">1 · Lo que más te pega</span><b>Creación de contenido</b></span><span class="cmo-fl" aria-hidden="true">›</span>
+        </div>
+        <div class="cmo-cam__it cmo-cam__it--2">
+          <Image src={leo} alt="" width={200} height={134} quality={70} class="cmo-cam__f" loading="eager" />
+          <span class="cmo-cam__tx"><span class="cmo-tag">2 · El puente</span><b>Animación 3D</b></span><span class="cmo-fl" aria-hidden="true">›</span>
+        </div>
+        <div class="cmo-cam__it cmo-cam__it--3">
+          <Image src={aitana} alt="" width={200} height={134} quality={70} class="cmo-cam__f" loading="eager" />
+          <span class="cmo-cam__tx"><span class="cmo-tag">3 · El salto</span><b>Ciberseguridad</b></span><span class="cmo-fl" aria-hidden="true">›</span>
+        </div>
+      </div>
+      <p class="cmo-nota cmo-nota--izq">Toca una para ver gente que ya se dedica a ello</p>
+    </div>
+  )}
+
+  {n === 2 && (
+    <div class="cmo-gen">
+      <div class="cmo-tabs"><span class="cmo-tab cmo-tab--on">Entrevistas</span><span class="cmo-tab">Consejos</span></div>
+      <div class="cmo-video">
+        <Image src={leoV} alt="" width={420} height={560} quality={75} class="cmo-video__f" loading="eager" />
+        <span class="cmo-play" set:html={ic.play} />
+        <span class="cmo-quien"><b>Leo, 26</b><small>Anima personajes 3D</small></span>
+        <span class="cmo-dur">Entrevista · 3 min</span>
+      </div>
+      <div class="cmo-burb"><p>«Dibujaba cómics y luego hice una FP de Animación 3D.»</p></div>
+      <div class="cmo-chips"><span class="cmo-tap">¿Qué estudiaste?</span><span>¿Cómo empezaste?</span><span>¿Cómo es tu día?</span></div>
+    </div>
+  )}
+
+  {n === 3 && (
+    <div class="cmo-coa">
+      <div class="cmo-cab"><small>Tu coach</small><h4>Sesiones <em>contigo</em></h4></div>
+      <div class="cmo-coach">
+        <Image src={coachV} alt="" width={240} height={320} quality={75} class="cmo-coach__f" loading="eager" />
+        <span class="cmo-coach__tx"><b>Laura</b><small>Coach de orientación</small><span class="cmo-chip cmo-chip--menta">Online · 1 a 1</span></span>
+      </div>
+      <p class="cmo-sub">Elige cuándo quieres tu sesión</p>
+      <div class="cmo-dias"><span>Mar<b>14</b></span><span class="cmo-dia--on">Jue<b>16</b></span><span>Sáb<b>18</b></span></div>
+      <div class="cmo-horas"><span>10:00</span><span class="cmo-hora--on">17:30</span><span>19:00</span></div>
+      <span class="cmo-btn">Reservar mi sesión</span>
+    </div>
+  )}
+
+  <nav class="cmo-nav" aria-hidden="true">
+    {nav(n === 0 ? 0 : n).map((x) => <span class:list={[{ 'cmo-on': x.on }]}><span class="cmo-ic" set:html={x.i} />{x.t}</span>)}
+  </nav>
+</div>

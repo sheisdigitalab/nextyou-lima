@@ -1,0 +1,85 @@
+---
+// Una pantalla de la demo de «¿Qué es NextYou?» (v3). Se usa dos veces:
+// en cada paso (móvil) y en el móvil fijo que cambia de pantalla (escritorio).
+// PLACEHOLDER: todo el contenido de las pantallas es de ejemplo.
+interface Props {
+  n: 0 | 1 | 2 | 3;
+  respuestas: string[];
+}
+const { n, respuestas } = Astro.props;
+
+const caminos = [
+  { tipo: 'El que más encaja', profesion: 'Edición de vídeo', motivo: 'Disfrutas creando y contando historias.' },
+  { tipo: 'El puente', profesion: 'Diseño UX/UI', motivo: 'Une lo creativo con resolver problemas de la gente.' },
+  { tipo: 'El salto', profesion: 'Sonido para videojuegos', motivo: 'Quizá no lo conocías, y encaja con lo que te mueve.' },
+];
+
+// Paso 3: lista de vídeos del camino elegido, sin caras, para no repetir «Los de dentro»
+const videos = [
+  { titulo: 'Edita para una productora', meta: '2 min', tono: 'a' },
+  { titulo: 'Monta vídeos para marcas en redes', meta: '3 min', tono: 'b' },
+  { titulo: 'Empezó subiendo vídeos a YouTube', meta: '2 min', tono: 'c' },
+];
+---
+
+{
+  n === 0 && (
+    <>
+      <div class="m-cabecera"><span>Un día prestado</span><span>Misión 3 de 8</span></div>
+      <div class="m-progreso"><span style="width: 37.5%" /></div>
+      <p class="m-pregunta">Sábado sin planes. ¿Qué te apetece?</p>
+      <div class="m-tarea">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10l5-3v10l-5-3z" /></svg>
+        Grabar y editar un vídeo de tu insti para redes
+      </div>
+      <div class="m-respuestas">
+        {respuestas.map((r, i) => <span class:list={{ sel: i === 3 }}>{r}</span>)}
+      </div>
+      <p class="m-nota">No hay respuestas buenas ni malas</p>
+      <div class="m-pie"><span>← Volver</span><span class="m-siguiente">Siguiente →</span></div>
+    </>
+  )
+}
+{
+  n === 1 && (
+    <>
+      <p class="m-titulo">Tus tres caminos</p>
+      <p class="m-sub">Para explorar. Sin ranking.</p>
+      {caminos.map((c, i) => (
+        <div class:list={['m-camino', { 'm-camino--uno': i === 0 }]}>
+          <span class="m-camino__tipo">{c.tipo}</span>
+          <strong>{c.profesion}</strong>
+          <span class="m-camino__motivo">{c.motivo}</span>
+        </div>
+      ))}
+    </>
+  )
+}
+{
+  n === 2 && (
+    <>
+      <p class="m-titulo">Edición de vídeo</p>
+      <p class="m-sub">Gente que ya trabaja en esto</p>
+      {videos.map((v) => (
+        <div class="m-video">
+          <span class:list={['m-video__mini', `m-video__mini--${v.tono}`]}>
+            <svg width="14" height="16" viewBox="0 0 12 14"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
+          </span>
+          <span class="m-video__texto"><strong>{v.titulo}</strong><span>{v.meta} · sin discursos</span></span>
+        </div>
+      ))}
+    </>
+  )
+}
+{
+  n === 3 && (
+    <>
+      <div class="m-chat__cabecera"><span class="m-avatar">C</span><div><strong>Tu coach</strong><span>en línea</span></div></div>
+      <p class="m-burbuja">¿Qué te dio más energía esta semana?</p>
+      <p class="m-burbuja m-burbuja--tu">El reto de diseño, sin duda</p>
+      <p class="m-burbuja">Pues prueba a rediseñar la web de tu insti. ¿Te animas?</p>
+      <p class="m-burbuja m-burbuja--tu">Va, lo intento</p>
+      <div class="m-sesion"><span>Próxima sesión</span><strong>Online · 45 min</strong></div>
+    </>
+  )
+}

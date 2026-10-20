@@ -1,0 +1,57 @@
+---
+// Franja discreta para padres y madres: la home habla al chico; la familia tiene su sitio aparte.
+import Boton from './Boton.astro';
+import Icono from './Icono.astro';
+import { familias as b } from '../data/home';
+import { ENLACES } from '../config';
+---
+
+<section class="familias" aria-labelledby="familias-titulo">
+  <div class="contenedor familias__fila">
+    <Icono nombre="lado" tam={52} />
+    <div class="familias__texto">
+      <h2 id="familias-titulo" class="familias__titulo">{b.titulo}</h2>
+      <p>{b.texto}</p>
+    </div>
+    <Boton href={ENLACES.familias} variante="contorno">{b.boton}</Boton>
+  </div>
+</section>
+
+<style>
+  .familias {
+    padding-block: var(--e-4);
+    background: var(--negro-2);
+    border-block: 1px solid var(--linea);
+  }
+
+  .familias__fila {
+    display: grid;
+    gap: var(--e-2) var(--e-3);
+    justify-items: start;
+  }
+
+  .familias :global(.icono) {
+    color: var(--hueso);
+  }
+
+  .familias__texto {
+    display: grid;
+    gap: var(--e-1);
+    max-width: 40rem;
+  }
+
+  .familias__titulo {
+    font-size: var(--t-4);
+  }
+
+  .familias__texto p {
+    color: var(--hueso-suave);
+  }
+
+  @media (min-width: 64rem) {
+    .familias__fila {
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+    }
+  }
+</style>

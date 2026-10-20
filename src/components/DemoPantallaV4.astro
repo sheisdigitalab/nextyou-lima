@@ -1,0 +1,146 @@
+---
+// Una pantalla de la demo de «¿Qué es NextYou?» (v4). Se usa dos veces:
+// en cada paso (móvil) y en el móvil fijo que cambia de pantalla (escritorio).
+// PLACEHOLDER: todo el contenido de las pantallas es de ejemplo.
+interface Props {
+  n: 0 | 1 | 2 | 3;
+  respuestas: string[];
+  // 'test' (v5): la pantalla 1 es la primera pregunta del test real
+  variante?: 'test';
+}
+const { n, respuestas, variante } = Astro.props;
+
+// Primera pregunta del test real (nextyou.academy/test/bachillerato-que-estudiar)
+const energias = [
+  { nombre: 'Creador/a', texto: 'Imaginas y construyes cosas nuevas' },
+  { nombre: 'Estratega', texto: 'Planificas y resuelves problemas' },
+  { nombre: 'Conector/a', texto: 'Unes personas e ideas' },
+  { nombre: 'Explorador/a', texto: 'Buscas lo desconocido' },
+];
+
+const caminos = [
+  { tipo: 'Lo que más te pega', profesion: 'Edición de vídeo', motivo: 'Disfrutas creando y contando historias.' },
+  { tipo: 'El puente', profesion: 'Diseño UX/UI', motivo: 'Une lo creativo con resolver problemas de la gente.' },
+  { tipo: 'El salto', profesion: 'Sonido para videojuegos', motivo: 'Quizá no lo conocías, y encaja con lo que te mueve.' },
+];
+
+// Paso 3: lista de vídeos del camino elegido, sin caras, para no repetir «Los de dentro»
+const videos = [
+  { titulo: 'Edita para una productora', meta: '2 min', tono: 'a' },
+  { titulo: 'Monta vídeos para marcas en redes', meta: '3 min', tono: 'b' },
+  { titulo: 'Empezó subiendo vídeos a YouTube', meta: '2 min', tono: 'c' },
+];
+---
+
+{
+  n === 0 && variante === 'test' && (
+    <>
+      <div class="m-cabecera"><span>Brújula Interior</span><span>1 de 12</span></div>
+      <div class="m-progreso"><span style="width: 8.33%" /></div>
+      <p class="m-pregunta">¿Cómo describirías tu energía natural?</p>
+      <div class="m-energias">
+        {energias.map((e, i) => (
+          <span class:list={{ sel: i === 0 }}>
+            <strong>{e.nombre}</strong>
+            {e.texto}
+          </span>
+        ))}
+      </div>
+      <p class="m-nota">Sin respuestas correctas ni incorrectas. Solo tú.</p>
+      <div class="m-pie"><span>← Volver</span><span class="m-siguiente">Siguiente →</span></div>
+    </>
+  )
+}
+{
+  n === 0 && variante !== 'test' && (
+    <>
+      <div class="m-cabecera"><span>Un día prestado</span><span>Parada 1 de 4</span></div>
+      <div class="m-progreso"><span style="width: 25%" /></div>
+      <p class="m-pregunta">Sábado sin planes. ¿Qué te apetece?</p>
+      <div class="m-tarea">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10l5-3v10l-5-3z" /></svg>
+        Grabar y editar un vídeo para redes
+      </div>
+      <div class="m-respuestas">
+        {respuestas.map((r, i) => <span class:list={{ sel: i === 3 }}>{r}</span>)}
+      </div>
+      <p class="m-nota">No hay respuestas buenas ni malas</p>
+      <div class="m-pie"><span>← Volver</span><span class="m-siguiente">Siguiente →</span></div>
+    </>
+  )
+}
+{
+  n === 1 && variante === 'test' && (
+    <>
+      <p class="m-titulo">Tus tres caminos</p>
+      <p class="m-sub">Según tus respuestas. Sin ranking.</p>
+      <!-- Desde ti salen tres ramas: se dibujan y las tarjetas entran una a una (v5) -->
+      <div class="m-ramas">
+        <svg class="m-ramas__lineas" viewBox="0 0 40 120" preserveAspectRatio="none">
+          <path class="m-l m-l--1" d="M4 60 C 24 60, 18 20, 40 20" />
+          <path class="m-l m-l--2" d="M4 60 L 40 60" />
+          <path class="m-l m-l--3" d="M4 60 C 24 60, 18 100, 40 100" />
+        </svg>
+        <span class="m-ramas__tu">Tú</span>
+        <div class="m-ramas__lista">
+          {caminos.map((c, i) => (
+            <div class:list={['m-rama', `m-rama--${i + 1}`]} style={`--d: ${i}`}>
+              <span class="m-rama__tipo">{c.tipo}</span>
+              <strong>{c.profesion}</strong>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p class="m-nota">Ninguno es «el bueno». Los tres merecen una prueba.</p>
+    </>
+  )
+}
+{
+  n === 1 && variante !== 'test' && (
+    <>
+      <p class="m-titulo">Tus tres caminos</p>
+      <p class="m-sub">Para explorar. Sin ranking.</p>
+      {caminos.map((c, i) => (
+        <div class:list={['m-camino', { 'm-camino--uno': i === 0 }]}>
+          <span class="m-camino__tipo">{c.tipo}</span>
+          <strong>{c.profesion}</strong>
+          <span class="m-camino__motivo">{c.motivo}</span>
+        </div>
+      ))}
+    </>
+  )
+}
+{
+  n === 2 && (
+    <>
+      <p class="m-titulo">Edición de vídeo</p>
+      <p class="m-sub">Gente que ya trabaja en esto</p>
+      {videos.map((v) => (
+        <div class="m-video">
+          <span class:list={['m-video__mini', `m-video__mini--${v.tono}`]}>
+            <svg width="14" height="16" viewBox="0 0 12 14"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
+          </span>
+          <span class="m-video__texto"><strong>{v.titulo}</strong><span>{v.meta} · sin discursos</span></span>
+        </div>
+      ))}
+    </>
+  )
+}
+{
+  n === 3 && (
+    <>
+      <!-- El MVP no tiene chat con el coach: tarjeta de sesión -->
+      <div class="m-sesion3">
+        <span class="m-avatar">C</span>
+        <p class="m-titulo">Sesión con tu coach</p>
+        <p class="m-sub">online</p>
+      </div>
+      <div class="m-reto">
+        <span>Reto para probar</span>
+        <strong>Rediseñar una web que conoces</strong>
+      </div>
+      <p class="m-nota">Hablas de lo que has probado. Decides tú.</p>
+      <Fragment set:html="<!-- PENDIENTE CLIENTA: duración y frecuencia de las sesiones -->" />
+    </>
+  )
+}

@@ -1,0 +1,178 @@
+---
+// Insiders (gratis, enseñan su trabajo) y coaches (de pago, acompañan). Conviene no mezclarlos.
+import Icono from './Icono.astro';
+import Boton from './Boton.astro';
+import { ENLACES } from '../config';
+import { Image } from 'astro:assets';
+import { quienHayDetras as b, losDeDentro } from '../data/home';
+---
+
+<section class="detras bloque" aria-labelledby="detras-titulo">
+  <div class="contenedor">
+    <header class="detras__cabecera" data-aparece>
+      <p class="etiqueta">{b.etiqueta}</p>
+      <h2 id="detras-titulo">{b.titulo}</h2>
+      <p class="detras__sub">{b.subtitulo}</p>
+    </header>
+
+    <ul class="detras__tarjetas" role="list">
+      {
+        b.tarjetas.map((t, i) => (
+          <li class:list={['figura', i === 1 && 'figura--clara claro']} data-aparece>
+            <div class="figura__cabeza">
+              {i === 0 ? (
+                <ul class="caras" role="list" aria-label="Algunos Insiders">
+                  {losDeDentro.personas.map((p) => (
+                    <li>
+                      <Image src={p.foto} alt={`${p.nombre}, ${p.profesion}`} width={96} height={96} class="cara" />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Icono nombre={t.icono as 'dentro' | 'lado'} tam={48} />
+              )}
+              <span class:list={['pastilla', i === 0 ? 'pastilla--lima' : 'pastilla--negra']}>{t.pastilla}</span>
+            </div>
+            <h3 class="figura__titulo">{t.titulo}</h3>
+            <p class="figura__texto">{t.texto}</p>
+            <ul class="figura__puntos" role="list">
+              {t.puntos.map((pt) => (
+                <li>{pt}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="detras__mas">
+      <Boton href={ENLACES.acompanamiento} variante="contorno" flecha>Cómo es cada uno, por dentro</Boton>
+    </div>
+    <Fragment set:html="<!-- PENDIENTE: precio del acompañamiento con coach -->" />
+  </div>
+</section>
+
+<style>
+  .detras {
+    border-top: 1px solid var(--linea);
+  }
+
+  .detras__cabecera {
+    display: grid;
+    gap: var(--e-2);
+    margin-bottom: var(--e-4);
+  }
+
+  .detras__cabecera h2 {
+    font-size: var(--t-5);
+    max-width: 18ch;
+  }
+
+  .detras__sub {
+    font-size: var(--t-3);
+    color: var(--hueso-suave);
+    max-width: 40rem;
+  }
+
+  .detras__tarjetas {
+    display: grid;
+    gap: var(--e-3);
+  }
+
+  .figura {
+    display: grid;
+    align-content: start;
+    gap: var(--e-2);
+    padding: var(--e-4) var(--e-3);
+    border-radius: var(--radio);
+    background: var(--negro-2);
+    border: 1px solid var(--linea);
+  }
+
+  /* Coaches en claro: la otra cara, la de pago, bien separada de la gratuita. */
+  .figura--clara {
+    background: var(--papel);
+    color: var(--negro);
+    border-color: transparent;
+  }
+
+  .figura__cabeza {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-2);
+  }
+
+  /* Las caras de los Insiders, las mismas de los reels, superpuestas. */
+  .caras {
+    display: flex;
+  }
+
+  .caras li + li {
+    margin-left: -0.75rem;
+  }
+
+  .caras :global(.cara) {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 50% 25%;
+    border: 2.5px solid var(--negro-2);
+  }
+
+  .figura :global(.icono) {
+    color: currentColor;
+  }
+
+  .pastilla--negra {
+    background: var(--negro);
+    color: var(--hueso);
+  }
+
+  .figura__titulo {
+    font-size: var(--t-4);
+  }
+
+  .figura__texto {
+    color: var(--hueso-suave);
+    max-width: 34rem;
+  }
+
+  .figura--clara .figura__texto {
+    color: var(--gris);
+  }
+
+  .figura__puntos {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: var(--e-1);
+    font-weight: 600;
+  }
+
+  .figura__puntos li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+
+  .figura__puntos li::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--lima);
+    box-shadow: 0 0 0 2px currentColor;
+    translate: 0 -1px;
+  }
+
+  .detras__mas {
+    margin-top: var(--e-4);
+  }
+
+  @media (min-width: 48rem) {
+    .detras__tarjetas {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

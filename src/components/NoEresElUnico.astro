@@ -1,0 +1,139 @@
+---
+import { Picture } from 'astro:assets';
+import { noEresElUnico as b } from '../data/home';
+import { resaltar } from '../utils/resaltar';
+---
+
+<section class="unico bloque" aria-labelledby="unico-titulo">
+  <header class="unico__cabecera contenedor" data-aparece>
+    <p class="etiqueta">{b.etiqueta}</p>
+    <h2 id="unico-titulo" set:html={resaltar(b.titulo, b.resaltado)} />
+    <p class="unico__sub">{b.subtitulo}</p>
+  </header>
+
+  <ul class="unico__lista carril" role="list" tabindex="0" aria-label="Testimonios">
+    {
+      b.personas.map((p) => (
+        <li>
+          <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+          <figure class="polaroid cinta" data-placeholder={p.placeholder ? 'true' : undefined}>
+            <Picture
+              src={p.foto}
+              formats={['avif', 'webp']}
+              widths={[320, 480, 640]}
+              sizes="(min-width: 64rem) 17rem, (min-width: 48rem) 45vw, 74vw"
+              alt={p.alt}
+            />
+            <blockquote class="polaroid__cita">
+              <p>«{p.cita}»</p>
+            </blockquote>
+            <figcaption class="polaroid__firma nota">
+              {p.nombre}, {p.edad}
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .unico {
+    border-top: 1px solid var(--linea);
+  }
+
+  .unico__cabecera {
+    display: grid;
+    gap: var(--e-2);
+    margin-bottom: var(--e-4);
+  }
+
+  .unico__sub {
+    font-size: var(--t-3);
+    color: var(--hueso-suave);
+    max-width: 36rem;
+  }
+
+  .unico__cabecera h2 {
+    font-size: var(--t-5);
+    max-width: 16ch;
+  }
+
+  .unico__lista {
+    grid-auto-columns: min(74%, 18rem);
+    gap: var(--e-3);
+    padding-top: var(--e-2);
+  }
+
+  /* Polaroid: foto con marco de papel, cita en negro y nombre a rotulador. */
+  .polaroid {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    height: 100%;
+    padding: 0.75rem 0.75rem 1.25rem;
+    border-radius: 6px;
+    background: var(--papel);
+    color: var(--negro);
+    box-shadow: 0 10px 24px -8px rgb(22 20 18 / 0.35);
+  }
+
+  .unico__lista li:nth-child(odd) .polaroid {
+    rotate: -1.5deg;
+  }
+
+  .unico__lista li:nth-child(even) .polaroid {
+    rotate: 1.5deg;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .polaroid {
+      transition: rotate 200ms ease, translate 200ms ease, box-shadow 200ms ease;
+    }
+
+    .unico__lista li .polaroid:hover {
+      rotate: 0deg;
+      translate: 0 -6px;
+      box-shadow: 0 18px 34px -10px rgb(22 20 18 / 0.45);
+    }
+  }
+
+  .polaroid :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+
+  .polaroid__cita {
+    font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
+    line-height: 1.2;
+    padding-inline: 0.25rem;
+  }
+
+  /* Nombre a rotulador en negro: el lima no se ve sobre papel. */
+  .polaroid__firma {
+    margin-top: auto;
+    padding-inline: 0.25rem;
+    font-size: 1.125rem;
+    color: var(--negro);
+  }
+
+  @media (min-width: 48rem) {
+    .unico__lista {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--e-4) var(--e-3);
+      width: min(100% - 2 * var(--margen), var(--ancho));
+      margin-inline: auto;
+      padding: var(--e-2) 0 0;
+      overflow: visible;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .unico__lista {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

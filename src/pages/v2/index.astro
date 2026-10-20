@@ -1,0 +1,549 @@
+---
+// Versión 2 de la home: el diseño de Figma (archivo «NextYou», marco «Crear landing page»)
+// con los 15 comentarios de Sara y las mejoras de SEO aplicadas.
+// Página independiente, con su propio estilo: no usa global.css ni los componentes de la v1.
+// Los textos salen de src/data/home.ts, los mismos que la v1. Personas y fotos DE MUESTRA.
+import { Image, getImage } from 'astro:assets';
+import V2 from '../../layouts/V2.astro';
+import { SITIO, BASE, ENLACES, CTA_PRINCIPAL } from '../../config';
+import { hero, noEresElUnico, queEsNextYou as q, losDeDentro, familias, sara } from '../../data/home';
+
+const reels = await Promise.all(
+  losDeDentro.personas.map(async (p) => ({ ...p, grande: (await getImage({ src: p.foto, width: 900, format: 'webp' })).src }))
+);
+const insider = reels[0];
+const heroGrande = (await getImage({ src: hero.foto, width: 900, format: 'webp' })).src;
+
+// Palabra destacada en cursiva dentro de un titular.
+const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>${palabra}</em>`);
+---
+
+<V2 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato">
+    <main id="contenido">
+      <!-- ===================== Hero ===================== -->
+      <section class="hero" aria-label="Aisha, 21: hoy estudia diseño UX/UI">
+        <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+        <Image
+          src={hero.foto}
+          alt={hero.alt}
+          widths={[640, 1080, 1440, 2000]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="hero__foto"
+        />
+        <div class="hero__contenido ancho">
+          <button
+            type="button"
+            class="hero__ver"
+            data-visor-abrir
+            aria-haspopup="dialog"
+            data-nombre={`${hero.nombre}, ${hero.edad}`}
+            data-profesion={hero.detalle}
+            data-cita={hero.cita}
+            data-duracion="2 min"
+            data-img={heroGrande}
+            data-video={hero.video?.src ?? ''}
+          >
+            <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+            Ver a {hero.nombre} · 2 min
+          </button>
+          <div class="hero__abajo">
+            <figure class="hero__cita">
+              <blockquote><p>«{hero.cita}»</p></blockquote>
+              <figcaption>
+                <span class="hero__nombre">{hero.nombre}, {hero.edad}</span>
+                <span class="hero__detalle">{hero.detalle}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Qué es, en un bloque propio fuera de la portada =====================
+           La portada se queda solo con la frase de la persona (Sara: demasiado texto arriba). -->
+      <section class="intro" aria-labelledby="hero-titulo">
+        <div class="estrecho intro__rejilla" data-aparece>
+          <h1 id="hero-titulo">{hero.titular}</h1>
+          <div class="intro__texto">
+            <p>{hero.texto}</p>
+            <div class="intro__accion">
+              <a href={CTA_PRINCIPAL.href} class="boton">{hero.boton}</a>
+              <span>8 minutos · gratis · sin crear cuenta</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== No eres el único ===================== -->
+      <section class="seccion unico" aria-labelledby="unico-titulo">
+        <div class="ancho">
+          <header class="cabecera cabecera--centro" data-aparece>
+            <p class="antetitulo">{noEresElUnico.etiqueta}</p>
+            <h2 id="unico-titulo" class="titular titular--unico" set:html={cursiva(noEresElUnico.titulo, noEresElUnico.resaltado)} />
+            <p class="cabecera__sub">{noEresElUnico.subtitulo}</p>
+          </header>
+          <ul data-aparece class="unico__lista" role="list" aria-label="Testimonios" tabindex="0">
+            {
+              noEresElUnico.personas.map((p) => (
+                <li class="tarjeta">
+                  <Image src={p.foto} alt={p.alt} width={480} height={420} class="tarjeta__foto" />
+                  <div class="tarjeta__texto">
+                    <p class="tarjeta__cita">«{p.cita}»</p>
+                    <p class="tarjeta__firma">— {p.nombre}, {p.edad}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===================== ¿Qué es NextYou? =====================
+           Fondo claro (#6), en modo pregunta con el logo (#7), titular de Sara (#8)
+           y una demo del producto en lugar de las frases y del «Cómo funciona» (#9, #12).
+           «Lo que no va a pasar» integrado como lista, sin caja de color (#13). -->
+      <section class="seccion que" aria-labelledby="que-titulo">
+        <div class="estrecho">
+          <header class="que__cabecera" data-aparece>
+            <p class="que__pregunta">¿Qué es <span class="logo logo--grande">Next<em>You</em></span>?</p>
+            <h2 id="que-titulo" set:html={cursiva(q.titulo, q.resaltado)} />
+          </header>
+
+          <ol data-aparece class="demo" role="list" aria-label="Cómo funciona, en cuatro pasos" tabindex="0">
+            <li class="demo__paso">
+              <div class="pantalla" aria-hidden="true">
+                <p class="pantalla__titulo">Sábado sin planes. ¿Qué te apetece?</p>
+                <p class="pantalla__tarea">Grabar y editar un vídeo</p>
+                <div class="pantalla__resp">
+                  {q.respuestas.map((r, i) => <span class:list={{ sel: i === 3 }}>{r}</span>)}
+                </div>
+              </div>
+              <span class="demo__n" aria-hidden="true">01</span>
+              <h3>{q.pasos[0].titulo}</h3>
+              <p>{q.pasos[0].texto}</p>
+              <span class="pastilla">{q.pasos[0].tiempo}</span>
+            </li>
+            <li class="demo__paso">
+              <div class="pantalla" aria-hidden="true">
+                <p class="pantalla__titulo">Tus tres caminos</p>
+                {q.caminos.map((c, i) => (
+                  <p class="pantalla__camino"><span class:list={['pantalla__punto', { lleno: i === 0 }]} />{c}</p>
+                ))}
+              </div>
+              <span class="demo__n" aria-hidden="true">02</span>
+              <h3>{q.pasos[1].titulo}</h3>
+              <p>{q.pasos[1].texto}</p>
+              <span class="pastilla">{q.pasos[1].tiempo}</span>
+            </li>
+            <li class="demo__paso">
+              <div class="pantalla pantalla--foto" aria-hidden="true">
+                <Image src={insider.foto} alt="" width={360} height={420} class="pantalla__img" />
+                <span class="pantalla__dur">▷ {insider.duracion}</span>
+                <p class="pantalla__pie"><strong>{insider.nombre}, {insider.edad}</strong>{insider.profesion}</p>
+              </div>
+              <span class="demo__n" aria-hidden="true">03</span>
+              <h3>{q.pasos[2].titulo}</h3>
+              <p>{q.pasos[2].texto}</p>
+              <span class="pastilla">{q.pasos[2].tiempo}</span>
+            </li>
+            <li class="demo__paso">
+              <div class="pantalla" aria-hidden="true">
+                <p class="pantalla__titulo">Sesión con tu coach</p>
+                <p class="pantalla__burbuja">¿Qué te dio más energía esta semana?</p>
+                <p class="pantalla__burbuja pantalla__burbuja--tu">El reto de diseño, sin duda</p>
+                <p class="pantalla__meta">online · 1 al mes</p>
+              </div>
+              <span class="demo__n" aria-hidden="true">04</span>
+              <h3>{q.pasos[3].titulo}</h3>
+              <p>{q.pasos[3].texto}</p>
+              <span class="pastilla pastilla--contorno">{q.pasos[3].tiempo}</span>
+            </li>
+          </ol>
+
+          <p class="desliza" aria-hidden="true">Desliza para ver los cuatro pasos →</p>
+
+          <div class="que__pie">
+            <ul class="nopasa" role="list" aria-label="Lo que no va a pasar">
+              {q.noVaAPasar.map((t) => (
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
+            <a href={CTA_PRINCIPAL.href} class="boton">{q.boton}</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Los de dentro ===================== -->
+      <section class="seccion dentro" aria-labelledby="dentro-titulo">
+        <div class="ancho">
+          <header class="cabecera cabecera--centro" data-aparece>
+            <p class="antetitulo">{losDeDentro.etiqueta}</p>
+            <h2 id="dentro-titulo" class="titular titular--dentro" set:html={cursiva(losDeDentro.titulo, losDeDentro.resaltado)} />
+            <p class="cabecera__sub">Sin discursos. Te cuentan cómo entraron, en qué se equivocaron y cómo es un martes cualquiera.</p>
+          </header>
+          <div class="dentro__nav">
+            <button type="button" class="flecha" data-mover="-1" aria-label="Anterior" disabled>←</button>
+            <span class="dentro__cuenta" aria-live="polite"><span data-actual>1</span> / {reels.length}</span>
+            <button type="button" class="flecha" data-mover="1" aria-label="Siguiente">→</button>
+          </div>
+        </div>
+        <Fragment set:html="<!-- PENDIENTE: clips de noviembre de Sara (comentario #11) -->" />
+        <ul class="reels" role="list" aria-label="Vídeos de profesionales" tabindex="0">
+          {
+            reels.map((p) => (
+              <li class="reel">
+                <Image src={p.foto} alt={p.alt} width={600} height={800} loading="eager" class="reel__foto" />
+                <span class="reel__dur">
+                  <svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+                  {p.duracion}
+                </span>
+                <div class="reel__pie">
+                  <p class="reel__nombre">{p.nombre}, {p.edad}</p>
+                  <span class="etiqueta-marco etiqueta-marco--grande">{p.profesion}</span>
+                </div>
+                <button
+                  type="button"
+                  class="reel__abrir"
+                  data-visor-abrir
+                  aria-haspopup="dialog"
+                  aria-label={`Ver el vídeo de ${p.nombre}, ${p.profesion}, ${p.duracion}`}
+                  data-nombre={`${p.nombre}, ${p.edad}`}
+                  data-profesion={p.profesion}
+                  data-cita={p.cita}
+                  data-duracion={p.duracion}
+                  data-img={p.grande}
+                  data-video={p.video ?? ''}
+                >
+                  <span class="reel__play" aria-hidden="true">
+                    <svg width="18" height="20" viewBox="0 0 12 14"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
+                  </span>
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="ancho">
+          <div class="puntos" aria-hidden="true">
+            {reels.map((_, i) => <span class:list={{ activo: i === 0 }} />)}
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Familias: los padres son quienes pagan ===================== -->
+      <section class="familias" aria-labelledby="familias-titulo">
+        <div class="estrecho familias__caja" data-aparece>
+          <div>
+            <h2 id="familias-titulo">{familias.titulo}</h2>
+            <p>{familias.texto}</p>
+          </div>
+          <a href={`${BASE}v2/familias/`} class="boton boton--oscuro">{familias.boton}</a>
+        </div>
+      </section>
+
+      <!-- Vídeo en grande. Mientras no haya clip, se ve la foto con un aviso. -->
+      <dialog class="visor" aria-labelledby="visor-nombre">
+        <div class="visor__caja">
+          <button type="button" class="visor__cerrar" aria-label="Cerrar">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </button>
+          <div class="visor__media">
+            <img class="visor__img" alt="" />
+            <video class="visor__video" controls playsinline hidden></video>
+            <p class="visor__aviso">Aquí irá el vídeo · <span data-visor="duracion"></span></p>
+          </div>
+          <div class="visor__texto">
+            <p id="visor-nombre" class="visor__nombre" data-visor="nombre"></p>
+            <span class="etiqueta-marco" data-visor="profesion"></span>
+            <p class="visor__cita">«<span data-visor="cita"></span>»</p>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ===================== Sara · fondo oscuro (comentario #15). Texto provisional suyo. ===================== -->
+      <section class="sara" aria-labelledby="sara-titulo">
+        <div class="estrecho sara__rejilla">
+          <div class="sara__texto" data-aparece>
+            <p class="antetitulo">{sara.etiqueta}</p>
+            <h2 id="sara-titulo" class="titular titular--sara">{sara.titulo}</h2>
+            <p>{sara.texto}</p>
+            <p class="firma">{sara.firma}</p>
+            <a href={ENLACES.sara} class="boton boton--contorno">{sara.boton}</a>
+          </div>
+          <Fragment set:html="<!-- PENDIENTE: foto de Sara -->" />
+          <div class="sara__foto" role="img" aria-label="Foto de Sara, pendiente">
+            <span class="sara__aviso" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+              Aquí irá la foto de Sara
+            </span>
+            <p><strong>Sara</strong>{sara.cargo}</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  <Fragment slot="antes-del-pie">
+    <!-- Botón siempre a mano en el móvil, entre la portada y el pie -->
+    <aside class="fijo" aria-label="Acceso rápido al test" aria-hidden="true" inert>
+      <a href={CTA_PRINCIPAL.href} class="boton">{hero.boton}</a>
+      <span>8 min · gratis</span>
+    </aside>
+  </Fragment>
+</V2>
+
+<script>
+      // Visor de vídeo de «Los de dentro»
+      const visor = document.querySelector<HTMLDialogElement>('.visor');
+      if (visor) {
+        const img = visor.querySelector<HTMLImageElement>('.visor__img')!;
+        const video = visor.querySelector<HTMLVideoElement>('.visor__video')!;
+        const aviso = visor.querySelector<HTMLElement>('.visor__aviso')!;
+        const campo = (k: string) => visor.querySelector<HTMLElement>(`[data-visor="${k}"]`)!;
+        document.querySelectorAll<HTMLButtonElement>('[data-visor-abrir]').forEach((b) => {
+          b.addEventListener('click', () => {
+            const d = b.dataset;
+            campo('nombre').textContent = d.nombre ?? '';
+            campo('profesion').textContent = d.profesion ?? '';
+            campo('cita').textContent = d.cita ?? '';
+            campo('duracion').textContent = d.duracion ?? '';
+            img.src = d.img ?? '';
+            const hayVideo = Boolean(d.video);
+            video.hidden = !hayVideo;
+            img.hidden = hayVideo;
+            aviso.hidden = hayVideo;
+            if (hayVideo) { video.src = d.video!; video.play().catch(() => {}); }
+            visor.showModal();
+          });
+        });
+        const cerrar = () => visor.close();
+        visor.querySelector('.visor__cerrar')!.addEventListener('click', cerrar);
+        visor.addEventListener('click', (e) => { if (e.target === visor) cerrar(); });
+        visor.addEventListener('close', () => { video.pause(); video.removeAttribute('src'); });
+      }
+
+      // Botón fijo en móvil: visible cuando ni la portada ni el pie están en pantalla
+      const fijo = document.querySelector<HTMLElement>('.fijo');
+      const portada = document.querySelector('.hero');
+      const pieWeb = document.querySelector('.pie');
+      if (fijo && portada && pieWeb && 'IntersectionObserver' in window) {
+        const vistos = new Set<Element>();
+        const actualizar = () => {
+          const mostrar = vistos.size === 0;
+          fijo.classList.toggle('visible', mostrar);
+          fijo.toggleAttribute('inert', !mostrar);
+          fijo.setAttribute('aria-hidden', String(!mostrar));
+        };
+        const ob = new IntersectionObserver((es) => {
+          es.forEach((e) => (e.isIntersecting ? vistos.add(e.target) : vistos.delete(e.target)));
+          actualizar();
+        });
+        ob.observe(portada);
+        const intro = document.querySelector('.intro');
+        if (intro) ob.observe(intro);
+        ob.observe(pieWeb);
+      }
+
+      // Carrusel de «Los de dentro»: flechas, contador y puntos sobre un scroll nativo.
+      const pista = document.querySelector<HTMLElement>('.reels');
+      const botones = document.querySelectorAll<HTMLButtonElement>('[data-mover]');
+      const actual = document.querySelector('[data-actual]');
+      const puntos = document.querySelectorAll('.puntos span');
+      if (pista) {
+        const items = [...pista.children] as HTMLElement[];
+        const paso = () => items[1].offsetLeft - items[0].offsetLeft;
+        const indice = () => Math.round(pista.scrollLeft / paso());
+        const pintar = () => {
+          const i = Math.min(indice(), items.length - 1);
+          if (actual) actual.textContent = String(i + 1);
+          puntos.forEach((p, n) => p.classList.toggle('activo', n === i));
+          const fin = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
+          botones[0].disabled = pista.scrollLeft <= 4;
+          botones[1].disabled = fin;
+        };
+        botones.forEach((b) =>
+          b.addEventListener('click', () => pista.scrollBy({ left: paso() * Number(b.dataset.mover), behavior: 'smooth' }))
+        );
+        pista.addEventListener('scroll', () => requestAnimationFrame(pintar), { passive: true });
+        pintar();
+      }
+</script>
+
+<style is:global>
+      /* ---------- Hero ---------- */
+      .hero { position: relative; isolation: isolate; display: grid; min-height: min(calc(100svh - 125px), 48rem); padding-block: 1.5rem 3rem; overflow: hidden; }
+      .hero__foto { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 60% 25%; }
+      .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to right, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.2) 60%, rgb(0 0 0 / 0.1)), linear-gradient(to bottom, transparent 30%, rgb(0 0 0 / 0.8)); }
+      .hero__contenido { display: grid; grid-template-rows: auto 1fr; gap: 2rem; }
+      .hero__ver { justify-self: start; display: inline-flex; align-items: center; gap: 0.625rem; min-height: 44px; padding: 0.5rem 1.125rem; border: 1px solid rgb(246 241 232 / 0.5); border-radius: 999px; background: rgb(0 0 0 / 0.2); color: var(--crema); font: inherit; font-size: 0.875rem; backdrop-filter: blur(6px); cursor: pointer; transition: background 150ms ease; }
+      .hero__ver:hover { background: rgb(0 0 0 / 0.45); }
+      .hero__abajo { align-self: end; display: grid; gap: 2.5rem; }
+      .hero__cita { display: grid; gap: 1rem; }
+      .hero__cita blockquote { font-family: var(--serif); font-weight: 600; font-size: clamp(2.5rem, 1.5rem + 3.6vw, 4.25rem); line-height: 1; letter-spacing: -0.025em; max-width: 14ch; }
+      .hero__cita figcaption { display: grid; justify-items: start; gap: 0.625rem; }
+      .hero__nombre { font-family: var(--serif); font-weight: 700; font-size: 1.625rem; letter-spacing: -0.02em; }
+      .hero__detalle { display: inline-block; padding: 0.375rem 0.875rem; border-radius: 999px; background: var(--detalle-bg); color: var(--detalle-txt); font-size: 1rem; font-weight: 600; }
+      /* Móvil: cita más compacta y sin el párrafo, para que el botón quede en la primera pantalla.
+         El párrafo vuelve a partir de tableta. */
+      @media (max-width: 47.99rem) {
+        .hero { padding-block: 1rem 1.75rem; min-height: min(calc(100svh - 125px), 40rem); }
+        .hero__contenido { gap: 1rem; }
+        .hero__abajo { gap: 1.5rem; }
+        .hero__cita { gap: 0.75rem; }
+        .hero__cita blockquote { font-size: clamp(2rem, 1.2rem + 4vw, 2.5rem); }
+        .hero__nombre { font-size: 1.375rem; }
+      }
+      @media (min-width: 64rem) { .hero__abajo { max-width: 40rem; gap: 2.25rem; } .hero__foto { object-position: 75% 25%; } }
+
+      /* ---------- Qué es (bajo la portada) ---------- */
+      .intro { background: var(--papel); color: var(--negro); padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem); }
+      .intro__rejilla { display: grid; gap: 1.5rem; align-items: end; }
+      .intro h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(2rem, 1.3rem + 3vw, 3.5rem); line-height: 1.04; letter-spacing: -0.025em; max-width: 18ch; text-wrap: balance; }
+      .intro__texto { display: grid; justify-items: start; gap: 1.5rem; }
+      .intro__texto p { color: var(--gris-oscuro); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.55; max-width: 34rem; }
+      .intro__accion { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+      .intro__accion span { font-size: 0.875rem; color: var(--gris-oscuro); }
+      @media (min-width: 60rem) { .intro__rejilla { grid-template-columns: 1.15fr 1fr; gap: 4rem; } }
+
+      /* ---------- No eres el único ---------- */
+      .unico .cabecera { margin-bottom: clamp(2.5rem, 2rem + 2vw, 4.5rem); }
+      .unico__lista { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: 0.875rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); scrollbar-width: none; }
+      .unico__lista::-webkit-scrollbar { display: none; }
+      .unico__lista .tarjeta { scroll-snap-align: start; }
+      .tarjeta { display: grid; grid-template-rows: auto 1fr; border-radius: 14px; overflow: hidden; background: var(--tarjeta); }
+      .tarjeta__foto { width: 100%; aspect-ratio: 8 / 7; object-fit: cover; }
+      .tarjeta__texto { display: grid; align-content: start; gap: 0.75rem; padding: 1.25rem 1.25rem 1.5rem; }
+      .tarjeta__cita { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; line-height: 1.2; }
+      .tarjeta__firma { color: var(--gris); font-size: 0.875rem; }
+      @media (min-width: 40rem) { .unico__lista { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; overflow: visible; margin-inline: 0; padding-inline: 0; } }
+      @media (min-width: 64rem) { .unico__lista { grid-template-columns: repeat(4, 1fr); } }
+
+      /* ---------- ¿Qué es NextYou? ---------- */
+      .que { background: var(--papel); color: var(--negro); }
+      .que__cabecera { display: grid; gap: 1.25rem; margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem); }
+      .que__pregunta { font-family: var(--serif); font-weight: 600; font-size: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem); line-height: 1; letter-spacing: -0.03em; }
+      .que__cabecera h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.375rem, 1.15rem + 1vw, 2.125rem); line-height: 1.2; max-width: 32ch; text-wrap: balance; }
+      .que__cabecera h2 em { color: var(--acento-oscuro); font-weight: 600; }
+      .demo { display: grid; grid-auto-flow: column; grid-auto-columns: 82%; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); padding-bottom: 0.5rem; scrollbar-width: none; }
+      .demo::-webkit-scrollbar { display: none; }
+      .demo__paso { scroll-snap-align: start; }
+      .demo__paso { display: grid; justify-items: start; align-content: start; gap: 0.5rem; }
+      .demo__n { font-family: var(--serif); font-weight: 600; font-size: 3rem; line-height: 1; color: var(--acento-oscuro); letter-spacing: -0.04em; margin-top: 1rem; }
+      .demo__paso h3 { font-family: var(--serif); font-weight: 600; font-size: 1.375rem; line-height: 1.2; }
+      .demo__paso > p { color: var(--gris-oscuro); }
+      .pastilla--contorno { background: none; color: var(--negro); border: 1px solid var(--negro); }
+      .pantalla { position: relative; width: 100%; min-height: 14rem; display: grid; align-content: start; gap: 0.5rem; padding: 1rem; border-radius: 16px; background: var(--negro); color: var(--crema); font-size: 0.875rem; overflow: hidden; box-shadow: 0 18px 32px -20px rgb(0 0 0 / 0.6); }
+      .pantalla__titulo { font-family: var(--serif); font-weight: 600; font-size: 1.0625rem; line-height: 1.2; margin-bottom: 0.25rem; }
+      .pantalla__tarea, .pantalla__camino { padding: 0.75rem; border-radius: 10px; background: var(--tarjeta); border: 1px solid var(--linea); font-weight: 600; }
+      .pantalla__resp { display: grid; grid-template-columns: 1fr 1fr; gap: 0.375rem; margin-top: 0.25rem; }
+      .pantalla__resp span { padding: 0.5rem; border-radius: 8px; border: 1px solid var(--linea); text-align: center; font-weight: 600; }
+      .pantalla__resp span.sel { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+      .pantalla__camino { display: flex; align-items: center; gap: 0.625rem; }
+      .pantalla__punto { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--gris); }
+      .pantalla__punto.lleno { border-color: var(--acento-texto); background: var(--acento-texto); }
+      .pantalla--foto { padding: 0; min-height: 14rem; }
+      .pantalla__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
+      .pantalla--foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 45%, rgb(0 0 0 / 0.9)); }
+      .pantalla__dur { position: absolute; z-index: 1; top: 0.75rem; left: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: rgb(0 0 0 / 0.6); font-size: 0.8125rem; }
+      .pantalla__pie { position: absolute; z-index: 1; left: 1rem; bottom: 0.875rem; display: grid; line-height: 1.3; }
+      .pantalla__pie strong { font-family: var(--serif); font-size: 1.125rem; }
+      .pantalla__burbuja { justify-self: start; max-width: 85%; padding: 0.625rem 0.75rem; border-radius: 14px 14px 14px 4px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .pantalla__burbuja--tu { justify-self: end; border-radius: 14px 14px 4px 14px; background: var(--acento); border-color: var(--acento); color: var(--acento-txt); font-weight: 600; }
+      .pantalla__meta { color: var(--gris); font-size: 0.8125rem; }
+      .desliza { margin-top: 1rem; font-size: 0.875rem; color: var(--gris-oscuro); }
+      @media (min-width: 48rem) { .desliza { display: none; } }
+      .que__pie { display: grid; justify-items: start; gap: 1.75rem; margin-top: clamp(3rem, 2rem + 3vw, 4.5rem); padding-top: 2rem; border-top: 1px solid rgb(0 0 0 / 0.15); }
+      .nopasa { display: grid; gap: 0.75rem 2.5rem; font-weight: 600; }
+      .nopasa li { display: flex; gap: 0.625rem; align-items: baseline; }
+      .nopasa svg { flex-shrink: 0; color: var(--acento-oscuro); translate: 0 1px; }
+      @media (min-width: 48rem) {
+        .demo { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.5rem; overflow: visible; margin-inline: 0; padding-inline: 0; }
+        .nopasa { grid-template-columns: repeat(2, auto); }
+      }
+      @media (min-width: 64rem) {
+        .demo { grid-template-columns: repeat(4, 1fr); }
+        .pantalla { height: 17rem; }
+        .pantalla--foto { aspect-ratio: auto; }
+        .que__pie { grid-template-columns: 1fr auto; align-items: center; }
+      }
+
+      /* ---------- Los de dentro ---------- */
+      .dentro { background: var(--negro-2); padding-bottom: clamp(4rem, 3rem + 4vw, 7rem); }
+      .dentro__nav { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-block: 2rem 1.5rem; }
+      .dentro__cuenta { color: var(--gris); font-size: 0.875rem; min-width: 3rem; text-align: center; }
+      .flecha { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--crema); background: none; color: var(--crema); font-size: 1.25rem; cursor: pointer; }
+      .flecha:disabled { border-color: var(--linea); color: rgb(246 241 232 / 0.3); cursor: default; }
+      .reels { display: grid; grid-auto-flow: column; grid-auto-columns: min(78vw, 24rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); padding-inline: var(--margen); scrollbar-width: none; }
+      .reels::-webkit-scrollbar { display: none; }
+      .reel { position: relative; aspect-ratio: 380 / 560; border-radius: 16px; overflow: hidden; scroll-snap-align: start; background: var(--tarjeta); }
+      .reel__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 400ms ease; }
+      .reel:hover .reel__foto { scale: 1.03; }
+      .reel__abrir { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; border: 0; background: none; cursor: pointer; border-radius: inherit; }
+      .reel__abrir:focus-visible { outline: 2px solid var(--crema); outline-offset: -4px; }
+      .reel__play { display: grid; place-items: center; width: 56px; height: 56px; padding-left: 4px; border-radius: 50%; border: 1.5px solid rgb(246 241 232 / 0.8); color: var(--crema); background: rgb(0 0 0 / 0.25); backdrop-filter: blur(4px); opacity: 0; scale: 0.9; transition: opacity 200ms ease, scale 200ms ease; }
+      .reel:hover .reel__play, .reel__abrir:focus-visible .reel__play { opacity: 1; scale: 1; }
+      @media (hover: none) { .reel__play { opacity: 1; scale: 1; width: 48px; height: 48px; } }
+
+      /* Visor */
+      .visor { padding: 0; border: 0; background: none; color: var(--crema); max-width: none; max-height: none; width: 100%; height: 100%; }
+      .visor::backdrop { background: rgb(0 0 0 / 0.85); backdrop-filter: blur(6px); }
+      .visor[open] { display: grid; place-items: center; }
+      .visor__caja { position: relative; display: grid; gap: 1.25rem; width: min(100% - 2rem, 58rem); max-height: calc(100svh - 2rem); padding: 1rem; border-radius: 18px; background: var(--negro-2); border: 1px solid var(--linea); overflow: auto; }
+      .visor__media { position: relative; aspect-ratio: 9 / 16; max-height: 70svh; justify-self: center; height: 70svh; border-radius: 12px; overflow: hidden; background: #000; }
+      .visor__img, .visor__video { width: 100%; height: 100%; object-fit: cover; }
+      .visor__aviso { position: absolute; left: 50%; bottom: 1rem; translate: -50% 0; white-space: nowrap; padding: 0.375rem 0.875rem; border-radius: 999px; background: rgb(0 0 0 / 0.65); font-size: 0.875rem; }
+      .visor__texto { display: grid; justify-items: start; align-content: center; gap: 0.75rem; }
+      .visor__nombre { font-family: var(--serif); font-weight: 700; font-size: 2rem; line-height: 1; }
+      .visor__cita { font-family: var(--serif); font-weight: 500; font-size: 1.375rem; line-height: 1.25; color: rgb(246 241 232 / 0.9); }
+      .visor__cerrar { position: absolute; z-index: 1; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea); background: rgb(0 0 0 / 0.6); color: var(--crema); cursor: pointer; }
+      @media (min-width: 48rem) {
+        .visor__caja { grid-template-columns: auto 1fr; gap: 2rem; padding: 1.5rem; }
+        .visor__media { height: min(78svh, 40rem); max-height: none; }
+      }
+      @media (max-width: 47.99rem) {
+        .visor__media { height: 58svh; }
+        .visor__nombre { font-size: 1.5rem; }
+        .visor__cita { font-size: 1.125rem; }
+      }
+      .reel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 55%, rgb(0 0 0 / 0.85)); }
+      .reel__dur { position: absolute; z-index: 1; top: 1rem; left: 1rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: rgb(60 56 52 / 0.75); font-size: 0.8125rem; }
+      .reel__pie { position: absolute; z-index: 1; left: 1.5rem; right: 1.5rem; bottom: 1.5rem; display: grid; justify-items: start; gap: 0.5rem; }
+      .reel__nombre { font-family: var(--serif); font-weight: 700; font-size: 1.875rem; letter-spacing: -0.02em; line-height: 1; }
+      .puntos { display: flex; gap: 0.5rem; margin-top: 2rem; }
+      .puntos span { width: 6px; height: 6px; border-radius: 999px; background: rgb(246 241 232 / 0.3); transition: width 200ms ease; }
+      .puntos span.activo { width: 24px; background: var(--acento-texto); }
+
+      /* ---------- Sara ---------- */
+      .sara { background: var(--negro); color: var(--crema); padding-block: clamp(4.5rem, 3rem + 5vw, 7rem); border-top: 1px solid var(--linea); }
+      .sara__rejilla { display: grid; gap: 3rem; align-items: center; }
+      .sara__texto { display: grid; justify-items: start; gap: 1.25rem; }
+      .sara__texto > p:not([class]) { color: rgb(246 241 232 / 0.82); max-width: 33rem; line-height: 1.7; }
+      .firma { font-family: var(--mano); font-size: 2.25rem; color: var(--acento-texto); line-height: 1; margin-block: 0.75rem 0.5rem; }
+      .sara__foto { position: relative; aspect-ratio: 536 / 480; border-radius: 16px; overflow: hidden; background: radial-gradient(120% 90% at 30% 20%, #2a231e, var(--tarjeta) 70%); border: 1px dashed rgb(246 241 232 / 0.22); display: flex; align-items: end; }
+      .sara__aviso { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 0.625rem; color: var(--gris); font-size: 0.875rem; }
+      .sara__foto p { position: relative; width: 100%; display: grid; padding: 3rem 1.25rem 1.25rem; background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.7)); color: var(--crema); font-size: 0.8125rem; }
+      .sara__foto strong { font-family: var(--serif); font-weight: 700; font-size: 1.25rem; }
+      @media (min-width: 56rem) { .sara__rejilla { grid-template-columns: 1fr 1.05fr; gap: 5rem; } }
+
+      /* ---------- Familias ---------- */
+      .familias { background: var(--papel); color: var(--negro); padding-block: clamp(3rem, 2rem + 3vw, 4.5rem); }
+      .familias__caja { display: grid; gap: 1.5rem; align-items: center; }
+      .familias h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+      .familias p { color: var(--gris-oscuro); max-width: 38rem; }
+      .familias .boton { justify-self: start; }
+      @media (min-width: 56rem) { .familias__caja { grid-template-columns: 1fr auto; gap: 3rem; } }
+
+      /* ---------- Botón fijo (solo móvil) ---------- */
+      .fijo { display: none; }
+      @media (max-width: 47.99rem) {
+        .fijo { position: fixed; z-index: 25; left: 0.75rem; right: 0.75rem; bottom: max(0.75rem, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.875rem 0.5rem 0.5rem; border-radius: 999px; background: rgb(22 20 18 / 0.88); border: 1px solid var(--linea); backdrop-filter: blur(12px); box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.6); translate: 0 140%; transition: translate 300ms cubic-bezier(.2,.7,.2,1); }
+        .fijo.visible { translate: 0 0; }
+        .fijo .boton { flex: 1; min-height: 48px; padding-inline: 1rem; }
+        .fijo span { flex-shrink: 0; font-size: 0.8125rem; color: var(--gris); }
+      }
+      @media (max-width: 47.99rem) and (prefers-reduced-motion: reduce) { .fijo { transition: none; } }
+
+</style>

@@ -1,0 +1,137 @@
+---
+import Boton from './Boton.astro';
+import { sara as b } from '../data/home';
+import { ENLACES } from '../config';
+import { resaltar } from '../utils/resaltar';
+---
+
+<section class="sara bloque" aria-labelledby="sara-titulo">
+  <div class="sara__rejilla contenedor">
+    <div class="sara__texto" data-aparece>
+      <p class="etiqueta">{b.etiqueta}</p>
+      <Fragment set:html="<!-- PENDIENTE: texto escrito para la propuesta, validarlo con Sara -->" />
+      <h2 id="sara-titulo" set:html={resaltar(b.titulo, b.resaltado)} />
+      <p class="sara__parrafo">{b.texto}</p>
+      <p class="sara__firma">{b.firma}</p>
+      <Fragment set:html="<!-- PENDIENTE: página fase posterior -->" />
+      <Boton href={ENLACES.sara} variante="contorno">{b.boton}</Boton>
+    </div>
+
+    <figure class="sara__foto">
+      <Fragment set:html="<!-- PENDIENTE: foto de Sara (aún no existe). Marcador dentro de la polaroid. -->" />
+      <div class="polaroid-sara cinta">
+        <div class="sara__marcador" data-placeholder="true" role="img" aria-label="Foto de Sara pendiente">
+          <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="9" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <span>Foto de Sara</span>
+        </div>
+        <figcaption class="sara__pie">
+          <span class="sara__nombre mano">Sara</span>
+          <span>{b.cargo}</span>
+        </figcaption>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<style>
+  /* Oscuro (comentario #15 de Sara): la polaroid clara destaca y no repite el fondo
+     de «¿Qué es NextYou?». */
+  .sara {
+    border-top: 1px solid var(--linea);
+  }
+
+  .sara__rejilla {
+    display: grid;
+    gap: var(--e-4);
+  }
+
+  /* Móvil: foto arriba, texto debajo. */
+  .sara__foto {
+    order: -1;
+    position: relative;
+  }
+
+  .sara__texto {
+    display: grid;
+    gap: var(--e-2);
+    justify-items: start;
+  }
+
+  .sara__texto h2 {
+    font-size: var(--t-5);
+    max-width: 16ch;
+  }
+
+  .sara__parrafo {
+    font-size: var(--t-3);
+    max-width: 34rem;
+  }
+
+  /* Firma a mano en lima, como el «YOU» del logo. */
+  .sara__firma {
+    font-family: var(--mano);
+    font-weight: 400;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--lima);
+    transform: rotate(-3deg);
+    margin-bottom: var(--e-1);
+  }
+
+  /* La foto de Sara como polaroid pegada, en lugar de un recuadro grande. */
+  .sara__foto {
+    justify-self: center;
+    width: min(100%, 18rem);
+  }
+
+  .polaroid-sara {
+    padding: 0.75rem 0.75rem 1rem;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 14px 30px -12px rgb(22 20 18 / 0.35);
+    rotate: -3deg;
+  }
+
+  .sara__marcador {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--negro) 7%, var(--papel));
+    color: var(--gris);
+    font-size: var(--t-1);
+  }
+
+  .sara__pie {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.75rem 0.25rem 0;
+    font-size: var(--t-1);
+    color: var(--gris);
+    line-height: 1.4;
+  }
+
+  .sara__nombre {
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--negro);
+  }
+
+  @media (min-width: 48rem) {
+    .sara__rejilla {
+      grid-template-columns: auto 1fr;
+      gap: var(--e-5);
+      align-items: center;
+    }
+
+    .sara__foto {
+      order: -1;
+      width: 20rem;
+    }
+  }
+</style>

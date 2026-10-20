@@ -1,0 +1,386 @@
+---
+// ¿Qué es NextYou? Fondo claro para separarlo de los testimonios, la pregunta con el logo
+// grande y una demo visual del producto en cuatro pasos (comentarios #6-#9 y #12 de Sara).
+// Sustituye al antiguo «Cómo funciona» con tanto texto.
+import Boton from './Boton.astro';
+import { Image } from 'astro:assets';
+import { BASE } from '../config';
+import { queEsNextYou as b, losDeDentro } from '../data/home';
+import { resaltar } from '../utils/resaltar';
+
+const insider = losDeDentro.personas[0];
+---
+
+<section class="que claro bloque" aria-labelledby="que-titulo">
+  <div class="contenedor">
+    <header class="que__cabecera" data-aparece>
+      <p class="que__pregunta">
+        <span>¿Qué es</span>
+        <span class="que__marca"><img src={`${BASE}marca/nextyou-logo-negro.svg`} alt="NextYou" width="230" height="61" class="que__logo" />?</span>
+      </p>
+      <h2 id="que-titulo" set:html={resaltar(b.titulo, b.resaltado, 'subrayado subrayado--negro')} />
+    </header>
+
+    <!-- Demo del producto: lo que pasa, en cuatro pantallas -->
+    <ol class="demo" role="list">
+      <li class="demo__paso">
+        <div class="pantalla" aria-hidden="true">
+          <p class="pantalla__titulo">Sábado sin planes. ¿Qué te apetece?</p>
+          <p class="pantalla__tarea">Grabar y editar un vídeo</p>
+          <div class="pantalla__resp">
+            {b.respuestas.map((r, i) => <span class:list={{ sel: i === 3 }}>{r}</span>)}
+          </div>
+        </div>
+        <h3><span class="demo__n">1</span>{b.pasos[0].titulo}</h3>
+        <p>{b.pasos[0].texto}</p>
+        <span class="pastilla pastilla--lima">{b.pasos[0].tiempo}</span>
+      </li>
+
+      <li class="demo__paso">
+        <div class="pantalla" aria-hidden="true">
+          <p class="pantalla__titulo">Tus tres caminos</p>
+          {
+            b.caminos.map((c, i) => (
+              <p class="pantalla__camino">
+                <span class:list={['pantalla__punto', { lleno: i === 0 }]} />
+                {c}
+              </p>
+            ))
+          }
+        </div>
+        <h3><span class="demo__n">2</span>{b.pasos[1].titulo}</h3>
+        <p>{b.pasos[1].texto}</p>
+        <span class="pastilla pastilla--lima">{b.pasos[1].tiempo}</span>
+      </li>
+
+      <li class="demo__paso">
+        <div class="pantalla pantalla--foto" aria-hidden="true">
+          <Image src={insider.foto} alt="" width={360} height={420} class="pantalla__img" />
+          <span class="pantalla__dur">▷ {insider.duracion}</span>
+          <p class="pantalla__pie"><strong>{insider.nombre}, {insider.edad}</strong>{insider.profesion}</p>
+        </div>
+        <h3><span class="demo__n">3</span>{b.pasos[2].titulo}</h3>
+        <p>{b.pasos[2].texto}</p>
+        <span class="pastilla pastilla--lima">{b.pasos[2].tiempo}</span>
+      </li>
+
+      <li class="demo__paso">
+        <div class="pantalla" aria-hidden="true">
+          <p class="pantalla__titulo">Sesión con tu coach</p>
+          <p class="pantalla__burbuja">¿Qué te dio más energía esta semana?</p>
+          <p class="pantalla__burbuja pantalla__burbuja--tu">El reto de diseño, sin duda</p>
+          <p class="pantalla__meta">online · 1 al mes</p>
+        </div>
+        <h3><span class="demo__n">4</span>{b.pasos[3].titulo}</h3>
+        <p>{b.pasos[3].texto}</p>
+        <span class="pastilla pastilla--contorno">{b.pasos[3].tiempo}</span>
+      </li>
+    </ol>
+
+    <!-- Lo que no va a pasar: integrado como una línea, no como caja de color (comentario #13) -->
+    <div class="que__pie">
+      <ul class="nopasa" role="list" aria-label="Lo que no va a pasar">
+        {
+          b.noVaAPasar.map((t) => (
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+              {t}
+            </li>
+          ))
+        }
+      </ul>
+      <Fragment set:html="<!-- PENDIENTE de decisión de la clienta: línea de precio bajo el botón -->" />
+      <Boton variante="oscuro" flecha>{b.boton}</Boton>
+    </div>
+  </div>
+</section>
+
+<style>
+  .que {
+    background: var(--grano), var(--papel);
+    color: var(--negro);
+  }
+
+  .que__cabecera {
+    display: grid;
+    gap: var(--e-3);
+    margin-bottom: var(--e-5);
+  }
+
+  /* «¿Qué es [logo]?» en grande: vuelve a verse la marca (comentario #7). */
+  .que__pregunta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35em;
+    font-weight: 800;
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .que__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.06em;
+  }
+
+  .que__logo {
+    height: 0.95em;
+    width: auto;
+    max-width: none;
+    translate: 0 0.04em;
+  }
+
+  .que__cabecera h2 {
+    font-size: var(--t-4);
+    font-weight: 700;
+    line-height: 1.2;
+    max-width: 30ch;
+  }
+
+  /* ---------- Demo ---------- */
+  .demo {
+    display: grid;
+    gap: var(--e-4);
+  }
+
+  .demo__paso {
+    display: grid;
+    gap: 0.625rem;
+    align-content: start;
+    justify-items: start;
+  }
+
+  .demo__paso h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: var(--t-4);
+    line-height: 1.15;
+    margin-top: var(--e-1);
+  }
+
+  .demo__n {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--negro);
+    color: var(--lima);
+    font-size: 0.9375rem;
+    font-weight: 800;
+  }
+
+  .demo__paso > p {
+    color: var(--gris);
+  }
+
+  /* Mini pantalla de móvil */
+  .pantalla {
+    position: relative;
+    width: 100%;
+    min-height: 13rem;
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 18px;
+    background: var(--negro);
+    color: var(--hueso);
+    font-size: 0.875rem;
+    overflow: hidden;
+    box-shadow: 0 16px 30px -18px rgb(22 20 18 / 0.6);
+  }
+
+  .pantalla__titulo {
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+
+  .pantalla__tarea {
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: var(--negro-2);
+    border: 1px solid var(--linea);
+    font-weight: 600;
+  }
+
+  .pantalla__resp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+  }
+
+  .pantalla__resp span {
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--linea);
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .pantalla__resp span.sel {
+    background: var(--lima);
+    border-color: var(--lima);
+    color: var(--negro);
+  }
+
+  .pantalla__camino {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: var(--negro-2);
+    border: 1px solid var(--linea);
+    font-weight: 700;
+  }
+
+  .pantalla__punto {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--hueso-suave);
+  }
+
+  .pantalla__punto.lleno {
+    border-color: var(--lima);
+    background: var(--lima);
+  }
+
+  .pantalla--foto {
+    padding: 0;
+    aspect-ratio: 4 / 5;
+    max-height: 20rem;
+  }
+
+  .pantalla--foto :global(.pantalla__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 25%;
+  }
+
+  .pantalla--foto::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgb(22 20 18 / 0) 45%, rgb(22 20 18 / 0.92));
+  }
+
+  .pantalla__dur {
+    position: absolute;
+    z-index: 1;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgb(22 20 18 / 0.6);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .pantalla__pie {
+    position: absolute;
+    z-index: 1;
+    left: 1rem;
+    bottom: 0.875rem;
+    display: grid;
+    line-height: 1.3;
+  }
+
+  .pantalla__pie strong {
+    font-weight: 800;
+  }
+
+  .pantalla__burbuja {
+    justify-self: start;
+    max-width: 85%;
+    padding: 0.625rem 0.75rem;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--negro-2);
+    border: 1px solid var(--linea);
+  }
+
+  .pantalla__burbuja--tu {
+    justify-self: end;
+    border-radius: 14px 14px 4px 14px;
+    background: var(--lima);
+    border-color: var(--lima);
+    color: var(--negro);
+    font-weight: 600;
+  }
+
+  .pantalla__meta {
+    margin-top: auto;
+    color: var(--hueso-suave);
+    font-size: 0.8125rem;
+  }
+
+  /* ---------- Lo que no va a pasar + botón ---------- */
+  .que__pie {
+    display: grid;
+    gap: var(--e-3);
+    justify-items: start;
+    margin-top: var(--e-5);
+    padding-top: var(--e-4);
+    border-top: 1.5px dashed rgb(22 20 18 / 0.25);
+  }
+
+  .nopasa {
+    display: grid;
+    gap: 0.625rem 2rem;
+    font-weight: 700;
+  }
+
+  .nopasa li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+  }
+
+  .nopasa svg {
+    flex-shrink: 0;
+    translate: 0 1px;
+  }
+
+  @media (min-width: 48rem) {
+    .demo {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nopasa {
+      grid-template-columns: repeat(2, auto);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .pantalla {
+      height: 17rem;
+    }
+
+    .pantalla--foto {
+      aspect-ratio: auto;
+    }
+
+    .demo {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--e-3);
+    }
+
+    .que__pie {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+</style>

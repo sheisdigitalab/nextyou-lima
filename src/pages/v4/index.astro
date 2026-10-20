@@ -1,0 +1,864 @@
+---
+// Versión 4 de la home (a partir de la v3). Antes, versión 3: identidad de la versión 1 (logo, Archivo, negro cálido y lima, detalles a mano)
+// con la estructura de la versión 2 (comentarios de Sara, SEO, demo, vídeos, familias).
+// Página independiente, con su propio estilo: no usa global.css ni los componentes de la v1.
+// Los textos salen de src/data/home.ts, los mismos que la v1. Personas y fotos DE MUESTRA.
+import { Image, Picture, getImage } from 'astro:assets';
+import V4 from '../../layouts/V4.astro';
+import LogoV3 from '../../components/LogoV3.astro';
+import DemoPantalla from '../../components/DemoPantallaV4.astro';
+import { SITIO, BASE, ENLACES, CTA_PRINCIPAL } from '../../config';
+import { hero, losDeDentro, familias, sara } from '../../data/home';
+import { unicoV4 as noEresElUnico, queV4 as q, bifurcacion } from '../../data/v4';
+
+const reels = await Promise.all(
+  losDeDentro.personas.map(async (p) => ({ ...p, grande: (await getImage({ src: p.foto, width: 900, format: 'webp' })).src }))
+);
+const insider = reels[0];
+const heroGrande = (await getImage({ src: hero.foto, width: 900, format: 'webp' })).src;
+
+// Demo de «¿Qué es NextYou?»: pastillas de tiempo propias de la v3 y la v4 (las de home.ts las usan la v1 y la v2)
+const tiempos = ['8 min', 'al momento', '2-3 min por vídeo'];
+const UNIVERSIDAD = `${BASE}v4/universidad/`;
+
+// Palabra destacada en cursiva dentro de un titular.
+const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>${palabra}</em>`);
+---
+
+<V4 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato">
+    <main id="contenido">
+      <!-- ===================== Hero ===================== -->
+      <section class="hero" aria-labelledby="hero-titulo" data-placeholder="true">
+        <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+        <Picture
+          src={hero.foto}
+          alt={hero.alt}
+          formats={['avif', 'webp']}
+          widths={[480, 768, 1080, 1440, 2000]}
+          sizes="100vw"
+          quality={60}
+          loading="eager"
+          fetchpriority="high"
+          class="hero__foto"
+        />
+        <div class="hero__contenido ancho">
+          <button
+            type="button"
+            class="hero__ver"
+            data-visor-abrir
+            aria-haspopup="dialog"
+            data-nombre={`${hero.nombre}, ${hero.edad}`}
+            data-profesion={hero.detalle}
+            data-cita={hero.cita}
+            data-duracion="2 min"
+            data-img={heroGrande}
+            data-video={hero.video?.src ?? ''}
+          >
+            <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+            Ver a {hero.nombre} · 2 min
+          </button>
+          <div class="hero__abajo">
+            <figure class="hero__cita">
+              <blockquote><p>«{hero.cita}»</p></blockquote>
+              <figcaption>
+                <span class="hero__nombre">{hero.nombre}, {hero.edad}</span>
+                <span class="hero__detalle">{hero.detalle}</span>
+              </figcaption>
+            </figure>
+            <!-- Qué es NextYou y acción, ya en la primera pantalla -->
+            <div class="hero__accion">
+              <h1 id="hero-titulo" class="hero__h1">Haz el test gratis y descubre a qué te podrías dedicar</h1>
+              <div class="hero__botones">
+                <a href={CTA_PRINCIPAL.href} class="boton">{hero.boton}</a>
+                <span>8 min · gratis · sin crear cuenta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Bifurcación: universidad y FP ===================== -->
+      <aside class="bifurca" aria-label="Para universitarios y FP">
+        <a class="bifurca__enlace ancho" href={UNIVERSIDAD}>
+          <span>{bifurcacion.texto}</span>
+          <strong>{bifurcacion.enlace} <span aria-hidden="true">→</span></strong>
+        </a>
+      </aside>
+
+
+      <!-- ===================== No eres el único ===================== -->
+      <section class="seccion unico" aria-labelledby="unico-titulo">
+        <div class="ancho">
+          <header class="cabecera cabecera--centro" data-aparece>
+            <p class="antetitulo">{noEresElUnico.etiqueta}</p>
+            <h2 id="unico-titulo" class="titular titular--unico" set:html={cursiva(noEresElUnico.titulo, noEresElUnico.resaltado)} />
+            <p class="cabecera__sub">{noEresElUnico.subtitulo}</p>
+          </header>
+          <ul data-aparece class="unico__lista" role="list" aria-label="Testimonios" tabindex="0">
+            {
+              noEresElUnico.personas.map((p) => (
+                <li class:list={['tarjeta', { 'tarjeta--uni': p.universidad }]} data-placeholder="true">
+                  <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+                  <Image src={p.foto} alt={p.alt} width={480} height={420} quality={70} class="tarjeta__foto" />
+                  <div class="tarjeta__texto">
+                    <p class="tarjeta__cita">«{p.cita}»</p>
+                    <p class="tarjeta__firma">— {p.nombre}, {p.edad}</p>
+                    {p.universidad && (
+                      <a class="tarjeta__enlace" href={UNIVERSIDAD}>¿También en la uni? Mira esto →</a>
+                    )}
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===================== ¿Qué es NextYou? =====================
+           Fondo claro (#6), en modo pregunta con el logo (#7), titular de Sara (#8)
+           y una demo del producto en lugar de las frases y del «Cómo funciona» (#9, #12).
+           «Lo que no va a pasar» integrado como lista, sin caja de color (#13). -->
+      <section id="como-funciona" class="seccion que sobre-claro" aria-labelledby="que-titulo">
+        <div class="estrecho">
+          <header class="que__cabecera" data-aparece>
+            <p class="que__pregunta">¿Qué es <span class="que__marca"><LogoV3 clase="logo--grande" /><span class="solo-lector">NextYou</span>?</span></p>
+            <h2 id="que-titulo" set:html={cursiva(q.titulo, q.resaltado)} />
+          </header>
+
+          <!-- Demo: en móvil, cada paso con su pantalla; en escritorio, un móvil fijo que cambia de pantalla -->
+          <div class="demo3">
+          <ol class="pasos3" role="list" aria-label="Cómo funciona, en cuatro pasos">
+            <li class="paso3" data-paso={0}>
+              <div class="paso3__texto">
+                <span class="paso3__n" aria-hidden="true">01</span>
+                <h3>{q.pasos[0].titulo}</h3>
+                <p class="paso3__lead">{q.pasos[0].texto}</p>
+                <span class="pastilla">{tiempos[0]}</span>
+              </div>
+              <div class="movil movil--paso" aria-hidden="true">
+                <div class="movil__pantalla"><DemoPantalla n={0} respuestas={q.respuestas} /></div>
+              </div>
+            </li>
+            <li class="paso3" data-paso={1}>
+              <div class="paso3__texto">
+                <span class="paso3__n" aria-hidden="true">02</span>
+                <h3>{q.pasos[1].titulo}</h3>
+                <p class="paso3__lead">{q.pasos[1].texto}</p>
+                <span class="pastilla">{tiempos[1]}</span>
+              </div>
+              <div class="movil movil--paso" aria-hidden="true">
+                <div class="movil__pantalla"><DemoPantalla n={1} respuestas={q.respuestas} /></div>
+              </div>
+            </li>
+            <li class="paso3" data-paso={2}>
+              <div class="paso3__texto">
+                <span class="paso3__n" aria-hidden="true">03</span>
+                <h3>{q.pasos[2].titulo}</h3>
+                <p class="paso3__lead">{q.pasos[2].texto}</p>
+                <span class="pastilla">{tiempos[2]}</span>
+              </div>
+              <div class="movil movil--paso" aria-hidden="true">
+                <div class="movil__pantalla"><DemoPantalla n={2} respuestas={q.respuestas} /></div>
+              </div>
+            </li>
+            <li class="paso3" data-paso={3}>
+              <div class="paso3__texto">
+                <span class="paso3__n" aria-hidden="true">04</span>
+                <h3>{q.pasos[3].titulo}</h3>
+                <p class="paso3__lead">{q.pasos[3].texto}</p>
+                <span class="pastilla pastilla--contorno">opcional · de pago</span>
+                <Fragment set:html="<!-- PENDIENTE CLIENTA: duración y frecuencia de las sesiones -->" />
+                <Fragment set:html="<!-- PENDIENTE CLIENTA: precio del acompañamiento con coach -->" />
+              </div>
+              <div class="movil movil--paso" aria-hidden="true">
+                <div class="movil__pantalla"><DemoPantalla n={3} respuestas={q.respuestas} /></div>
+              </div>
+            </li>
+          </ol>
+          <div class="demo3__fijo" aria-hidden="true">
+            <div class="movil">
+              {[0, 1, 2, 3].map((n) => (
+                <div class:list={['movil__pantalla', 'movil__capa', { activa: n === 0 }]} data-capa={n}>
+                  <DemoPantalla n={n as 0 | 1 | 2 | 3} respuestas={q.respuestas} />
+                </div>
+              ))}
+            </div>
+          </div>
+          </div>
+
+          <!-- Lo que no va a pasar: cierre de la sección en un panel propio, con título y botón -->
+          <div class="promesa" data-aparece>
+            <div class="promesa__texto">
+              <h3 class="promesa__titulo">Lo que no va a pasar</h3>
+              <ul class="promesa__lista" role="list">
+                {q.noVaAPasar.map((t) => (
+                  <li>
+                    <span class="promesa__x" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg></span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="promesa__accion">
+              <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
+              <a href={CTA_PRINCIPAL.href} class="boton boton--grande">{q.boton}</a>
+              <span>8 minutos · gratis · sin crear cuenta</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Los de dentro ===================== -->
+      <section class="seccion dentro" aria-labelledby="dentro-titulo">
+        <div class="ancho">
+          <header class="cabecera cabecera--centro" data-aparece>
+            <p class="antetitulo">{losDeDentro.etiqueta}</p>
+            <h2 id="dentro-titulo" class="titular titular--dentro rotulador" set:html={cursiva(losDeDentro.titulo, losDeDentro.resaltado)} />
+            <p class="cabecera__sub">Sin discursos. Te cuentan cómo entraron, en qué se equivocaron y cómo es un martes cualquiera.</p>
+          </header>
+          <div class="dentro__nav" data-solo-carrusel>
+            <button type="button" class="flecha" data-mover="-1" aria-label="Anterior" disabled>←</button>
+            <span class="dentro__cuenta" aria-live="polite"><span data-actual>1</span> / {reels.length}</span>
+            <button type="button" class="flecha" data-mover="1" aria-label="Siguiente">→</button>
+          </div>
+        </div>
+        <Fragment set:html="<!-- PENDIENTE: clips de noviembre de Sara (comentario #11) -->" />
+        <ul class="reels" data-reels role="list" aria-label="Vídeos de profesionales" tabindex="0">
+          {
+            reels.map((p, i) => (
+              <li class="reel" style={`--i: ${i}`} data-placeholder="true">
+                <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+                <Image src={p.foto} alt={p.alt} width={540} height={960} loading={i < 2 ? 'eager' : 'lazy'} quality={70} class="reel__foto" />
+                <div class="reel__pie">
+                  <!-- La frase gancho, como una pegatina: encima del nombre para no tapar la cara -->
+                  <p class="reel__gancho"><span>{p.cita}</span></p>
+                  <p class="reel__nombre">{p.nombre}, {p.edad}</p>
+                  <p class="reel__camino">{p.camino.join(' → ')}</p>
+                  <span class="reel__ver">
+                    <svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
+                    Ver su día · {p.duracion}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="reel__abrir"
+                  data-visor-abrir
+                  aria-haspopup="dialog"
+                  aria-label={`Ver el vídeo de ${p.nombre}, ${p.profesion}, ${p.duracion}`}
+                  data-nombre={`${p.nombre}, ${p.edad}`}
+                  data-profesion={p.profesion}
+                  data-cita={p.cita}
+                  data-duracion={p.duracion}
+                  data-img={p.grande}
+                  data-video={p.video ?? ''}
+                  data-subtitulos={p.subtitulos ?? ''}
+                  data-indice={i}
+                  data-camino={p.camino.join('|')}
+                  data-estudios={p.estudios}
+                  data-trabajo={p.primerTrabajo}
+                  data-martes={p.martes}
+                >
+                  <span class="reel__play" aria-hidden="true">
+                    <svg width="18" height="20" viewBox="0 0 12 14"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
+                  </span>
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="ancho">
+          <div class="puntos" aria-hidden="true">
+            {reels.map((_, i) => <span class:list={{ activo: i === 0 }} />)}
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Familias: los padres son quienes pagan ===================== -->
+      <section class="familias" aria-labelledby="familias-titulo">
+        <div class="estrecho familias__caja" data-aparece>
+          <div class="familias__texto">
+            <p class="familias__para">Para madres y padres</p>
+            <h2 id="familias-titulo">{familias.titulo}</h2>
+            <p>Hay una página para ti. Sin prisas y sin decidir en su lugar.</p>
+          </div>
+          <div class="familias__lado">
+            <ul class="familias__lista" role="list" aria-label="Qué encontrarás">
+              <li><span class="familias__check"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>El método, paso a paso</li>
+              <li><span class="familias__check"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>Qué datos guardamos y cuáles no</li>
+              <li><span class="familias__check"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>Cómo acompañar sin decidir por él o ella</li>
+            </ul>
+            <a href={`${BASE}v4/familias/`} class="boton familias__boton">{familias.boton} <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vídeo en grande. Mientras no haya clip, se ve la foto con un aviso. -->
+      <dialog class="visor" aria-labelledby="visor-nombre">
+        <div class="visor__caja">
+          <button type="button" class="visor__cerrar" aria-label="Cerrar">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </button>
+          <div class="visor__media">
+            <img class="visor__img" alt="" />
+            <video class="visor__video" controls playsinline preload="metadata" hidden></video>
+            <p class="visor__aviso">Aquí irá el vídeo · <span data-visor="duracion"></span></p>
+          </div>
+          <div class="visor__texto">
+            <p id="visor-nombre" class="visor__nombre" data-visor="nombre"></p>
+            <span class="etiqueta-marco" data-visor="profesion"></span>
+            <p class="visor__cita">«<span data-visor="cita"></span>»</p>
+            <!-- Ficha mientras no haya vídeo (PLACEHOLDER: datos de ejemplo) -->
+            <div class="visor__ficha" data-visor="ficha">
+              <ol class="visor__camino" data-visor="camino" aria-label="Su camino"></ol>
+              <dl class="visor__datos">
+                <div><dt>Qué estudió</dt><dd data-visor="estudios"></dd></div>
+                <div><dt>Su primer trabajo</dt><dd data-visor="trabajo"></dd></div>
+                <div><dt>Cómo es un martes</dt><dd data-visor="martes"></dd></div>
+              </dl>
+            </div>
+            <a href={CTA_PRINCIPAL.href} class="boton visor__cta">¿Te ves aquí? Haz el test</a>
+            <div class="visor__nav" data-visor="nav">
+              <button type="button" class="flecha" data-visor-mover="-1" aria-label="Profesional anterior">←</button>
+              <span class="visor__cuenta" aria-live="polite"><span data-visor="actual"></span> / {reels.length}</span>
+              <button type="button" class="flecha" data-visor-mover="1" aria-label="Siguiente profesional">→</button>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- ===================== Sara · fondo oscuro (comentario #15). Texto provisional suyo. ===================== -->
+      <section class="sara" aria-labelledby="sara-titulo">
+        <div class="estrecho sara__rejilla">
+          <div class="sara__texto" data-aparece>
+            <p class="antetitulo">{sara.etiqueta}</p>
+            <h2 id="sara-titulo" class="titular titular--sara">{sara.titulo}</h2>
+            <p>{sara.texto}</p>
+            <p class="firma">{sara.firma}</p>
+            {ENLACES.sara === '#' ? (
+              <span class="boton boton--contorno boton--pronto" aria-disabled="true">{sara.boton}<small>pronto</small></span>
+            ) : (
+              <a href={ENLACES.sara} class="boton boton--contorno">{sara.boton}</a>
+            )}
+          </div>
+          <Fragment set:html="<!-- PENDIENTE: foto de Sara -->" />
+          <div class="sara__polaroid" role="img" aria-label="Foto de Sara, pendiente">
+            <div class="sara__hueco" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+              <span>Aquí irá la foto de Sara</span>
+            </div>
+            <p class="sara__pie" aria-hidden="true"><strong>Sara</strong> · {sara.cargo}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Cierre: última llamada antes del pie ===================== -->
+      <section class="cierre" aria-labelledby="cierre-titulo">
+        <div class="estrecho cierre__caja" data-aparece>
+          <p class="nota-mano" aria-hidden="true">tu turno ↓</p>
+          <h2 id="cierre-titulo" class="titular rotulador">¿Y tú, a qué te <em>podrías dedicar</em>?</h2>
+          <a href={CTA_PRINCIPAL.href} class="boton boton--grande">{hero.boton}</a>
+          <p class="cierre__meta">8 minutos · gratis · sin crear cuenta</p>
+        </div>
+      </section>
+    </main>
+
+  <Fragment slot="antes-del-pie">
+    <!-- Botón siempre a mano en el móvil, entre la portada y el pie -->
+    <aside class="fijo" aria-label="Acceso rápido al test" aria-hidden="true" inert>
+      <a href={CTA_PRINCIPAL.href} class="boton">{hero.boton}</a>
+      <span>8 min · gratis</span>
+    </aside>
+  </Fragment>
+</V4>
+
+<script>
+      // Visor de «Los de dentro»: vídeo si lo hay; si no, foto y ficha. Flechas para pasar de profesional.
+      const visor = document.querySelector<HTMLDialogElement>('.visor');
+      if (visor) {
+        const img = visor.querySelector<HTMLImageElement>('.visor__img')!;
+        const video = visor.querySelector<HTMLVideoElement>('.visor__video')!;
+        const aviso = visor.querySelector<HTMLElement>('.visor__aviso')!;
+        const campo = (k: string) => visor.querySelector<HTMLElement>(`[data-visor="${k}"]`)!;
+        const tarjetas = [...document.querySelectorAll<HTMLButtonElement>('.reel__abrir[data-indice]')];
+        let actual = -1;
+        const mostrar = (b: HTMLButtonElement) => {
+          const d = b.dataset;
+          actual = d.indice ? Number(d.indice) : -1;
+          campo('nombre').textContent = d.nombre ?? '';
+          campo('profesion').textContent = d.profesion ?? '';
+          campo('cita').textContent = d.cita ?? '';
+          campo('duracion').textContent = d.duracion ?? '';
+          img.src = d.img ?? '';
+          const hayVideo = Boolean(d.video);
+          video.hidden = !hayVideo;
+          img.hidden = hayVideo;
+          aviso.hidden = hayVideo;
+          // Ficha solo para profesionales y mientras no haya vídeo
+          const ficha = !hayVideo && Boolean(d.camino);
+          campo('ficha').hidden = !ficha;
+          if (ficha) {
+            campo('camino').replaceChildren(...d.camino!.split('|').map((paso) => Object.assign(document.createElement('li'), { textContent: paso })));
+            campo('estudios').textContent = d.estudios ?? '';
+            campo('trabajo').textContent = d.trabajo ?? '';
+            campo('martes').textContent = d.martes ?? '';
+          }
+          campo('nav').hidden = actual < 0;
+          campo('actual').textContent = String(actual + 1);
+          video.pause();
+          video.querySelectorAll('track').forEach((tr) => tr.remove());
+          if (hayVideo) {
+            video.poster = d.img ?? '';
+            video.src = d.video!;
+            if (d.subtitulos) {
+              const pista = document.createElement('track');
+              Object.assign(pista, { kind: 'subtitles', srclang: 'es', label: 'Español', src: d.subtitulos, default: true });
+              video.append(pista);
+            }
+            video.play().catch(() => {});
+          } else video.removeAttribute('src');
+          visor.querySelector('.visor__caja')!.scrollTop = 0;
+        };
+        document.querySelectorAll<HTMLButtonElement>('[data-visor-abrir]').forEach((b) =>
+          b.addEventListener('click', () => { mostrar(b); visor.showModal(); })
+        );
+        visor.querySelectorAll<HTMLButtonElement>('[data-visor-mover]').forEach((f) =>
+          f.addEventListener('click', () => {
+            if (actual < 0) return;
+            const n = (actual + Number(f.dataset.visorMover) + tarjetas.length) % tarjetas.length;
+            mostrar(tarjetas[n]);
+          })
+        );
+        visor.addEventListener('keydown', (e) => {
+          if (actual < 0) return;
+          if (e.key === 'ArrowRight') mostrar(tarjetas[(actual + 1) % tarjetas.length]);
+          if (e.key === 'ArrowLeft') mostrar(tarjetas[(actual - 1 + tarjetas.length) % tarjetas.length]);
+        });
+        const cerrar = () => visor.close();
+        visor.querySelector('.visor__cerrar')!.addEventListener('click', cerrar);
+        visor.addEventListener('click', (e) => { if (e.target === visor) cerrar(); });
+        // El botón del test cierra el visor antes de abrir el aviso
+        visor.querySelector('.visor__cta')!.addEventListener('click', cerrar);
+        visor.addEventListener('close', () => { video.pause(); video.removeAttribute('src'); });
+      }
+
+      // Botón fijo en móvil: visible cuando ni la portada ni el pie están en pantalla
+      const fijo = document.querySelector<HTMLElement>('.fijo');
+      const portada = document.querySelector('.hero');
+      const pieWeb = document.querySelector('.pie');
+      if (fijo && portada && pieWeb && 'IntersectionObserver' in window) {
+        const vistos = new Set<Element>();
+        const actualizar = () => {
+          const mostrar = vistos.size === 0;
+          fijo.classList.toggle('visible', mostrar);
+          fijo.toggleAttribute('inert', !mostrar);
+          fijo.setAttribute('aria-hidden', String(!mostrar));
+        };
+        const ob = new IntersectionObserver((es) => {
+          es.forEach((e) => (e.isIntersecting ? vistos.add(e.target) : vistos.delete(e.target)));
+          actualizar();
+        });
+        ob.observe(portada);
+        const tarjetasDentro = document.querySelector('.dentro');
+        if (tarjetasDentro) ob.observe(tarjetasDentro);
+        const cierre = document.querySelector('.cierre');
+        if (cierre) ob.observe(cierre);
+        ob.observe(pieWeb);
+      }
+
+      // Efectos de «Los de dentro»: entrada al llegar, movimiento solo mientras se ve, inclinación con el ratón
+      const reelsFx = document.querySelector<HTMLElement>('[data-reels]');
+      if (reelsFx && 'IntersectionObserver' in window) {
+        new IntersectionObserver((es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting && !reelsFx.classList.contains('en-vista')) {
+              reelsFx.classList.add('en-vista');
+              setTimeout(() => reelsFx.classList.add('listo'), 1800);
+            }
+            reelsFx.classList.toggle('moviendo', e.isIntersecting);
+          });
+        }, { threshold: 0.2 }).observe(reelsFx);
+      } else reelsFx?.classList.add('en-vista', 'listo');
+      const quietos = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!quietos && window.matchMedia('(hover: hover)').matches) {
+        document.querySelectorAll<HTMLElement>('.reel').forEach((r) => {
+          r.addEventListener('pointermove', (e) => {
+            const c = r.getBoundingClientRect();
+            const x = (e.clientX - c.left) / c.width, y = (e.clientY - c.top) / c.height;
+            r.classList.add('inclinada');
+            r.style.setProperty('--ry', `${(x - 0.5) * 14}deg`);
+            r.style.setProperty('--rx', `${(0.5 - y) * 14}deg`);
+            r.style.setProperty('--mx', `${x * 100}%`);
+            r.style.setProperty('--my', `${y * 100}%`);
+          });
+          r.addEventListener('pointerleave', () => {
+            r.classList.remove('inclinada');
+            r.style.setProperty('--rx', '0deg');
+            r.style.setProperty('--ry', '0deg');
+          });
+        });
+      }
+
+      // Demo de «¿Qué es NextYou?»: el móvil fijo muestra la pantalla del paso que cruza el centro de la ventana
+      const pasosDemo = document.querySelectorAll<HTMLElement>('.paso3');
+      const capas = document.querySelectorAll<HTMLElement>('.movil__capa');
+      if (pasosDemo.length && capas.length && 'IntersectionObserver' in window) {
+        const activar = (n: number) => {
+          capas.forEach((c) => c.classList.toggle('activa', Number(c.dataset.capa) === n));
+          pasosDemo.forEach((p) => p.classList.toggle('activo', Number(p.dataset.paso) === n));
+        };
+        activar(0);
+        const obs = new IntersectionObserver((es) => {
+          es.forEach((e) => { if (e.isIntersecting) activar(Number((e.target as HTMLElement).dataset.paso)); });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        pasosDemo.forEach((p) => obs.observe(p));
+      }
+
+      // Carrusel de «Los de dentro»: flechas, contador y puntos sobre un scroll nativo.
+      const pista = document.querySelector<HTMLElement>('.reels');
+      const botones = document.querySelectorAll<HTMLButtonElement>('[data-mover]');
+      const actual = document.querySelector('[data-actual]');
+      const puntos = document.querySelectorAll('.puntos span');
+      if (pista) {
+        const items = [...pista.children] as HTMLElement[];
+        const paso = () => items[1].offsetLeft - items[0].offsetLeft;
+        const indice = () => Math.round(pista.scrollLeft / paso());
+        const pintar = () => {
+          const i = Math.min(indice(), items.length - 1);
+          if (actual) actual.textContent = String(i + 1);
+          puntos.forEach((p, n) => p.classList.toggle('activo', n === i));
+          const fin = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
+          botones[0].disabled = pista.scrollLeft <= 4;
+          botones[1].disabled = fin;
+        };
+        botones.forEach((b) =>
+          b.addEventListener('click', () => pista.scrollBy({ left: paso() * Number(b.dataset.mover), behavior: 'smooth' }))
+        );
+        pista.addEventListener('scroll', () => requestAnimationFrame(pintar), { passive: true });
+        pintar();
+      }
+</script>
+
+<style is:global>
+      /* ---------- Hero ---------- */
+      .hero { position: relative; isolation: isolate; display: grid; min-height: min(calc(100svh - 125px), 48rem); padding-block: 1.5rem 3rem; overflow: hidden; }
+      .hero__foto { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 60% 25%; }
+      .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to right, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.2) 60%, rgb(0 0 0 / 0.1)), linear-gradient(to bottom, transparent 30%, rgb(0 0 0 / 0.8)); }
+      .hero__contenido { display: grid; grid-template-rows: auto 1fr; gap: 2rem; }
+      .hero__ver { justify-self: start; display: inline-flex; align-items: center; gap: 0.625rem; min-height: 44px; padding: 0.5rem 1.125rem; border: 1px solid rgb(246 241 232 / 0.5); border-radius: 999px; background: rgb(0 0 0 / 0.2); color: var(--crema); font: inherit; font-size: var(--t1); backdrop-filter: blur(6px); cursor: pointer; transition: background 150ms ease; }
+      .hero__ver:hover { background: rgb(0 0 0 / 0.45); }
+      .hero__abajo { align-self: end; display: grid; gap: 2.5rem; }
+      .hero__cita { display: grid; gap: 1rem; }
+      .hero__cita blockquote { font-family: var(--titular); font-weight: 800; font-stretch: 105%; text-wrap: balance; font-size: var(--t6); line-height: 1; letter-spacing: -0.025em; max-width: 14ch; }
+      .hero__cita figcaption { display: grid; justify-items: start; gap: 0.625rem; }
+      .hero__nombre { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); letter-spacing: -0.02em; }
+      .hero__accion { display: grid; justify-items: start; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid rgb(246 241 232 / 0.2); }
+      .hero__h1 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.2; letter-spacing: -0.01em; max-width: 26ch; }
+      .hero__botones { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+      .hero__botones span { font-size: var(--t1); color: rgb(246 241 232 / 0.85); }
+      .hero__detalle { display: inline-block; padding: 0.375rem 0.875rem; border-radius: 999px; background: var(--detalle-bg); color: var(--detalle-txt); font-size: var(--t2); font-weight: 600; }
+      /* Móvil: cita más compacta y sin el párrafo, para que el botón quede en la primera pantalla.
+         El párrafo vuelve a partir de tableta. */
+      @media (max-width: 47.99rem) {
+        .hero { padding-block: 1rem 1.75rem; min-height: min(calc(100svh - 125px), 40rem); }
+        .hero__contenido { gap: 1rem; }
+        .hero__abajo { gap: 1.5rem; }
+        .hero__cita { gap: 0.75rem; }
+        .hero__cita blockquote { font-size: var(--t6); }
+        .hero__nombre { font-size: var(--t4); }
+      }
+      /* Escritorio: la foto (vertical) ocupa la mitad derecha y se ve entera; el texto va sobre negro. */
+      @media (min-width: 64rem) {
+        .hero { background: var(--negro); min-height: min(calc(100svh - 125px), 52rem); padding-block: 1.75rem 4.5rem; }
+        .hero__foto { left: auto; right: 0; width: 54%; object-position: 50% 22%; }
+        .hero::after { background: linear-gradient(to right, var(--negro) 46%, rgb(22 20 18 / 0.88) 49%, rgb(22 20 18 / 0.45) 57%, rgb(22 20 18 / 0.12) 66%, rgb(22 20 18 / 0) 74%), linear-gradient(to bottom, rgb(22 20 18 / 0) 72%, rgb(22 20 18 / 0.55)); }
+        .hero__abajo { max-width: 38rem; gap: 2.25rem; }
+        /* En escritorio la frase va a t5 para que el botón quepa en la primera pantalla */
+        .hero__cita blockquote { font-size: var(--t5); }
+      }
+
+      /* ---------- Qué es (bajo la portada) ---------- */
+
+      /* ---------- Bifurcación a universidad ---------- */
+      .bifurca { background: var(--negro); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+      .bifurca__enlace { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; min-height: 64px; padding-block: 1rem; text-decoration: none; font-size: var(--t2); color: var(--crema); }
+      .bifurca__enlace strong { color: var(--acento-texto); font-weight: 800; white-space: nowrap; }
+      .bifurca__enlace:hover strong { text-decoration: underline; text-underline-offset: 0.2em; }
+
+      /* ---------- No eres el único ---------- */
+      .unico .cabecera { margin-bottom: clamp(2.5rem, 2rem + 2vw, 4.5rem); }
+      .unico__lista { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: 0.875rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); padding-block: 1.25rem 2rem; scrollbar-width: none; }
+      .unico__lista::-webkit-scrollbar { display: none; }
+      .unico__lista .tarjeta { scroll-snap-align: start; }
+      .tarjeta { position: relative; display: grid; grid-template-rows: auto 1fr; border-radius: 6px; background: var(--crema); color: var(--negro); padding: 0.625rem 0.625rem 0; box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.7); }
+  .tarjeta__enlace { justify-self: start; margin-top: 0.25rem; font-size: var(--t1); font-weight: 800; color: var(--negro); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+  .tarjeta__enlace::after { content: ''; position: absolute; inset: 0; z-index: 2; }
+  .tarjeta::before { content: ''; position: absolute; z-index: 1; top: -10px; left: 50%; width: 76px; height: 22px; translate: -50% 0; rotate: -3deg; background: var(--acento); opacity: 0.85; }
+  .tarjeta:nth-child(odd) { rotate: -1.2deg; }
+  .tarjeta:nth-child(even) { rotate: 1.2deg; }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .tarjeta { transition: rotate 300ms cubic-bezier(.2,.7,.2,1), translate 300ms cubic-bezier(.2,.7,.2,1), box-shadow 300ms ease; }
+    .tarjeta:hover { rotate: 0deg; translate: 0 -6px; box-shadow: 0 28px 40px -20px rgb(0 0 0 / 0.75); }
+  }
+  .tarjeta__foto { border-radius: 3px; }
+  .tarjeta__firma { color: var(--gris-oscuro) !important; }
+      .tarjeta__foto { width: 100%; aspect-ratio: 8 / 7; object-fit: cover; }
+      .tarjeta__texto { display: grid; align-content: start; gap: 0.75rem; padding: 1.25rem 1.25rem 1.5rem; }
+      .tarjeta__cita { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.2; }
+      .tarjeta__firma { color: var(--gris); font-size: var(--t1); }
+      @media (min-width: 40rem) { .unico__lista { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; overflow: visible; margin-inline: 0; padding-inline: 0; padding-block: 0.75rem 0; } }
+      @media (min-width: 64rem) { .unico__lista { grid-template-columns: repeat(4, 1fr); } }
+
+      /* ---------- ¿Qué es NextYou? ---------- */
+      .que { background: var(--papel); color: var(--negro); }
+      .que__cabecera { display: grid; gap: 1.25rem; margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem); }
+      .que__pregunta { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t6); line-height: 1; letter-spacing: -0.03em; }
+      .que__cabecera h2 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.2; max-width: 32ch; text-wrap: balance; }
+  .que__pregunta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
+  .que__marca { display: inline-flex; align-items: center; white-space: nowrap; }
+  /* Paleta lima: el logo sobre crema lleva subrayado lima, como el resto de destacados */
+  [data-paleta='d'] .que .logo--grande { padding-bottom: 0.1em; background: var(--subrayado-oscuro) no-repeat 100% 100% / 46% 0.2em; }
+  .que .logo--grande { height: 0.9em; width: auto; margin-right: -0.15em; color: var(--negro); --logo-you: var(--logo-you-claro); translate: 0 0.04em; }
+      .pastilla.pastilla--contorno { background: none; color: var(--negro); border: 1px solid var(--negro); }
+      /* ---------- Lo que no va a pasar ---------- */
+      .promesa { display: grid; gap: 2rem; margin-top: clamp(3rem, 2rem + 3vw, 5rem); padding: clamp(1.75rem, 1.25rem + 2.5vw, 3rem); border-radius: 24px; background: var(--negro); color: var(--crema); }
+      .promesa__texto { display: grid; gap: 1.25rem; }
+      .promesa__titulo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.1; letter-spacing: -0.02em; }
+      .promesa__lista { display: grid; gap: 0.875rem 2.5rem; }
+      .promesa__lista li { display: flex; gap: 0.75rem; align-items: center; font-weight: 600; }
+      .promesa__x { display: grid; place-items: center; flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgb(246 241 232 / 0.45); color: var(--crema); }
+      .promesa__accion { display: grid; justify-items: start; gap: 0.75rem; }
+      .promesa__accion span { font-size: var(--t1); color: var(--gris); }
+      @media (min-width: 48rem) { .promesa__lista { grid-template-columns: repeat(2, auto); justify-content: start; } }
+      @media (min-width: 64rem) {
+        .promesa { grid-template-columns: 1fr auto; align-items: center; gap: 4rem; }
+        .promesa__accion { justify-items: center; text-align: center; }
+      }
+
+      /* ---------- Demo vertical ---------- */
+      .pasos3 { overflow-x: clip; padding-block: 1rem; margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); display: grid; gap: clamp(2.5rem, 2rem + 2vw, 3.5rem); margin-top: clamp(1rem, 0.5rem + 2vw, 2.5rem); }
+      .paso3 { display: grid; gap: 1.75rem; align-items: center; }
+      .paso3__texto { display: grid; justify-items: start; gap: 1rem; max-width: 26rem; }
+      .paso3__n { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t6); line-height: 0.9; letter-spacing: -0.04em; color: var(--acento-oscuro); }
+      [data-paleta='d'] .paso3__n { padding: 0.08em 0.18em 0; border-radius: 12px; background: #c8f53b; color: var(--negro); }
+      .paso3__lead { font-size: var(--t3); line-height: 1.45; color: var(--gris-oscuro); max-width: 24rem; }
+      .paso3 h3 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1.05; letter-spacing: -0.025em; }
+
+      /* Pantalla de móvil */
+      .movil { position: relative; justify-self: center; width: min(100%, 17rem); padding: 0.5rem; border-radius: 34px; background: var(--negro); box-shadow: 0 40px 60px -30px rgb(0 0 0 / 0.55), inset 0 0 0 1px rgb(255 255 255 / 0.08); rotate: 2deg; }
+      .movil::before { content: ''; position: absolute; z-index: -1; inset: 12% -14% 8%; border-radius: 50%; background: var(--acento); opacity: 0.22; filter: blur(40px); }
+      .movil::after { content: ''; position: absolute; z-index: 2; top: 0.85rem; left: 50%; width: 4.5rem; height: 1.1rem; translate: -50% 0; border-radius: 999px; background: var(--negro); }
+      .movil__pantalla { position: relative; display: grid; align-content: start; gap: 0.75rem; min-height: 21.5rem; padding: 2.4rem 0.875rem 0.875rem; gap: 0.5rem; border-radius: 27px; background: var(--negro); color: var(--crema); font-size: 0.8125rem; overflow: hidden; }
+      .m-cabecera { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; }
+      .m-progreso { height: 6px; border-radius: 999px; background: var(--tarjeta); overflow: hidden; }
+      .m-progreso span { display: block; height: 100%; border-radius: inherit; background: var(--acento-texto); }
+      .m-pregunta, .m-titulo { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1.125rem; line-height: 1.15; margin-top: 0.5rem; }
+      .m-sub { color: var(--gris); margin-top: -0.25rem; }
+      .m-tarea { display: flex; gap: 0.75rem; align-items: center; padding: 0.75rem; border-radius: 16px; background: var(--tarjeta); border: 1px solid var(--linea); font-weight: 700; font-size: 0.9375rem; line-height: 1.3; }
+      .m-tarea svg { flex-shrink: 0; color: var(--acento-texto); }
+      .m-respuestas { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+      .m-respuestas span { padding: 0.55rem 0.5rem; border-radius: 12px; border: 1px solid var(--linea); text-align: center; font-weight: 700; }
+      .m-respuestas span.sel { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+      .m-pie { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.75rem; color: var(--gris); font-weight: 600; }
+      .m-siguiente { padding: 0.5rem 0.875rem; border-radius: 999px; background: var(--crema); color: var(--negro); }
+      .m-camino { display: grid; gap: 0.1rem; padding: 0.5rem 0.75rem; border-radius: 16px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .m-camino--uno { border-color: var(--acento-texto); }
+      .m-camino__tipo { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acento-texto); }
+      .m-camino strong { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: 1rem; }
+      .m-camino__motivo { color: var(--gris); line-height: 1.35; }
+      .m-nota { text-align: center; font-size: 0.75rem; color: var(--gris); }
+      .m-chat__cabecera { display: flex; gap: 0.625rem; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--linea); }
+      .m-chat__cabecera div { display: grid; line-height: 1.2; }
+      .m-chat__cabecera div span { font-size: 0.75rem; color: var(--acento-texto); }
+      .m-avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--acento); color: var(--acento-txt); font-weight: 800; }
+      .m-burbuja { justify-self: start; max-width: 85%; padding: 0.625rem 0.875rem; border-radius: 16px 16px 16px 4px; background: var(--tarjeta); border: 1px solid var(--linea); line-height: 1.35; }
+      .m-burbuja--tu { justify-self: end; border-radius: 16px 16px 4px 16px; background: var(--acento); border-color: var(--acento); color: var(--acento-txt); font-weight: 600; }
+      .m-sesion3 { display: grid; justify-items: start; gap: 0.25rem; padding: 0.875rem; border-radius: 16px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .m-sesion3 .m-avatar { margin-bottom: 0.375rem; }
+      .m-sesion3 .m-titulo { margin-top: 0; }
+      .m-reto { display: grid; gap: 0.2rem; padding: 0.875rem; border-radius: 16px; border: 1px dashed rgb(246 241 232 / 0.25); }
+      .m-reto span { font-size: 0.75rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+      .m-sesion { display: grid; gap: 0.125rem; margin-top: auto; padding: 0.875rem 1rem; border-radius: 16px; border: 1px dashed rgb(246 241 232 / 0.25); }
+      .m-sesion span { font-size: 0.75rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+      .m-video { display: flex; gap: 0.625rem; align-items: center; padding: 0.5rem; border-radius: 14px; background: var(--tarjeta); border: 1px solid var(--linea); }
+      .m-video__mini { display: grid; place-items: center; flex-shrink: 0; width: 3.25rem; aspect-ratio: 9 / 12; border-radius: 9px; color: var(--crema); }
+      .m-video__mini--a { background: linear-gradient(160deg, #3a332c, var(--negro)); }
+      .m-video__mini--b { background: linear-gradient(160deg, var(--acento), var(--negro) 85%); }
+      .m-video__mini--c { background: linear-gradient(160deg, #5a524a, var(--tarjeta)); }
+      .m-video__texto { display: grid; gap: 0.15rem; line-height: 1.25; }
+      .m-video__texto span { color: var(--gris); font-size: 0.75rem; }
+      .paso3__pastillas { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+      /* Pasos en vertical (móvil y tableta): móviles al 75 % */
+      .demo3__fijo { display: none; }
+      .movil--paso { zoom: 0.75; }
+
+      /* Escritorio: móvil fijo en una columna que cambia de pantalla según el paso a la vista */
+      @media (min-width: 64rem) {
+        .demo3 { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+        .pasos3 { gap: 0; padding-block: 0; }
+        .paso3 { min-height: 52vh; align-content: center; }
+        .movil--paso { display: none; }
+        .paso3__texto { position: relative; padding-left: 1.5rem; }
+        .paso3__texto::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 999px; background: var(--acento); transform: scaleY(0); transform-origin: top; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .paso3.activo .paso3__texto::before { transform: scaleY(1); }
+        [data-paleta='d'] .paso3__texto::before { background: var(--negro); }
+        .demo3__fijo { display: grid; place-items: center; position: sticky; top: calc(50vh - 15.5rem + 2.5rem); padding-block: 1rem; }
+        /* Unos 350 px de ancho: se escala el móvil entero para que también crezca su contenido */
+        .demo3__fijo .movil { display: grid; width: 18.5rem; zoom: 1.19; }
+        .movil__capa { grid-area: 1 / 1; min-height: 25rem; opacity: 0; transform: scale(0.97); filter: blur(4px); pointer-events: none;
+          transition: opacity 320ms cubic-bezier(0.23, 1, 0.32, 1), transform 320ms cubic-bezier(0.23, 1, 0.32, 1), filter 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .movil__capa.activa { opacity: 1; transform: none; filter: none; }
+      }
+      /* Menos movimiento: solo fundido de opacidad, sin escala ni desenfoque */
+      @media (min-width: 64rem) and (prefers-reduced-motion: reduce) {
+        .movil__capa { transform: none; filter: none; transition: opacity 180ms ease; }
+        .paso3__texto::before { transition: none; }
+      }
+
+      @media (min-width: 48rem) {
+      }
+      @media (min-width: 64rem) {
+      }
+
+      /* ---------- Los de dentro ---------- */
+      .boton--pronto { gap: 0.5rem; cursor: default; opacity: 0.8; }
+  .boton--pronto:hover { transform: none; box-shadow: none; filter: none; background: none; color: var(--crema); }
+  .boton--pronto small { padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid currentColor; font-size: var(--t1); text-transform: none; letter-spacing: 0.04em; }
+  .cierre { background: radial-gradient(60% 90% at 50% 100%, color-mix(in srgb, var(--acento) 16%, transparent), transparent 70%), var(--negro); color: var(--crema); padding-block: clamp(4.5rem, 3rem + 5vw, 7.5rem); border-block: 1px solid var(--linea); }
+  .cierre__caja { display: grid; justify-items: center; gap: 1.5rem; text-align: center; }
+  .cierre .titular { max-width: 16ch; }
+  .cierre__meta { font-size: var(--t1); color: var(--gris); }
+  .nota-mano { color: var(--acento-texto); font-size: var(--t1); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .dentro { background: var(--negro-2); padding-bottom: clamp(4rem, 3rem + 4vw, 7rem); }
+      /* Sin flechas en ningún tamaño: en móvil se desliza y se ven los puntos; en escritorio caben todas */
+      [data-solo-carrusel] { display: none !important; }
+      .dentro__nav { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-block: 2rem 1.5rem; }
+      .dentro__cuenta { color: var(--gris); font-size: var(--t1); min-width: 3rem; text-align: center; }
+      .flecha { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--crema); background: none; color: var(--crema); font-size: var(--t3); cursor: pointer; }
+      .flecha:disabled { border-color: var(--linea); color: rgb(246 241 232 / 0.3); cursor: default; }
+      .reels { display: grid; grid-auto-flow: column; grid-auto-columns: min(72vw, 17.5rem); gap: 0.875rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); padding-inline: var(--margen); padding-bottom: 0.5rem; scrollbar-width: none; }
+      .reels::-webkit-scrollbar { display: none; }
+      .reel { position: relative; aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; scroll-snap-align: start; background: var(--tarjeta); box-shadow: 0 24px 40px -24px rgb(0 0 0 / 0.8); }
+      .reel__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 500ms cubic-bezier(.2,.7,.2,1); }
+      .reel__abrir { position: absolute; inset: 0; z-index: 3; border: 0; background: none; color: var(--crema); cursor: pointer; border-radius: inherit; }
+      .reel__abrir:focus-visible { outline: 3px solid var(--acento-texto); outline-offset: -3px; }
+      .reel__play { display: none; }
+
+      /* Visor */
+      .visor { padding: 0; border: 0; background: none; color: var(--crema); max-width: none; max-height: none; width: 100%; height: 100%; }
+      .visor::backdrop { background: rgb(0 0 0 / 0.85); backdrop-filter: blur(6px); }
+      .visor[open] { display: grid; place-items: center; }
+      .visor__caja { position: relative; display: grid; gap: 1.25rem; width: min(100% - 2rem, 58rem); max-height: calc(100svh - 2rem); padding: 1rem; border-radius: 18px; background: var(--negro-2); border: 1px solid var(--linea); overflow: auto; }
+      .visor__media { position: relative; aspect-ratio: 9 / 16; max-height: 70svh; justify-self: center; height: 70svh; border-radius: 12px; overflow: hidden; background: var(--negro); }
+      .visor__img, .visor__video { width: 100%; height: 100%; object-fit: cover; }
+      .visor__aviso { position: absolute; left: 50%; bottom: 1rem; translate: -50% 0; white-space: nowrap; padding: 0.375rem var(--t1); border-radius: 999px; background: rgb(0 0 0 / 0.65); font-size: var(--t1); }
+      .visor__texto { display: grid; justify-items: start; align-content: center; gap: 0.875rem; }
+      .visor__nombre { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1; }
+      .visor__cita { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.25; color: rgb(246 241 232 / 0.9); }
+      .visor__ficha { display: grid; gap: 1.25rem; width: 100%; }
+      .visor__ficha[hidden], .visor__nav[hidden] { display: none; }
+      .visor__camino { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem; counter-reset: paso; }
+      .visor__camino li { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--tarjeta); border: 1px solid var(--linea); font-size: var(--t1); font-weight: 600; }
+      .visor__camino li:last-child { background: var(--acento); color: var(--acento-txt); border-color: var(--acento); }
+      .visor__camino li + li::before { content: '→'; margin-right: 0.375rem; margin-left: -0.125rem; color: var(--gris); }
+      .visor__camino li:last-child::before { color: var(--acento-txt); }
+      .visor__datos { display: grid; gap: 0.875rem; }
+      .visor__datos dt { font-size: var(--t1); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--acento-texto); }
+      .visor__datos dd { margin: 0.2rem 0 0; color: rgb(246 241 232 / 0.88); line-height: 1.5; }
+      .visor__cta { margin-top: 0.25rem; }
+      .visor__nav { display: flex; align-items: center; gap: 0.875rem; margin-top: 0.25rem; }
+      .visor__cuenta { font-size: var(--t1); color: var(--gris); min-width: 3rem; text-align: center; }
+      .visor__cerrar { position: absolute; z-index: 1; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea); background: rgb(0 0 0 / 0.6); color: var(--crema); cursor: pointer; }
+      @media (min-width: 48rem) {
+        .visor__caja { grid-template-columns: auto 1fr; gap: 2rem; padding: 1.5rem; }
+        .visor__media { height: min(78svh, 40rem); max-height: none; }
+      }
+      @media (max-width: 47.99rem) {
+        .visor__media { height: 42svh; }
+        .visor__nombre { font-size: var(--t4); }
+        .visor__cita { font-size: var(--t3); }
+      }
+      .reel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgb(0 0 0 / 0.45) 58%, rgb(0 0 0 / 0.92)); }
+      /* Frase gancho: texto sobre cajita clara, como los subtítulos de TikTok */
+      .reel__gancho { justify-self: start; margin-bottom: 0.75rem; text-align: left; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t2); line-height: 1.6; letter-spacing: -0.01em; rotate: -2deg; transform-origin: left bottom; }
+      .reel__gancho span { padding: 0.15em 0.4em; border-radius: 6px; background: var(--crema); color: var(--negro); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+      .reel__pie { position: absolute; z-index: 1; left: 1rem; right: 1rem; bottom: 1rem; display: grid; justify-items: start; gap: 0.25rem; }
+      .reel__nombre { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); letter-spacing: -0.02em; line-height: 1.05; }
+      .reel__camino { font-size: var(--t2); font-weight: 600; line-height: 1.35; color: var(--crema); text-shadow: 0 1px 8px rgb(0 0 0 / 0.6); }
+      .reel__ver { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 0.625rem; min-height: 40px; padding: 0.4rem 1rem; border-radius: 999px; background: var(--acento); color: var(--acento-txt); font-weight: 600; font-size: var(--t1); transition: transform 200ms ease; }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .reel { transition: translate 300ms cubic-bezier(.2,.7,.2,1); }
+        .reel:hover { translate: 0 -6px; }
+        .reel:hover .reel__ver { transform: translateX(4px); }
+      }
+      /* ---- Efectos de «Los de dentro» (desactivados si se piden menos animaciones) ---- */
+      @media (prefers-reduced-motion: no-preference) {
+        /* 1. Entrada en cascada: suben y se enderezan una tras otra */
+        .js [data-reels] .reel { transition: opacity 600ms ease, translate 700ms cubic-bezier(.2,.8,.2,1), rotate 700ms cubic-bezier(.2,.8,.2,1), transform 450ms cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i) * 110ms); }
+        .js [data-reels].listo .reel { transition-delay: 0ms; transition-duration: 300ms, 300ms, 300ms, 450ms; }
+        .js [data-reels]:not(.en-vista) .reel { opacity: 0; translate: 0 60px; rotate: calc(-4deg + var(--i) * 2.5deg); }
+        /* La frase aparece con un barrido, como un subrayador */
+        .reel__gancho span { background: linear-gradient(var(--crema), var(--crema)) no-repeat 0 0 / 100% 100%; transition: background-size 550ms cubic-bezier(.6,0,.2,1), color 200ms ease; transition-delay: calc(var(--i) * 110ms + 550ms), calc(var(--i) * 110ms + 950ms); }
+        .js [data-reels]:not(.en-vista) .reel__gancho span { background-size: 0% 100%; color: transparent; }
+        /* 2. Movimiento de vídeo: zoom lento y continuo mientras la sección está a la vista */
+        [data-reels].en-vista.moviendo .reel__foto { animation: reel-vivo 16s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -4s); }
+        @keyframes reel-vivo { from { scale: 1.02; translate: 1% 0; } to { scale: 1.14; translate: -2% -2.5%; } }
+      }
+      /* 3. Inclinación 3D con reflejo al pasar el ratón (solo escritorio) */
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .reel { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+        .js [data-reels] .reel.inclinada, .reel.inclinada { transition: transform 80ms linear, translate 300ms ease; }
+        .reel::before { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.22), transparent 45%); opacity: 0; transition: opacity 250ms ease; }
+        .reel:hover::before { opacity: 1; }
+      }
+
+      /* Escritorio: las cuatro a la vista, escalonadas como en la versión 1; sin flechas ni puntos */
+      @media (min-width: 64rem) {
+        .reels { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; overflow: visible; width: min(100% - 2 * var(--margen), 72rem); margin-inline: auto; padding: 1rem 0 2rem; }
+        .reel:nth-child(even) { margin-top: 1.75rem; margin-bottom: -1.75rem; }
+        .dentro .puntos { display: none; }
+      }
+      .puntos { display: flex; gap: 0.5rem; margin-top: 2rem; }
+      .puntos span { width: 6px; height: 6px; border-radius: 999px; background: rgb(246 241 232 / 0.3); transition: width 200ms ease; }
+      .puntos span.activo { width: 24px; background: var(--acento-texto); }
+
+      /* ---------- Sara ---------- */
+      .sara { background: var(--negro); color: var(--crema); padding-block: clamp(4.5rem, 3rem + 5vw, 7rem); border-top: 1px solid var(--linea); }
+      .sara__rejilla { display: grid; gap: 3rem; align-items: center; }
+      .sara__texto { display: grid; justify-items: start; gap: 1.25rem; }
+      .sara__texto > p:not([class]) { color: rgb(246 241 232 / 0.82); max-width: 33rem; line-height: 1.7; }
+      .firma { font-family: var(--mano); font-size: var(--t4); color: var(--acento-texto); line-height: 1; margin-block: 0.75rem 0.5rem; }
+      .sara__polaroid { position: relative; justify-self: center; width: min(100%, 19rem); padding: 0.75rem 0.75rem 0; border-radius: 6px; background: var(--crema); color: var(--negro); box-shadow: 0 24px 40px -22px rgb(0 0 0 / 0.8); rotate: 2.5deg; }
+      .sara__polaroid::before { content: ''; position: absolute; top: -11px; left: 50%; width: 84px; height: 24px; translate: -50% 0; rotate: -4deg; background: var(--acento); opacity: 0.85; }
+      .sara__hueco { aspect-ratio: 1; display: grid; place-content: center; justify-items: center; gap: 0.5rem; border-radius: 3px; background: var(--tarjeta); color: var(--gris); font-size: var(--t1); text-align: center; }
+      .sara__pie { padding: 0.875rem 0.25rem 1.125rem; font-size: var(--t1); color: var(--gris-oscuro); text-align: center; }
+      .sara__polaroid strong { color: var(--negro); font-weight: 800; }
+      @media (min-width: 56rem) { .sara__rejilla { grid-template-columns: 1.3fr 1fr; gap: 5rem; } }
+
+      /* ---------- Familias ---------- */
+      .familias { background: var(--papel); color: var(--negro); border-top: 1px solid var(--linea); --f-txt: var(--negro); --f-suave: var(--gris-oscuro); --f-linea: rgb(22 20 18 / 0.14); --f-check-bg: var(--negro); --f-check-txt: var(--crema); --f-boton: var(--negro); --f-boton-txt: var(--crema); padding-block: clamp(3.5rem, 2.5rem + 3vw, 5rem); }
+      .familias__caja { display: grid; gap: 2rem; align-items: center; }
+      .familias__texto { display: grid; gap: 0.75rem; max-width: 36rem; }
+      .familias__para { font-size: var(--t1); font-weight: 600; color: var(--f-suave); }
+      .familias h2 { font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t5); line-height: 1.04; letter-spacing: -0.025em; color: var(--f-txt); text-wrap: balance; }
+      .familias__texto > p:last-child { font-size: var(--t3); line-height: 1.45; color: var(--f-suave); }
+      .familias__lado { display: grid; gap: 1.5rem; justify-items: start; }
+      .familias__lista { display: grid; width: 100%; border-top: 1px solid var(--f-linea); }
+      .familias__lista li { display: flex; gap: 0.75rem; align-items: center; padding-block: 0.875rem; border-bottom: 1px solid var(--f-linea); font-weight: 600; color: var(--f-txt); }
+      .familias__check { display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--f-check-bg); color: var(--f-check-txt); }
+      .familias .familias__boton { gap: 0.5rem; background: var(--f-boton); color: var(--f-boton-txt); }
+      .familias__boton span { display: inline-block; transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) { .familias__boton:hover span { transform: translateX(3px); } }
+      @media (min-width: 56rem) { .familias__caja { grid-template-columns: 1.3fr 1fr; gap: 4rem; } }
+
+      /* ---------- Botón fijo (solo móvil) ---------- */
+      .fijo { display: none; }
+      @media (max-width: 47.99rem) {
+        .fijo { position: fixed; z-index: 25; left: 0.75rem; right: 0.75rem; bottom: max(0.75rem, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.875rem 0.5rem 0.5rem; border-radius: 999px; background: rgb(22 20 18 / 0.88); border: 1px solid var(--linea); backdrop-filter: blur(12px); box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.6); translate: 0 140%; transition: translate 300ms cubic-bezier(.2,.7,.2,1); }
+        .fijo.visible { translate: 0 0; }
+        .fijo .boton { flex: 1; min-height: 48px; padding-inline: 1rem; }
+        .fijo span { flex-shrink: 0; font-size: var(--t1); color: var(--gris); }
+      }
+      @media (max-width: 47.99rem) and (prefers-reduced-motion: reduce) { .fijo { transition: none; } }
+
+</style>

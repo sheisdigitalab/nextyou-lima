@@ -1,0 +1,237 @@
+---
+import Logo from './Logo.astro';
+import Boton from './Boton.astro';
+import { ENLACES, BASE } from '../config';
+
+interface Props {
+  solido?: boolean; // barra negra opaca, para páginas de fondo claro
+}
+const { solido = false } = Astro.props;
+
+const enlaces = [
+  // Por perfiles (comentario #2 de Sara). La home es la de bachillerato.
+  { texto: 'Estoy en bachillerato', href: BASE },
+  { texto: 'Estoy en la universidad', href: ENLACES.universidad },
+  { texto: 'Soy madre o padre', href: ENLACES.familias },
+];
+
+// Marca el enlace de la página en la que estás.
+const actual = (href: string) => href !== '#' && Astro.url.pathname.replace(/\/?$/, '/') === href;
+---
+
+<header class:list={['menu', { 'menu--solido': solido }]}>
+  <div class="menu__barra contenedor">
+    <a href={BASE} class="menu__logo" aria-label="NextYou, inicio"><Logo /></a>
+
+    <nav class="menu__nav" aria-label="Principal">
+      <button
+        class="menu__abrir"
+        type="button"
+        aria-expanded="false"
+        aria-controls="menu-enlaces"
+      >
+        <span class="solo-lector">Menú</span>
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+          <path class="l1" d="M3 7h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+          <path class="l2" d="M3 15h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <ul id="menu-enlaces" class="menu__enlaces" role="list">
+        {
+          enlaces.map((e) => (
+            <li>
+              {e.href === '#' && <Fragment set:html="<!-- PENDIENTE: página fase posterior -->" />}
+              <a href={e.href} aria-current={actual(e.href) ? 'page' : undefined}>{e.texto}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <Boton class="menu__cta">Test gratis</Boton>
+  </div>
+</header>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('.menu__abrir');
+  const lista = document.getElementById('menu-enlaces');
+  if (boton && lista) {
+    const cerrar = () => {
+      boton.setAttribute('aria-expanded', 'false');
+      lista.classList.remove('abierto');
+    };
+    boton.addEventListener('click', () => {
+      const abierto = boton.getAttribute('aria-expanded') === 'true';
+      boton.setAttribute('aria-expanded', String(!abierto));
+      lista.classList.toggle('abierto', !abierto);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && boton.getAttribute('aria-expanded') === 'true') {
+        cerrar();
+        boton.focus();
+      }
+    });
+    lista.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) cerrar();
+    });
+  }
+</script>
+
+<style>
+  /* Franja negra translúcida con desenfoque: el menú se lee sobre cualquier foto. */
+  .menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding-block: 0.75rem;
+    background: rgb(22 20 18 / 0.78);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .menu--solido {
+    background: var(--negro);
+  }
+
+  .menu__barra {
+    display: flex;
+    align-items: center;
+    gap: var(--e-2);
+  }
+
+  .menu__logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  .menu__nav {
+    order: 3;
+  }
+
+  .menu__abrir {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--negro-2);
+    cursor: pointer;
+  }
+
+  .menu__abrir path {
+    transition: transform 150ms ease;
+    transform-origin: center;
+  }
+  .menu__abrir[aria-expanded='true'] .l1 {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .menu__abrir[aria-expanded='true'] .l2 {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  .menu__enlaces {
+    display: none;
+  }
+
+  /* Móvil: panel bajo la barra */
+  .menu__enlaces.abierto {
+    display: grid;
+    position: absolute;
+    top: calc(100% - 0.25rem);
+    left: var(--margen);
+    right: var(--margen);
+    padding: 0.5rem;
+    border-radius: var(--radio);
+    background: var(--negro);
+    border: 1px solid var(--linea);
+  }
+
+  /* Panel móvil: enlaces grandes con una flecha lima. */
+  .menu__enlaces a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    padding-inline: 1rem;
+    border-radius: 10px;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .menu__enlaces a[aria-current='page'] {
+    color: var(--lima);
+  }
+
+  .menu__enlaces a::after {
+    content: '→';
+    color: var(--lima);
+    font-weight: 600;
+  }
+
+  .menu__enlaces a:hover {
+    background: rgb(246 241 232 / 0.08);
+  }
+
+  .menu :global(.menu__cta) {
+    min-height: 44px;
+    padding: 0.5rem 1.125rem;
+    font-size: var(--t-1);
+  }
+
+  @media (min-width: 48rem) {
+    .menu {
+      padding-block: 1.25rem;
+    }
+
+    .menu__nav {
+      order: 0;
+    }
+
+    .menu__abrir {
+      display: none;
+    }
+
+    .menu__enlaces,
+    .menu__enlaces.abierto {
+      display: flex;
+      position: static;
+      gap: 0.25rem;
+      padding: 0;
+      background: none;
+      border: 0;
+    }
+
+    .menu__enlaces a::after {
+      content: none;
+    }
+
+    .menu__enlaces a[aria-current='page'] {
+      color: var(--hueso);
+      box-shadow: inset 0 0 0 1.5px var(--lima);
+    }
+
+    .menu__enlaces a {
+      justify-content: center;
+      font-size: var(--t-1);
+      font-weight: 600;
+      letter-spacing: 0;
+      min-height: 44px;
+      padding-inline: 0.875rem;
+      font-size: var(--t-1);
+      border-radius: 999px;
+    }
+
+    .menu :global(.menu__cta) {
+      margin-left: var(--e-1);
+    }
+  }
+</style>

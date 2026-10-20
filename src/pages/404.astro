@@ -1,0 +1,48 @@
+---
+import Base from '../layouts/Base.astro';
+import Menu from '../components/Menu.astro';
+import Boton from '../components/Boton.astro';
+import { BASE } from '../config';
+---
+
+<Base titulo="Esta página no existe · NextYou" descripcion="La página que buscas no existe. Vuelve al inicio de NextYou.">
+  <Menu />
+  <main id="contenido" class="error">
+    <div class="contenedor error__caja">
+      <p class="nota error__nota" aria-hidden="true">te has salido del mapa ↓</p>
+      <h1 class="error__titulo">Esta página no existe.</h1>
+      <p class="error__texto">Puede que el enlace esté mal o que esta parte de NextYou todavía no esté lista. Mejor vuelve al principio.</p>
+      <Boton href={BASE} flecha>Volver al inicio</Boton>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .error {
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding-block: 8rem 4rem;
+  }
+
+  .error__caja {
+    display: grid;
+    gap: var(--e-3);
+    justify-items: start;
+  }
+
+  .error__nota {
+    font-size: 1.25rem;
+  }
+
+  .error__titulo {
+    font-size: clamp(2.75rem, 1.5rem + 5vw, 5.5rem);
+    max-width: 12ch;
+  }
+
+  .error__texto {
+    font-size: var(--t-3);
+    color: var(--hueso-suave);
+    max-width: 34rem;
+  }
+</style>

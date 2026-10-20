@@ -1,0 +1,119 @@
+---
+import '../styles/global.css';
+import { SITIO, BASE, NO_INDEXAR } from '../config';
+import archivoUrl from '../assets/fonts/archivo.woff2?url';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+}
+
+const { titulo = SITIO.titulo, descripcion = SITIO.descripcion } = Astro.props;
+const canonica = new URL(Astro.url.pathname, Astro.site);
+const imagenOg = new URL(`${BASE}og.jpg`, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonica} />
+    <meta name="theme-color" content="#161412" />
+    <link rel="icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
+    {NO_INDEXAR && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph: se va a compartir mucho por WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content={SITIO.nombre} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:image" content={imagenOg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NextYou. Tu futuro no se adivina. Se explora." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Datos estructurados: quién es NextYou, para buscadores y asistentes -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            name: SITIO.nombre,
+            url: new URL(BASE, Astro.site).href,
+            logo: new URL(`${BASE}marca/nextyou-logo.svg`, Astro.site).href,
+            description: SITIO.descripcion,
+          },
+          {
+            '@type': 'WebSite',
+            name: SITIO.nombre,
+            url: new URL(BASE, Astro.site).href,
+            inLanguage: 'es',
+          },
+        ],
+      })}
+    />
+
+    <!-- Fuentes en local -->
+    <link rel="preload" href={archivoUrl} as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <!-- Filtro que da a los iconos un trazo irregular, como pintado a mano -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <filter id="trazo-mano">
+        <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="7" />
+        <feDisplacementMap in="SourceGraphic" scale="1.3" />
+      </filter>
+    </svg>
+    <slot />
+
+    <script>
+      // Fundido de 150 ms al aparecer, una sola vez.
+      const elementos = document.querySelectorAll('[data-aparece]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entradas) => {
+            for (const e of entradas) {
+              if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px' }
+        );
+        elementos.forEach((el) => io.observe(el));
+      } else {
+        elementos.forEach((el) => el.classList.add('visible'));
+      }
+    </script>
+
+    <style>
+      .saltar {
+        position: absolute;
+        left: var(--margen);
+        top: -100px;
+        z-index: 100;
+        padding: 0.75rem 1.25rem;
+        border-radius: 999px;
+        background: var(--hueso);
+        color: var(--negro);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .saltar:focus {
+        top: 0.75rem;
+      }
+    </style>
+  </body>
+</html>

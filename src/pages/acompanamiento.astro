@@ -1,0 +1,362 @@
+---
+// Quién hay detrás: Insiders (gratis) y coaches (de pago). Página para el chico, en el
+// mismo registro oscuro que la home.
+import Base from '../layouts/Base.astro';
+import Menu from '../components/Menu.astro';
+import Pie from '../components/Pie.astro';
+import Boton from '../components/Boton.astro';
+import Reel from '../components/Reel.astro';
+import { acompanamiento as a } from '../data/acompanamiento';
+import { losDeDentro } from '../data/home';
+import { resaltar } from '../utils/resaltar';
+---
+
+<Base titulo={a.titulo} descripcion={a.descripcion}>
+  <Menu />
+  <main id="contenido">
+    <!-- Hero -->
+    <section class="a-hero" aria-labelledby="a-titulo">
+      <div class="contenedor a-hero__caja">
+        <p class="etiqueta">{a.hero.etiqueta}</p>
+        <h1 id="a-titulo" set:html={resaltar(a.hero.titulo, a.hero.resaltado)} />
+        <p class="a-lead">{a.hero.texto}</p>
+        <nav class="a-indice" aria-label="En esta página">
+          <a href="#insiders">Los Insiders <span class="pastilla pastilla--lima">gratis</span></a>
+          <a href="#coaches">Los coaches <span class="pastilla pastilla--contorno">si tú quieres</span></a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Insiders -->
+    <section class="a-bloque" id="insiders" aria-labelledby="a-insiders">
+      <div class="contenedor">
+        <header class="a-cabecera">
+          <p class="etiqueta">{a.insiders.etiqueta}</p>
+          <h2 id="a-insiders">{a.insiders.titulo}</h2>
+          <p class="a-lead">{a.insiders.texto}</p>
+        </header>
+      </div>
+      <!-- PENDIENTE: vídeos de los profesionales. Personas de muestra (las mismas de la home). -->
+      <ul class="a-reels carril" role="list" tabindex="0" aria-label="Insiders">
+        {
+          losDeDentro.personas.map((p) => (
+            <li>
+              <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
+              <Reel persona={p} />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Cómo los elegimos -->
+    <section class="a-eleccion claro" aria-labelledby="a-eleccion">
+      <div class="contenedor a-dos">
+        <header class="a-cabecera">
+          <p class="etiqueta">{a.eleccion.etiqueta}</p>
+          <h2 id="a-eleccion">{a.eleccion.titulo}</h2>
+        </header>
+        <div>
+          <ul class="a-criterios" role="list">
+            {a.eleccion.puntos.map((t) => <li>{t}</li>)}
+          </ul>
+          <p class="a-remate">{a.eleccion.remate}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coaches -->
+    <section class="a-bloque" id="coaches" aria-labelledby="a-coach">
+      <div class="contenedor a-dos">
+        <header class="a-cabecera">
+          <p class="etiqueta">{a.coach.etiqueta}</p>
+          <h2 id="a-coach">{a.coach.titulo}</h2>
+          <Fragment set:html="<!-- PENDIENTE: precio del acompañamiento con coach -->" />
+        </header>
+        <div>
+          <ol class="a-pasos" role="list">
+            {
+              a.coach.pasos.map((p, i) => (
+                <li class="a-paso">
+                  <span class="a-paso__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <div class="a-paso__cuerpo">
+                    <h3>{p.titulo}</h3>
+                    <p>{p.texto}</p>
+                    <ul class="a-chips" role="list">
+                      {p.pastillas.map((t, j) => (
+                        <li class:list={['pastilla', j === 0 ? 'pastilla--lima' : 'pastilla--contorno']}>{t}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+
+          <aside class="a-nohace claro cinta" aria-labelledby="a-nohace">
+            <h3 id="a-nohace" class="mano">{a.noHace.titulo}</h3>
+            <ul role="list">
+              {
+                a.noHace.puntos.map((t) => (
+                  <li>
+                    <svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true">
+                      <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                    </svg>
+                    {t}
+                  </li>
+                ))
+              }
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cierre -->
+    <section class="a-cierre" aria-labelledby="a-cierre">
+      <div class="contenedor a-cierre__caja">
+        <h2 id="a-cierre">{a.cierre.titulo}</h2>
+        <Boton flecha>{a.cierre.boton}</Boton>
+      </div>
+    </section>
+  </main>
+  <Pie cierre={false} />
+</Base>
+
+<style>
+  .a-hero {
+    padding-block: 9rem var(--e-5);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .a-hero__caja {
+    display: grid;
+    gap: var(--e-3);
+    justify-items: start;
+  }
+
+  .a-hero h1 {
+    font-size: clamp(2.75rem, 1.4rem + 5vw, 5.5rem);
+    max-width: 13ch;
+  }
+
+  .a-lead {
+    font-size: var(--t-3);
+    color: var(--hueso-suave);
+    max-width: 38rem;
+  }
+
+  .a-indice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .a-indice a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 48px;
+    padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--linea);
+    font-weight: 800;
+    text-decoration: none;
+    transition: border-color 150ms ease;
+  }
+
+  .a-indice a:hover {
+    border-color: var(--hueso);
+  }
+
+  .a-bloque {
+    padding-block: var(--e-5);
+  }
+
+  .a-cabecera {
+    display: grid;
+    gap: var(--e-2);
+    margin-bottom: var(--e-4);
+    align-content: start;
+  }
+
+  .a-cabecera h2 {
+    font-size: var(--t-5);
+    max-width: 16ch;
+  }
+
+  /* Reels: carril en móvil, cuatro a lo ancho en escritorio */
+  .a-reels {
+    grid-auto-columns: min(72%, 17rem);
+  }
+
+  /* Cómo los elegimos */
+  .a-eleccion {
+    padding-block: var(--e-5);
+    background: var(--grano), var(--papel);
+    color: var(--negro);
+  }
+
+  .a-criterios {
+    display: grid;
+    gap: var(--e-2);
+    counter-reset: criterio;
+  }
+
+  .a-criterios li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--e-2);
+    align-items: baseline;
+    padding-bottom: var(--e-2);
+    border-bottom: 1px solid rgb(22 20 18 / 0.15);
+    font-size: var(--t-3);
+    font-weight: 600;
+    counter-increment: criterio;
+  }
+
+  .a-criterios li::before {
+    content: '0' counter(criterio);
+    font-family: var(--mano);
+    font-size: 1.5rem;
+  }
+
+  .a-remate {
+    margin-top: var(--e-4);
+    font-size: var(--t-4);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    max-width: 24ch;
+  }
+
+  /* Pasos del coach */
+  .a-pasos {
+    display: grid;
+    gap: var(--e-4);
+  }
+
+  .a-paso {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: var(--e-2);
+  }
+
+  .a-paso__num {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--lima);
+    font-family: var(--mano);
+    font-size: 1.4rem;
+    color: var(--lima);
+  }
+
+  .a-paso:nth-child(odd) .a-paso__num {
+    rotate: -6deg;
+  }
+
+  .a-paso:nth-child(even) .a-paso__num {
+    rotate: 5deg;
+  }
+
+  .a-paso__cuerpo {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 0.35rem;
+  }
+
+  .a-paso__cuerpo h3 {
+    font-size: var(--t-4);
+    line-height: 1.12;
+  }
+
+  .a-paso__cuerpo p {
+    color: var(--hueso-suave);
+    max-width: 36rem;
+  }
+
+  .a-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Lo que un coach no hace: nota de cuaderno */
+  .a-nohace {
+    margin-top: var(--e-5);
+    padding: var(--e-4) var(--e-3) var(--e-3);
+    border-radius: 6px;
+    background: var(--papel);
+    color: var(--negro);
+    rotate: -1deg;
+  }
+
+  .a-nohace h3 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: var(--e-2);
+  }
+
+  .a-nohace ul {
+    display: grid;
+    gap: 0.875rem;
+    font-weight: 600;
+  }
+
+  .a-nohace li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+
+  .a-nohace svg {
+    translate: 0 2px;
+  }
+
+  /* Cierre */
+  .a-cierre {
+    padding-block: var(--e-5);
+    border-top: 1px solid var(--linea);
+  }
+
+  .a-cierre__caja {
+    display: grid;
+    gap: var(--e-3);
+    justify-items: start;
+  }
+
+  .a-cierre h2 {
+    font-size: var(--t-5);
+    max-width: 16ch;
+  }
+
+  @media (min-width: 64rem) {
+    .a-reels {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--e-3);
+      width: min(100% - 2 * var(--margen), var(--ancho));
+      margin-inline: auto;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .a-dos {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: var(--e-5);
+      align-items: start;
+    }
+
+    .a-dos .a-cabecera {
+      position: sticky;
+      top: 6rem;
+      margin-bottom: 0;
+    }
+  }
+</style>

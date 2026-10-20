@@ -1,0 +1,80 @@
+---
+// Textos legales de NextYou en una sola página, con una sección por tema (el pie enlaza a cada ancla).
+// PENDIENTE CLIENTA: sustituir cada sección por el texto definitivo (titular de la web, datos de contacto,
+// base legal, plazos de conservación, tratamiento de datos de menores, cookies reales). Aquí solo van los
+// compromisos que ya se dicen en la web (página «Antes de empezar»), sin inventar datos de la empresa.
+import V5 from '../../layouts/V5.astro';
+import { BASE } from '../../config';
+
+const INICIO = BASE;
+---
+
+<V5
+  titulo="Información legal · NextYou"
+  descripcion="Privacidad, aviso legal, cookies y datos de menores de NextYou."
+  actual="bachillerato"
+  soloBachillerato
+  ruta=""
+>
+  <main id="contenido" class="legal">
+    <div class="estrecho legal__caja">
+      <a class="legal__volver" href={INICIO}>
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        Volver
+      </a>
+      <h1 class="legal__titulo">Información legal</h1>
+      <p class="legal__lead">Aquí encontrarás cómo tratamos tus datos y las condiciones de uso de NextYou, explicado de forma clara.</p>
+
+      <ul class="legal__indice" role="list" aria-label="Contenido">
+        <li><a href="#privacidad">Política de privacidad</a></li>
+        <li><a href="#aviso-legal">Aviso legal</a></li>
+        <li><a href="#cookies">Política de cookies</a></li>
+        <li><a href="#menores">Datos y menores</a></li>
+      </ul>
+
+      <section id="privacidad" class="legal__seccion" aria-labelledby="t-privacidad">
+        <h2 id="t-privacidad">Política de privacidad</h2>
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: texto legal definitivo (responsable, base legal, derechos, conservación) -->" />
+        <p>Te pedimos tu nombre y tu correo para dos cosas: dirigirnos a ti como quieras y enviarte tus resultados, tus 3 caminos y la información para que explores el tuyo.</p>
+        <p>No compartimos ni vendemos tus datos, no te enviamos publicidad y puedes darte de baja con un clic desde cualquier correo que te enviemos.</p>
+        <p class="legal__nota">El texto completo de esta política se publicará antes del lanzamiento del test.</p>
+      </section>
+
+      <section id="aviso-legal" class="legal__seccion" aria-labelledby="t-aviso">
+        <h2 id="t-aviso">Aviso legal</h2>
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: titular de la web, datos de contacto y condiciones de uso -->" />
+        <p class="legal__nota">Aquí figurarán los datos del titular de NextYou y las condiciones de uso de la web. Se publicará antes del lanzamiento.</p>
+      </section>
+
+      <section id="cookies" class="legal__seccion" aria-labelledby="t-cookies">
+        <h2 id="t-cookies">Política de cookies</h2>
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: cookies reales y gestor de consentimiento cuando se activen analítica u otros servicios -->" />
+        <p>Esta versión de la web no usa cookies de seguimiento ni de publicidad. Solo recuerda, en tu propio navegador, la variante de color que hayas elegido.</p>
+        <p class="legal__nota">Si más adelante se añaden herramientas de medición, aquí se detallarán y te pediremos permiso antes.</p>
+      </section>
+
+      <section id="menores" class="legal__seccion" aria-labelledby="t-menores">
+        <h2 id="t-menores">Datos y menores</h2>
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: tratamiento de datos de menores de 18 años y consentimiento de madre, padre o tutor -->" />
+        <p>NextYou está pensado para chicos y chicas de 16 a 21 años. Cuidamos con especial atención los datos de las personas menores de edad y solo pedimos lo imprescindible.</p>
+        <p class="legal__nota">Aquí se explicará cómo se tratan los datos de menores y qué hacer si una madre, un padre o una persona tutora quiere consultarlos o eliminarlos.</p>
+      </section>
+    </div>
+  </main>
+</V5>
+
+<style is:global>
+  .legal { background: var(--negro-2, #161412); color: var(--crema); padding-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) var(--aire, 6rem); min-height: calc(100svh - 125px); }
+  .legal__caja { display: grid; gap: 1.25rem; justify-items: start; }
+  .legal__volver { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; color: rgb(246 241 232 / 0.7); font-size: 0.9375rem; text-decoration: none; }
+  .legal__volver:hover { color: var(--crema); }
+  .legal__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); line-height: 1.06; letter-spacing: -0.025em; }
+  .legal__lead { max-width: 40rem; font-size: 1.125rem; line-height: 1.6; color: rgb(246 241 232 / 0.8); }
+  .legal__indice { list-style: none; margin: 0.5rem 0 1rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .legal__indice a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; border: 1px solid rgb(246 241 232 / 0.2); color: var(--crema); text-decoration: none; font-size: 0.9375rem; transition: border-color 200ms ease, background-color 200ms ease; }
+  .legal__indice a:hover { border-color: var(--crema); background: rgb(246 241 232 / 0.06); }
+  .legal__seccion { width: 100%; max-width: 44rem; display: grid; gap: 0.9rem; padding-top: 2rem; border-top: 1px solid rgb(246 241 232 / 0.12); scroll-margin-top: 8rem; }
+  .legal__seccion h2 { font-family: var(--titular); font-weight: 800; font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.1; letter-spacing: -0.02em; }
+  .legal__seccion p { line-height: 1.65; color: rgb(246 241 232 / 0.82); font-size: 1.0625rem; }
+  .legal__nota { color: rgb(246 241 232 / 0.62) !important; font-size: 0.9375rem !important; }
+</style>
