@@ -6,6 +6,7 @@
 //  - Destino real de los datos (lista de envío / CRM): hoy NO se guardan ni se envían en ningún sitio.
 //  - Texto legal y de menores (hay personas de 16-17 años) y página de privacidad.
 //  - URL real del test: cuando exista, `DESTINO_TEST` lleva ahí al terminar el segundo paso.
+//  - Al acabar el test, la página de resultados es /resultados/?nombre=… (hoy se enlaza como ejemplo desde la pantalla final).
 import V5 from '../../layouts/V5.astro';
 import { BASE, ENLACES } from '../../config';
 
@@ -89,6 +90,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
         <h1 id="p3-titulo" class="paso__titulo" tabindex="-1" data-titulo-3>¡Gracias!</h1>
         <p class="paso__lead" data-mensaje></p>
         <a class="boton paso__seguir" href={INICIO}>Seguir explorando</a>
+        <a class="paso__ejemplo" href={`${BASE}resultados/`} data-ejemplo>Mientras tanto, mira cómo serán tus resultados</a>
       </section>
     </div>
   </main>
@@ -123,6 +125,9 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
         $('[data-mensaje]').textContent = datos.correo
           ? 'Te escribiremos a ' + datos.correo + ' en cuanto el test esté listo, con tus resultados y todo lo necesario para explorar tu camino.'
           : 'No hace falta dejar tu correo. En cuanto el test esté listo podrás hacerlo y ver tus resultados en pantalla.';
+        // El ejemplo de resultados lleva el nombre, para que el saludo salga personalizado
+        var ej = $('[data-ejemplo]');
+        if (ej && datos.nombre) ej.href = ej.getAttribute('href').split('?')[0] + '?nombre=' + encodeURIComponent(datos.nombre);
         ir(3);
       }
 
@@ -217,6 +222,9 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   .paso__listo:not([hidden]) .paso__visto path { animation: paso-trazo 450ms 650ms cubic-bezier(.4,0,.2,1) forwards; }
   @keyframes paso-trazo { to { stroke-dashoffset: 0; } }
   .paso__seguir { margin-top: 0.5rem; }
+  .paso__ejemplo { display: inline-flex; align-items: center; min-height: 44px; color: var(--crema); font-size: var(--t2); text-decoration: underline; text-underline-offset: 0.25em; text-decoration-thickness: 1px; }
+  .paso__ejemplo:hover { color: var(--acento-texto); }
+  .paso__ejemplo:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
 
   @media (prefers-reduced-motion: no-preference) {
     .paso__pantalla:not([hidden]) > * { animation: paso-entra 520ms cubic-bezier(.2,.7,.2,1) backwards; }

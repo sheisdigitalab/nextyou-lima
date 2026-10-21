@@ -1,0 +1,200 @@
+---
+// Página de resultados del test: los 3 caminos (cada uno se abre para ver en qué consiste, qué formación
+// requiere y cómo llegar) y, debajo, el acompañamiento premium que se puede contratar.
+//
+// PENDIENTE CLIENTA / DESARROLLO:
+//  - Los caminos de esta página son de EJEMPLO (src/data/resultados.ts). En el producto real salen de las respuestas del test.
+//  - Nombre: se lee de ?nombre=... y, si no viene, el saludo no lo lleva.
+//  - Precio, sesiones y enlace de contratación del coach: hoy el botón abre el aviso «próximamente».
+import { Image } from 'astro:assets';
+import V5 from '../../layouts/V5.astro';
+import { caminos, acompanamiento as coach } from '../../data/resultados';
+
+const iconos = {
+  fp: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
+  uni: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+  curso: '<rect x="3" y="5" width="18" height="11" rx="2"/><path d="M2 19h20"/>',
+  solo: '<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
+};
+---
+
+<V5
+  titulo="Tus 3 caminos · NextYou"
+  descripcion="Tus 3 caminos profesionales: en qué consiste cada uno, qué formación necesitas y cómo llegar. Y, si quieres, un coach que te acompañe."
+  actual="bachillerato"
+  soloBachillerato
+  ruta=""
+>
+  <main id="contenido" class="res">
+    <div class="ancho res__caja">
+      <header class="res__cab">
+        <p class="res__saludo" data-saludo>¡Listo!</p>
+        <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
+        <p class="res__lead">Elegidos con tus respuestas. Toca uno para ver en qué consiste, qué formación necesitas y cómo llegar.</p>
+        <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
+      </header>
+
+      <ol class="res__lista" role="list">
+        {
+          caminos.map((c, i) => (
+            <li>
+              <details class="cam" name="camino" open={i === 0} data-placeholder="true">
+                <summary class="cam__cabeza">
+                  <span class="cam__n" aria-hidden="true">{i + 1}</span>
+                  <span class="cam__tx">
+                    <small class="cam__tipo">{c.tipo}</small>
+                    <b class="cam__nombre">{c.nombre}</b>
+                    <span class="cam__resumen">{c.resumen}</span>
+                  </span>
+                  <Image src={c.foto} alt="" width={160} height={160} class="cam__foto" loading="lazy" />
+                  <span class="cam__mas" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  </span>
+                </summary>
+
+                <div class="cam__cuerpo">
+                  <ul class="cam__chips" role="list" aria-label="Se te da bien">
+                    {c.chips.map((t) => <li>{t}</li>)}
+                  </ul>
+
+                  <section class="cam__bloque" aria-label={`En qué consiste ${c.nombre}`}>
+                    <h2 class="cam__h">En qué consiste</h2>
+                    <dl class="cam__datos">
+                      <div><dt>Qué haces</dt><dd>{c.que}</dd></div>
+                      <div><dt>Un día normal</dt><dd>{c.dia}</dd></div>
+                      <div><dt>Por qué encaja contigo</dt><dd>{c.porque}</dd></div>
+                    </dl>
+                  </section>
+
+                  <section class="cam__bloque" aria-label={`Formación de ${c.nombre}`}>
+                    <h2 class="cam__h">La formación</h2>
+                    <p class="cam__p">{c.formacion}</p>
+                  </section>
+
+                  <section class="cam__bloque" aria-label={`Cómo llegar a ${c.nombre}`}>
+                    <h2 class="cam__h">Cómo llegar <small>Hay más de un camino</small></h2>
+                    <ul class="cam__rutas" role="list">
+                      {c.rutas.map((r) => (
+                        <li>
+                          <i aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></i>
+                          <span><b>{r.titulo}</b><small>{r.detalle}</small></span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+
+                  <a class="cam__coach" href="#coach">¿Quieres ayuda para decidir? <b>Habla con un coach</b> <span aria-hidden="true">↓</span></a>
+                </div>
+              </details>
+            </li>
+          ))
+        }
+      </ol>
+
+      <p class="res__nota">No tienes que elegir ya. Repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
+
+      <!-- ===================== Acompañamiento premium ===================== -->
+      <section id="coach" class="prem" aria-labelledby="prem-titulo" data-placeholder="true">
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones y enlace de contratación -->" />
+        <Image src={coach.foto} alt="" width={900} height={600} class="prem__foto" loading="lazy" />
+        <div class="prem__texto">
+          <p class="prem__eti"><span aria-hidden="true">★</span> {coach.eti}</p>
+          <h2 id="prem-titulo" class="prem__titulo">{coach.titulo}</h2>
+          <p class="prem__p">{coach.texto}</p>
+          <ul class="prem__lista" role="list">
+            {coach.puntos.map((t) => <li>{t}</li>)}
+          </ul>
+          <a class="boton boton--grande" href="#">{coach.cta}</a>
+          <p class="prem__nota">{coach.nota}</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</V5>
+
+<script>
+  // Saludo con el nombre, si llega en la dirección (?nombre=...)
+  const nombre = (new URLSearchParams(location.search).get('nombre') || '').trim().slice(0, 40);
+  const saludo = document.querySelector<HTMLElement>('[data-saludo]');
+  if (saludo && nombre) saludo.textContent = `¡Listo, ${nombre}!`;
+</script>
+
+<style is:global>
+  .res { background: var(--negro); color: var(--crema); padding-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) var(--aire, 6rem); min-height: calc(100svh - 125px); }
+  .res__caja { display: grid; gap: 1.5rem; max-width: 52rem; }
+  .res__cab { display: grid; gap: 0.6rem; }
+  .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
+  .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
+  .res__tres { display: inline-block; padding: 0 0.22em; border-radius: 0.2em; background: var(--acento); color: var(--acento-txt); }
+  .res__lead { max-width: 38rem; font-size: var(--t3, 1.125rem); line-height: 1.55; color: var(--gris); }
+
+  .res__lista { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.85rem; }
+
+  /* Cada camino: tarjeta que se abre */
+  .cam { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 1.25rem; transition: border-color 200ms ease, background-color 200ms ease; }
+  .cam[open] { border-color: rgb(246 241 232 / 0.28); }
+  .cam__cabeza { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 0.9rem; padding: 1rem 1.1rem; min-height: 44px; cursor: pointer; list-style: none; border-radius: 1.25rem; }
+  .cam__cabeza::-webkit-details-marker { display: none; }
+  .cam__cabeza:hover { background: rgb(246 241 232 / 0.04); }
+  .cam__cabeza:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+  .cam__n { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-weight: 800; font-size: 1rem; }
+  .cam__tx { display: grid; gap: 0.15rem; min-width: 0; }
+  .cam__tipo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acento-texto); }
+  .cam__nombre { font-family: var(--titular); font-weight: 800; font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.6rem); line-height: 1.12; letter-spacing: -0.01em; }
+  .cam__resumen { font-size: var(--t2); line-height: 1.45; color: var(--gris); }
+  .cam__foto { width: 3.6rem; height: 3.6rem; border-radius: 50%; object-fit: cover; }
+  .cam__mas { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 1px solid var(--linea); color: var(--crema); transition: transform 250ms ease; }
+  .cam[open] .cam__mas { transform: rotate(180deg); }
+
+  .cam__cuerpo { display: grid; gap: 1.4rem; padding: 0.4rem 1.1rem 1.4rem; border-top: 1px solid var(--linea); margin-top: 0.1rem; padding-top: 1.2rem; }
+  .cam__chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .cam__chips li { padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid var(--linea); font-size: var(--t1); color: var(--crema); }
+  .cam__bloque { display: grid; gap: 0.7rem; }
+  .cam__h { font-family: var(--titular); font-weight: 800; font-size: 1.1875rem; line-height: 1.15; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
+  .cam__h small { font-family: var(--sans); font-weight: 500; font-size: var(--t1); color: var(--gris); }
+  .cam__p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
+  .cam__datos { display: grid; gap: 0.85rem; margin: 0; }
+  .cam__datos dt { font-size: var(--t1); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.15rem; }
+  .cam__datos dd { margin: 0; font-size: var(--t2); line-height: 1.5; color: rgb(246 241 232 / 0.92); }
+  .cam__rutas { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+  .cam__rutas li { display: flex; align-items: center; gap: 0.85rem; padding: 0.8rem 0.95rem; border-radius: 0.9rem; background: rgb(246 241 232 / 0.05); }
+  .cam__rutas i { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--acento); color: var(--acento-txt); }
+  .cam__rutas span { display: grid; gap: 0.1rem; min-width: 0; }
+  .cam__rutas b { font-size: var(--t2); line-height: 1.3; }
+  .cam__rutas small { font-size: var(--t1); color: var(--gris); }
+  .cam__coach { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; min-height: 44px; padding: 0.7rem 1rem; border-radius: 0.9rem; border: 1px dashed rgb(246 241 232 / 0.3); color: var(--crema); text-decoration: none; font-size: var(--t2); }
+  .cam__coach b { color: var(--acento-texto); }
+  .cam__coach:hover { border-color: var(--acento); }
+  .cam__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+
+  .res__nota { font-size: var(--t2); line-height: 1.5; color: var(--gris); text-align: center; margin-top: 0.25rem; }
+
+  /* Acompañamiento premium: bloque claro para que destaque sobre el negro */
+  .prem { margin-top: 1.25rem; display: grid; border-radius: 1.5rem; overflow: hidden; background: var(--crema); color: var(--negro); scroll-margin-top: 6rem; }
+  .prem__foto { width: 100%; height: 15rem; object-fit: cover; object-position: center 25%; }
+  .prem__texto { display: grid; gap: 0.9rem; padding: clamp(1.4rem, 1rem + 2vw, 2.4rem); justify-items: start; }
+  .prem__eti { font-size: var(--t1); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris-oscuro); }
+  .prem__eti span { display: inline-block; margin-right: 0.35rem; padding: 0.05em 0.4em; border-radius: 999px; background: var(--acento); color: var(--acento-txt); }
+  .prem__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem); line-height: 1.08; letter-spacing: -0.02em; }
+  .prem__p { font-size: var(--t2); line-height: 1.6; color: #3a342e; }
+  .prem__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+  .prem__lista li { position: relative; padding-left: 1.9rem; font-size: var(--t2); line-height: 1.45; font-weight: 600; }
+  .prem__lista li::before { content: ''; position: absolute; left: 0; top: 0.2em; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--negro) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat; }
+  .prem__nota { font-size: var(--t1); color: var(--gris-oscuro); }
+
+  @media (min-width: 48rem) {
+    .cam__cabeza { padding: 1.15rem 1.4rem; }
+    .cam__cuerpo { padding: 1.4rem 1.4rem 1.6rem; }
+    .cam__foto { width: 4.4rem; height: 4.4rem; }
+    .cam__datos { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .cam__rutas { grid-template-columns: 1fr 1fr; }
+    .prem { grid-template-columns: 0.9fr 1.1fr; }
+    .prem__foto { height: 100%; min-height: 22rem; }
+  }
+  @media (max-width: 30rem) {
+    .cam__cabeza { grid-template-columns: auto 1fr auto; gap: 0.75rem; padding: 0.95rem; }
+    .cam__foto { display: none; }
+    .cam__resumen { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cam, .cam__mas { transition: none; } }
+</style>

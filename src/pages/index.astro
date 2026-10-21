@@ -272,6 +272,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                     {p.puntos.map((t) => <li set:html={t} />)}
                   </ul>
                   {p.cierre && <p class="cfa__cierre">{p.cierre}</p>}
+                  {i === 1 && <a class="cfa__ejemplo" href={`${BASE}resultados/`}>Ver un ejemplo de resultados <span aria-hidden="true">→</span></a>}
                 </div>
                 <div class="cfa__hueco" data-cfa-hueco={i}>
                   {i === 0 && (
@@ -3373,4 +3374,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .camino8__profs li + li { border-top: 1px solid rgb(246 241 232 / 0.1); border-radius: 0; }
     .camino8__profs b { max-width: none; font-size: 1.0625rem; }
   }
+</style>
+
+<style is:global>
+  /* Paso 2 de «Cómo funciona»: enlace al ejemplo de la página de resultados */
+  .cfa__ejemplo { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; margin-top: 0.75rem; font-weight: 700; font-size: var(--t2); color: var(--acento-oscuro); text-decoration: underline; text-underline-offset: 0.28em; text-decoration-thickness: 1.5px; }
+  .cfa__ejemplo:hover { text-decoration-thickness: 2.5px; }
+  .cfa__ejemplo:focus-visible { outline: 3px solid var(--acento-oscuro); outline-offset: 3px; border-radius: 4px; }
 </style>
