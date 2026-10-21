@@ -22,7 +22,7 @@ export const unicoLima = {
   personas: unicoV4.personas.map((p) => ({ ...p, ...(fotos[p.nombre] ?? {}) })),
 };
 
-// «Cómo funciona»: el paso 2 invita a tocar un camino (y a hablar con un coach) y el paso 3
+// «Cómo funciona»: el paso 2 explica qué pasa al tocar un camino (en qué consiste, cómo llegar y contratar un coach) y el paso 3
 // no promete un vídeo por camino, sino consejos y vídeos de personas que pasaron por algo parecido
 export const comoAppLima = {
   ...comoAppV7,
@@ -30,8 +30,8 @@ export const comoAppLima = {
     i === 1
       ? {
           ...p,
-          texto: 'Con tus respuestas te proponemos 3 profesiones que encajan contigo, cada una por un motivo distinto. Toca una para ver en qué consiste y cómo llegar:',
-          cierre: 'No tienes que elegir ya. Y si quieres ayuda para decidir, puedes hablar con un coach desde ahí.',
+          texto: 'Al terminar el test te proponemos 3 profesiones que encajan contigo, cada una por un motivo distinto:',
+          cierre: 'No tienes que elegir ya: toca un camino para ver en qué consiste y cómo llegar a él. Si quieres ayuda para decidir, puedes contratar a un coach desde ahí mismo.',
         }
       : i === 2
         ? {
