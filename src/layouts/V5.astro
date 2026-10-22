@@ -21,8 +21,12 @@ interface Props {
   soloBachillerato?: boolean;
   // Paleta fija (sin barra de paletas ni cambio por la dirección): la versión Lima usa 'd'
   paletaFija?: 'd' | 'f';
+  // Meta robots de la página (por defecto, una vista previa que no se indexa ni se sigue)
+  robots?: string;
+  // Botón principal del menú (por defecto, «Test gratis»)
+  cta?: { texto: string; href: string };
 }
-const { titulo, descripcion, actual, pagina, ruta = 'v5/', soloBachillerato = false, paletaFija } = Astro.props;
+const { titulo, descripcion, actual, pagina, ruta = 'v5/', soloBachillerato = false, paletaFija, robots = 'noindex, nofollow', cta = { texto: 'Test gratis', href: CTA_PRINCIPAL.href } } = Astro.props;
 
 // Tarjeta al compartir el enlace: foto de la portada recortada a 1200×630.
 const ogImagen = new URL(`${BASE}og.jpg`, Astro.site).href;
@@ -77,8 +81,8 @@ const menu = soloBachillerato
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
-    <!-- Vista previa de una versión alternativa: nunca se indexa -->
-    <meta name="robots" content="noindex, nofollow" />
+    {/* Vista previa de una versión alternativa: nunca se indexa */}
+    <meta name="robots" content={robots} />
     <meta name="theme-color" content="#161412" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_ES" />
@@ -103,7 +107,7 @@ const menu = soloBachillerato
   <body>
     <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-    <!-- Solo para la presentación: elegir paleta. Para quitarla, MOSTRAR_PALETAS_V4 = false en src/config.ts -->
+    {/* Solo para la presentación: elegir paleta. Para quitarla, MOSTRAR_PALETAS_V4 = false en src/config.ts */}
     {MOSTRAR_PALETAS_V4 && !paletaFija && (
       <aside class="paletas" aria-label="Paleta de color">
         <button type="button" data-elegir="f" aria-pressed="false"><i><b style="background:#000000"></b><b style="background:#c93b22"></b><b style="background:#f6f1e8"></b></i>Red</button>
@@ -111,7 +115,7 @@ const menu = soloBachillerato
       </aside>
     )}
 
-    <!-- ===================== Menú ===================== -->
+    {/* ===================== Menú ===================== */}
     <header class="menu">
       <div class="menu__barra ancho">
         <a href={INICIO} class="logo" aria-label="NextYou, inicio"><LogoV3 /></a>
@@ -125,7 +129,7 @@ const menu = soloBachillerato
               <li>
                 {e.href === '#' ? (
                   <>
-                    <Fragment set:html="<!-- PENDIENTE: página fase posterior -->" />
+                    {/* PENDIENTE: página fase posterior */}
                     <span class="pronto" aria-disabled="true">{e.texto}<small>pronto</small></span>
                   </>
                 ) : (
@@ -135,7 +139,7 @@ const menu = soloBachillerato
             ))}
           </ul>
         </nav>
-        <a href={CTA_PRINCIPAL.href} class="boton boton--sm menu__cta">Test gratis</a>
+        <a href={cta.href} class="boton boton--sm menu__cta">{cta.texto}</a>
       </div>
     </header>
 
@@ -143,7 +147,7 @@ const menu = soloBachillerato
 
     <slot name="antes-del-pie" />
 
-    <!-- Aviso de los botones del test mientras no exista (fase 2). PENDIENTE: destino real del botón. -->
+    {/* Aviso de los botones del test mientras no exista (fase 2). PENDIENTE: destino real del botón. */}
     <dialog class="aviso" aria-labelledby="aviso-titulo">
       <div class="aviso__caja">
         <button type="button" class="aviso__cerrar" aria-label="Cerrar">
@@ -153,7 +157,7 @@ const menu = soloBachillerato
         <h2 id="aviso-titulo">El test llega muy pronto</h2>
         <p>Estamos preparando los ocho minutos. Mientras, puedes ver cómo funciona y conocer a la gente que ya trabaja en lo suyo.</p>
         <a href={`${INICIO}#como-funciona`} class="boton">Ver cómo funciona</a>
-        <Fragment set:html="<!-- PENDIENTE CLIENTA: activar lista de espera (LISTA_ESPERA_V4 en src/config.ts), destino de los datos, textos legales y enlace de baja -->" />
+        {/* PENDIENTE CLIENTA: activar lista de espera (LISTA_ESPERA_V4 en src/config.ts), destino de los datos, textos legales y enlace de baja */}
         <form class="espera" hidden={!LISTA_ESPERA_V4} action="#" method="post" novalidate>
           <p class="espera__titulo">Te avisamos cuando abra</p>
           <label class="espera__campo">Tu correo<input type="email" name="correo" autocomplete="email" required /></label>
@@ -163,14 +167,14 @@ const menu = soloBachillerato
             <label><input type="radio" name="edad" value="18-o-mas" />18 o más</label>
           </fieldset>
           <label class="espera__check"><input type="checkbox" name="privacidad" required /><span>He leído y acepto la <a href={ENLACES.privacidad}>política de privacidad</a>.</span></label>
-          <Fragment set:html="<!-- PENDIENTE CLIENTA: texto legal de privacidad y datos de menores (enlace aún sin página) -->" />
+          {/* PENDIENTE CLIENTA: texto legal de privacidad y datos de menores (enlace aún sin página) */}
           <label class="espera__check"><input type="checkbox" name="novedades" />Quiero recibir novedades de NextYou (opcional).</label>
           <button type="submit" class="boton">Apuntarme</button>
         </form>
       </div>
     </dialog>
 
-    <!-- ===================== Pie ===================== -->
+    {/* ===================== Pie ===================== */}
     <footer class="pie">
       <div class="estrecho">
         <div class="pie__rejilla">

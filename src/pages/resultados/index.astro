@@ -9,10 +9,13 @@
 //  - Precio, sesiones y enlace de contratación del coach: hoy el botón abre el aviso «próximamente».
 import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
+import { CTA_PRINCIPAL } from '../../config';
 import { caminos, acompanamiento as coach } from '../../data/resultados';
 
 // Bloque del coach: 'C' = banda discreta (la que se ve) · 'B' = «tus 3 caminos llevan al coach» (montada, oculta)
 const coachVariante: 'C' | 'B' = 'C';
+// Fila «Envíame mis caminos» / «Compartir»: solo diseño, sin funcionalidad ni datos (pon false para quitarla)
+const mostrarGuardar = true;
 const MAX_MESES = 48; // la línea más larga (4 años) ocupa todo el ancho
 const ramas = ['M150 0 V10 C150 38 50 34 50 70', 'M150 0 V70', 'M150 0 V10 C150 38 250 34 250 70'];
 const iconos = {
@@ -29,6 +32,8 @@ const iconos = {
   actual="bachillerato"
   soloBachillerato
   ruta=""
+  robots="noindex, follow"
+  cta={{ texto: 'Repetir el test', href: CTA_PRINCIPAL.href }}
 >
   <main id="contenido" class="res">
     <div class="ancho res__caja">
@@ -37,7 +42,7 @@ const iconos = {
         <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
         <p class="res__lead">Salen de tus respuestas. No son una lista cerrada: son tres pistas para empezar a explorar.</p>
         <p class="res__toca">Toca cada uno para ver de qué va y cómo llegar.</p>
-        <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
+        {/* PENDIENTE: caminos de ejemplo; en el producto real salen del test */}
       </header>
 
       <section class="mp" data-mapa data-sel="0" aria-label="Mapa de tus caminos">
@@ -122,7 +127,7 @@ const iconos = {
 
             <div class="mp__mas">
               <details class="mp__det">
-                <Fragment set:html="<!-- PENDIENTE CLIENTA: validar dato -->" />
+                {/* PENDIENTE CLIENTA: validar dato */}
                 <summary><span>El dato</span><i aria-hidden="true"></i></summary>
                 <p class="mp__p">{c.dato}</p>
                 <p class="mp__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
@@ -138,13 +143,35 @@ const iconos = {
         ))
       }
 
-      <p class="res__nota"><strong>No tienes que elegir ya.</strong><br />Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
+      <div class="res__cierre">
+        <h3 class="res__cierre-t">No tienes que elegir ya.</h3>
+        <p class="res__cierre-p">Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
+        <a class="boton boton--contorno" href={CTA_PRINCIPAL.href}>Repetir el test</a>
+      </div>
 
-      <!-- ===================== Acompañamiento premium ===================== -->
+      {
+        mostrarGuardar && (
+          <div class="res__guardar">
+            <div class="res__guardar-botones">
+              <button type="button" class="boton boton--contorno" data-proximamente>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+                Envíame mis caminos
+              </button>
+              <button type="button" class="boton boton--contorno" data-proximamente>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="6" r="2.5" /><circle cx="18" cy="18" r="2.5" /><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6" /></svg>
+                Compartir
+              </button>
+            </div>
+            <p class="res__aviso" role="status" aria-live="polite" data-aviso></p>
+          </div>
+        )
+      }
+
+      {/* ===================== Acompañamiento premium ===================== */}
       {
         coachVariante === 'C' && (
           <section id="coach" class="coach coach--c" aria-label="Acompañamiento premium" data-placeholder="true">
-            <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach -->" />
+            {/* PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach */}
             <Image src={coach.foto} alt="" width={220} height={220} class="coach__av" loading="lazy" />
             <div class="coach__txt">
               <p class="mp__sup"><span aria-hidden="true">★</span> {coach.eti}</p>
@@ -152,7 +179,7 @@ const iconos = {
               <p class="coach__firma">{coach.firma}</p>
             </div>
             <div class="coach__cta">
-              <a class="boton" href="#">{coach.cta} <span aria-hidden="true">→</span></a>
+              <a class="boton boton--grande" href="#">{coach.cta} <span aria-hidden="true">→</span></a>
               <small>{coach.nota}</small>
             </div>
           </section>
@@ -161,7 +188,7 @@ const iconos = {
       {
         coachVariante === 'B' && (
           <section id="coach" class="coach coach--b" aria-labelledby="coach-titulo" data-placeholder="true">
-            <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach -->" />
+            {/* PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach */}
             <p class="mp__sup"><span aria-hidden="true">★</span> {coach.eti}</p>
             <h2 id="coach-titulo" class="coach__tit">{coach.titulo.antes}<em>{coach.titulo.enfasis}</em>{coach.titulo.despues}</h2>
             <p class="coach__intro">{coach.intro}</p>
@@ -217,6 +244,22 @@ const iconos = {
   const nombre = (new URLSearchParams(location.search).get('nombre') || '').trim().slice(0, 40);
   const saludo = document.querySelector<HTMLElement>('[data-saludo]');
   if (saludo && nombre) saludo.textContent = `¡Listo, ${nombre}!`;
+
+  // «Envíame mis caminos» y «Compartir»: de momento solo un aviso discreto; no se recoge ni se envía nada
+  const aviso = document.querySelector<HTMLElement>('[data-aviso]');
+  let avisoTimer: number | undefined;
+  document.querySelectorAll<HTMLElement>('[data-proximamente]').forEach((b) =>
+    b.addEventListener('click', () => {
+      if (!aviso) return;
+      aviso.textContent = 'Próximamente';
+      aviso.classList.add('is-on');
+      window.clearTimeout(avisoTimer);
+      avisoTimer = window.setTimeout(() => {
+        aviso.classList.remove('is-on');
+        aviso.textContent = '';
+      }, 2600);
+    })
+  );
 
   // Pestañas: elegir un camino muestra su ficha y resalta su rama del mapa (también con las flechas del teclado)
   const mapa = document.querySelector<HTMLElement>('[data-mapa]');
@@ -296,7 +339,7 @@ const iconos = {
 
 <style is:global>
   .res { background: var(--negro); color: var(--crema); padding-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) var(--aire, 6rem); min-height: calc(100svh - 125px); }
-  .res__caja { display: grid; gap: 1.5rem; max-width: 52rem; }
+  .res__caja { display: grid; gap: 1.5rem; max-width: 68.75rem; }
   .res__cab { display: grid; gap: 0.6rem; }
   .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
   .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
@@ -339,6 +382,7 @@ const iconos = {
   .mp__h3 { font-family: var(--titular); font-weight: 700; font-size: 1.1875rem; line-height: 1.15; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
   .mp__h3 small { font-family: var(--sans); font-weight: 500; font-size: var(--t1); color: var(--gris); }
   .mp__p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
+  .mp__p, .mp__datos dd, .via__det, .mp__ref { max-width: 51ch; } /* ≈ 68 caracteres por línea */
   .mp__ref { font-size: var(--t1); line-height: 1.4; color: var(--gris); }
   /* Datos de la ficha: una fila por dato (aro fino con icono, etiqueta en lima, texto cómodo), separadas por líneas de 1 px */
   .mp__datos { display: grid; margin: 0; }
@@ -399,8 +443,8 @@ const iconos = {
   .via__linea::before { content: ''; position: absolute; inset: 50% 0 auto; border-top: 1px solid var(--linea); }
   .via__barra { position: relative; height: 3px; width: var(--w, 100%); border-radius: 3px; background: var(--crema); }
   .via__barra::after { content: ''; position: absolute; right: -4px; top: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--acento); }
-  .via--solo .via__barra { height: 0; background: none; border-top: 1px dashed rgb(246 241 232 / 0.65); border-radius: 0; }
-  .via--solo .via__barra::after { display: none; }
+  .via--solo .via__linea { display: none; }
+  .via--solo .via__dur { grid-column: 1 / -1; justify-self: end; }
   .via__dur { font-size: var(--t1); font-weight: 600; color: var(--crema); white-space: nowrap; }
   .via__det { margin: 0; padding: 0 0 1rem 2.75rem; font-size: var(--t1); line-height: 1.5; color: rgb(246 241 232 / 0.8); }
 
@@ -409,14 +453,27 @@ const iconos = {
   .mp__coach:hover { border-color: var(--acento); }
   .mp__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
 
-  .res__nota { font-size: var(--t2); line-height: 1.5; color: var(--gris); text-align: center; margin-top: 0.25rem; }
+  /* Cierre: titular corto, párrafo legible y botón de contorno */
+  .res__cierre { display: grid; justify-items: center; gap: 0.9rem; text-align: center; margin-top: clamp(1.5rem, 0.5rem + 3vw, 3rem); }
+  .res__cierre-t { margin: 0; font-family: var(--titular); font-weight: 700; font-size: var(--t4); line-height: 1.15; letter-spacing: -0.015em; color: var(--crema); }
+  .res__cierre-p { margin: 0; max-width: 54ch; font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
+  .res__cierre .boton { margin-top: 0.6rem; }
+
+  /* Guardar y compartir (solo diseño): botones de contorno, lima al pasar el ratón */
+  .res__guardar { display: grid; justify-items: center; gap: 0.75rem; }
+  .res__guardar-botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+  .res__guardar .boton { gap: 0.6rem; }
+  .res__guardar .boton svg { flex: none; }
+  .res__guardar .boton--contorno:hover { background: none; border-color: var(--acento); color: var(--acento-texto); }
+  .res__aviso { margin: 0; min-height: 1.9rem; padding: 0.3rem 1rem; border: 1px solid transparent; border-radius: 999px; font-size: var(--t1); line-height: 1.3; color: transparent; transition: color 200ms ease, border-color 200ms ease; }
+  .res__aviso.is-on { color: var(--crema); border-color: var(--linea); }
 
   /* Bloque del coach: sobre el fondo oscuro, sin caja crema */
   .coach { margin-top: 1.25rem; scroll-margin-top: 6rem; }
   .coach__cta { display: grid; justify-items: start; gap: 0.6rem; }
   .coach__cta small { font-size: var(--t1); line-height: 1.4; color: var(--gris); text-wrap: balance; }
   .coach--c .coach__cta small { max-width: 16rem; }
-  .coach--c .boton { padding-inline: 1.5rem; }
+  @media (max-width: 63.99rem) { .coach--c .boton { min-height: 48px; font-size: var(--t2); padding-inline: 1.5rem; } }
   .coach .boton { white-space: nowrap; }
 
   /* Opción C · banda discreta: foto, una frase y el botón entre dos líneas finas */
@@ -450,9 +507,23 @@ const iconos = {
   .coach--b .coach__cta { justify-items: center; text-align: center; }
 
   @media (min-width: 48rem) {
+    .mp__panel { gap: 2.5rem; }
+    .coach { margin-top: 2rem; margin-bottom: 1.5rem; }
     .mp__datos { grid-template-columns: repeat(2, 1fr); column-gap: 3rem; }
     .mp__dato:nth-child(2) { border-top: 0; padding-top: 0.25rem; }
     .mp__ramas { height: 5.5rem; }
+  }
+  @media (min-width: 64rem) {
+    .mp__panel { gap: 3rem; padding: 2.75rem; }
+    .mp__datos { column-gap: 3.5rem; }
+    .vias { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.5rem; }
+    .vias > li:nth-child(-n + 2) { border-top: 0; }
+    .coach { margin-top: 2.5rem; margin-bottom: 2rem; }
+    .coach--c { padding-block: 2.75rem; }
+  }
+  @media (max-width: 47.99rem) {
+    .res__guardar-botones { flex-direction: column; width: 100%; }
+    .res__guardar .boton { width: 100%; }
   }
   @media (max-width: 760px) {
     .coach--c { grid-template-columns: auto minmax(0, 1fr); padding-block: 1.5rem; }
