@@ -1,14 +1,17 @@
 ---
-// Página de resultados del test: los 3 caminos (cada uno se abre para ver en qué consiste, qué formación
-// requiere y cómo llegar) y, debajo, el acompañamiento premium que se puede contratar.
+// Página de resultados del test · DISEÑO 1 · LISTA: los 3 caminos como tarjetas que se abren (en qué consiste,
+// formación y cómo llegar) y, debajo, el acompañamiento premium que se puede contratar.
 //
 // PENDIENTE CLIENTA / DESARROLLO:
 //  - Los caminos de esta página son de EJEMPLO (src/data/resultados.ts). En el producto real salen de las respuestas del test.
 //  - Nombre: se lee de ?nombre=... y, si no viene, el saludo no lo lleva.
 //  - Precio, sesiones y enlace de contratación del coach: hoy el botón abre el aviso «próximamente».
+//  - Hay tres diseños (/resultados/, /resultados/mapa/ y /resultados/fichas/): al elegir uno, se quitan los otros y el selector.
 import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
-import { caminos, acompanamiento as coach } from '../../data/resultados';
+import CabResultados from '../../components/CabResultados.astro';
+import Acompanamiento from '../../components/Acompanamiento.astro';
+import { caminos } from '../../data/resultados';
 
 const iconos = {
   fp: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
@@ -27,12 +30,7 @@ const iconos = {
 >
   <main id="contenido" class="res">
     <div class="ancho res__caja">
-      <header class="res__cab">
-        <p class="res__saludo" data-saludo>¡Listo!</p>
-        <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
-        <p class="res__lead">Elegidos con tus respuestas. Toca uno para ver en qué consiste, qué formación necesitas y cómo llegar.</p>
-        <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
-      </header>
+      <CabResultados actual={1} />
 
       <ol class="res__lista" role="list">
         {
@@ -93,41 +91,12 @@ const iconos = {
 
       <p class="res__nota">No tienes que elegir ya. Repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
 
-      <!-- ===================== Acompañamiento premium ===================== -->
-      <section id="coach" class="prem" aria-labelledby="prem-titulo" data-placeholder="true">
-        <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones y enlace de contratación -->" />
-        <Image src={coach.foto} alt="" width={900} height={600} class="prem__foto" loading="lazy" />
-        <div class="prem__texto">
-          <p class="prem__eti"><span aria-hidden="true">★</span> {coach.eti}</p>
-          <h2 id="prem-titulo" class="prem__titulo">{coach.titulo}</h2>
-          <p class="prem__p">{coach.texto}</p>
-          <ul class="prem__lista" role="list">
-            {coach.puntos.map((t) => <li>{t}</li>)}
-          </ul>
-          <a class="boton boton--grande" href="#">{coach.cta}</a>
-          <p class="prem__nota">{coach.nota}</p>
-        </div>
-      </section>
+      <Acompanamiento />
     </div>
   </main>
 </V5>
 
-<script>
-  // Saludo con el nombre, si llega en la dirección (?nombre=...)
-  const nombre = (new URLSearchParams(location.search).get('nombre') || '').trim().slice(0, 40);
-  const saludo = document.querySelector<HTMLElement>('[data-saludo]');
-  if (saludo && nombre) saludo.textContent = `¡Listo, ${nombre}!`;
-</script>
-
 <style is:global>
-  .res { background: var(--negro); color: var(--crema); padding-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) var(--aire, 6rem); min-height: calc(100svh - 125px); }
-  .res__caja { display: grid; gap: 1.5rem; max-width: 52rem; }
-  .res__cab { display: grid; gap: 0.6rem; }
-  .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
-  .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
-  .res__tres { display: inline-block; padding: 0 0.22em; border-radius: 0.2em; background: var(--acento); color: var(--acento-txt); }
-  .res__lead { max-width: 38rem; font-size: var(--t3, 1.125rem); line-height: 1.55; color: var(--gris); }
-
   .res__lista { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.85rem; }
 
   /* Cada camino: tarjeta que se abre */
@@ -146,7 +115,7 @@ const iconos = {
   .cam__mas { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 1px solid var(--linea); color: var(--crema); transition: transform 250ms ease; }
   .cam[open] .cam__mas { transform: rotate(180deg); }
 
-  .cam__cuerpo { display: grid; gap: 1.4rem; padding: 0.4rem 1.1rem 1.4rem; border-top: 1px solid var(--linea); margin-top: 0.1rem; padding-top: 1.2rem; }
+  .cam__cuerpo { display: grid; gap: 1.4rem; padding: 1.2rem 1.1rem 1.4rem; border-top: 1px solid var(--linea); margin-top: 0.1rem; }
   .cam__chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .cam__chips li { padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid var(--linea); font-size: var(--t1); color: var(--crema); }
   .cam__bloque { display: grid; gap: 0.7rem; }
@@ -167,29 +136,12 @@ const iconos = {
   .cam__coach:hover { border-color: var(--acento); }
   .cam__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
 
-  .res__nota { font-size: var(--t2); line-height: 1.5; color: var(--gris); text-align: center; margin-top: 0.25rem; }
-
-  /* Acompañamiento premium: bloque claro para que destaque sobre el negro */
-  .prem { margin-top: 1.25rem; display: grid; border-radius: 1.5rem; overflow: hidden; background: var(--crema); color: var(--negro); scroll-margin-top: 6rem; }
-  .prem__foto { width: 100%; height: 15rem; object-fit: cover; object-position: center 25%; }
-  .prem__texto { display: grid; gap: 0.9rem; padding: clamp(1.4rem, 1rem + 2vw, 2.4rem); justify-items: start; }
-  .prem__eti { font-size: var(--t1); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris-oscuro); }
-  .prem__eti span { display: inline-block; margin-right: 0.35rem; padding: 0.05em 0.4em; border-radius: 999px; background: var(--acento); color: var(--acento-txt); }
-  .prem__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem); line-height: 1.08; letter-spacing: -0.02em; }
-  .prem__p { font-size: var(--t2); line-height: 1.6; color: #3a342e; }
-  .prem__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
-  .prem__lista li { position: relative; padding-left: 1.9rem; font-size: var(--t2); line-height: 1.45; font-weight: 600; }
-  .prem__lista li::before { content: ''; position: absolute; left: 0; top: 0.2em; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--negro) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat; }
-  .prem__nota { font-size: var(--t1); color: var(--gris-oscuro); }
-
   @media (min-width: 48rem) {
     .cam__cabeza { padding: 1.15rem 1.4rem; }
     .cam__cuerpo { padding: 1.4rem 1.4rem 1.6rem; }
     .cam__foto { width: 4.4rem; height: 4.4rem; }
     .cam__datos { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
     .cam__rutas { grid-template-columns: 1fr 1fr; }
-    .prem { grid-template-columns: 0.9fr 1.1fr; }
-    .prem__foto { height: 100%; min-height: 22rem; }
   }
   @media (max-width: 30rem) {
     .cam__cabeza { grid-template-columns: auto 1fr auto; gap: 0.75rem; padding: 0.95rem; }

@@ -1,0 +1,71 @@
+---
+// Cabecera común de la página de resultados (en sus tres diseños): selector de diseño (solo para la
+// presentación), saludo con el nombre y título. Lleva también los estilos base de la página.
+import { BASE } from '../config';
+
+interface Props {
+  actual: 1 | 2 | 3;
+  lead?: string;
+}
+const { actual, lead = 'Elegidos con tus respuestas. Toca uno para ver en qué consiste, qué formación necesitas y cómo llegar.' } = Astro.props;
+
+// PENDIENTE: el selector es solo para enseñar las opciones a la clienta; se quita al elegir diseño.
+const disenos = [
+  { n: 1, nombre: 'Lista', href: `${BASE}resultados/` },
+  { n: 2, nombre: 'Mapa', href: `${BASE}resultados/mapa/` },
+  { n: 3, nombre: 'Fichas', href: `${BASE}resultados/fichas/` },
+];
+---
+
+<nav class="disenos" aria-label="Diseños de la página de resultados (solo para la presentación)">
+  <span class="disenos__tit">Diseño</span>
+  {
+    disenos.map((d) => (
+      <a href={d.href} aria-current={d.n === actual ? 'page' : undefined}>
+        <b>{d.n}</b> {d.nombre}
+      </a>
+    ))
+  }
+</nav>
+
+<header class="res__cab">
+  <p class="res__saludo" data-saludo>¡Listo!</p>
+  <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
+  <p class="res__lead">{lead}</p>
+  <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
+</header>
+
+<script>
+  // Saludo con el nombre, si llega en la dirección (?nombre=...)
+  const nombre = (new URLSearchParams(location.search).get('nombre') || '').trim().slice(0, 40);
+  const saludo = document.querySelector<HTMLElement>('[data-saludo]');
+  if (saludo && nombre) saludo.textContent = `¡Listo, ${nombre}!`;
+  // El selector de diseño conserva el nombre al cambiar de diseño
+  if (nombre) {
+    document.querySelectorAll<HTMLAnchorElement>('.disenos a').forEach((a) => {
+      a.href = a.getAttribute('href')!.split('?')[0] + '?nombre=' + encodeURIComponent(nombre);
+    });
+  }
+</script>
+
+<style is:global>
+  .res { background: var(--negro); color: var(--crema); padding-block: clamp(1rem, 0.8rem + 1.5vw, 2.5rem) var(--aire, 6rem); min-height: calc(100svh - 125px); }
+  .res__caja { display: grid; gap: 1.5rem; max-width: 52rem; }
+  .res__caja--ancha { max-width: 78rem; }
+
+  .disenos { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .disenos__tit { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); margin-right: 0.15rem; }
+  .disenos a { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0 1rem 0 0.4rem; border-radius: 999px; border: 1px solid var(--linea); color: var(--crema); text-decoration: none; font-size: var(--t1); font-weight: 600; }
+  .disenos a b { display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgb(246 241 232 / 0.12); font-size: 0.8125rem; }
+  .disenos a[aria-current='page'] { background: var(--acento); border-color: var(--acento); color: var(--acento-txt); }
+  .disenos a[aria-current='page'] b { background: var(--acento-txt); color: var(--acento); }
+  .disenos a:hover:not([aria-current='page']) { border-color: var(--crema); }
+  .disenos a:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+
+  .res__cab { display: grid; gap: 0.6rem; }
+  .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
+  .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
+  .res__tres { display: inline-block; padding: 0 0.22em; border-radius: 0.2em; background: var(--acento); color: var(--acento-txt); }
+  .res__lead { max-width: 38rem; font-size: var(--t3, 1.125rem); line-height: 1.55; color: var(--gris); }
+  .res__nota { font-size: var(--t2); line-height: 1.5; color: var(--gris); text-align: center; margin-top: 0.25rem; }
+</style>

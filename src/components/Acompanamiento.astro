@@ -1,0 +1,39 @@
+---
+// Bloque del acompañamiento premium (coach) de la página de resultados. Es común a los tres diseños.
+// PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones y enlace de contratación;
+// hasta entonces el botón abre el aviso «próximamente» (a.boton[href="#"]).
+import { Image } from 'astro:assets';
+import { acompanamiento as coach } from '../data/resultados';
+---
+
+<section id="coach" class="prem" aria-labelledby="prem-titulo" data-placeholder="true">
+  <Image src={coach.foto} alt="" width={900} height={600} class="prem__foto" loading="lazy" />
+  <div class="prem__texto">
+    <p class="prem__eti"><span aria-hidden="true">★</span> {coach.eti}</p>
+    <h2 id="prem-titulo" class="prem__titulo">{coach.titulo}</h2>
+    <p class="prem__p">{coach.texto}</p>
+    <ul class="prem__lista" role="list">
+      {coach.puntos.map((t) => <li>{t}</li>)}
+    </ul>
+    <a class="boton boton--grande" href="#">{coach.cta}</a>
+    <p class="prem__nota">{coach.nota}</p>
+  </div>
+</section>
+
+<style is:global>
+  .prem { margin-top: 1.25rem; display: grid; border-radius: 1.5rem; overflow: hidden; background: var(--crema); color: var(--negro); scroll-margin-top: 6rem; }
+  .prem__foto { width: 100%; height: 15rem; object-fit: cover; object-position: center 25%; }
+  .prem__texto { display: grid; gap: 0.9rem; padding: clamp(1.4rem, 1rem + 2vw, 2.4rem); justify-items: start; }
+  .prem__eti { font-size: var(--t1); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris-oscuro); }
+  .prem__eti span { display: inline-block; margin-right: 0.35rem; padding: 0.05em 0.4em; border-radius: 999px; background: var(--acento); color: var(--acento-txt); }
+  .prem__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem); line-height: 1.08; letter-spacing: -0.02em; }
+  .prem__p { font-size: var(--t2); line-height: 1.6; color: #3a342e; }
+  .prem__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+  .prem__lista li { position: relative; padding-left: 1.9rem; font-size: var(--t2); line-height: 1.45; font-weight: 600; }
+  .prem__lista li::before { content: ''; position: absolute; left: 0; top: 0.2em; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--negro) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat; }
+  .prem__nota { font-size: var(--t1); color: var(--gris-oscuro); }
+  @media (min-width: 48rem) {
+    .prem { grid-template-columns: 0.9fr 1.1fr; }
+    .prem__foto { height: 100%; min-height: 22rem; }
+  }
+</style>

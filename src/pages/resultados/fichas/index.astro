@@ -1,0 +1,208 @@
+---
+// Página de resultados del test · DISEÑO 3 · FICHAS: los 3 caminos como tarjetas grandes con foto (en móvil, se
+// pasan con el dedo) y, al pulsar una, se abre una hoja (desde abajo en móvil y desde la derecha en escritorio)
+// con en qué consiste, la formación y cómo llegar, y un botón para hablar con un coach.
+// PENDIENTE CLIENTA / DESARROLLO: contenido de ejemplo (src/data/resultados.ts); ver la nota del diseño 1.
+import { Image } from 'astro:assets';
+import V5 from '../../../layouts/V5.astro';
+import CabResultados from '../../../components/CabResultados.astro';
+import Acompanamiento from '../../../components/Acompanamiento.astro';
+import { caminos } from '../../../data/resultados';
+
+const iconos = {
+  fp: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
+  uni: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+  curso: '<rect x="3" y="5" width="18" height="11" rx="2"/><path d="M2 19h20"/>',
+  solo: '<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
+};
+---
+
+<V5
+  titulo="Tus 3 caminos · NextYou"
+  descripcion="Tus 3 caminos profesionales en tarjetas: abre cada uno para ver en qué consiste y cómo llegar. Y, si quieres, un coach que te acompañe."
+  actual="bachillerato"
+  soloBachillerato
+  ruta=""
+>
+  <main id="contenido" class="res">
+    <div class="ancho res__caja res__caja--ancha">
+      <CabResultados actual={3} lead="Elegidos con tus respuestas. Abre un camino para ver en qué consiste, qué formación necesitas y cómo llegar." />
+
+      <ul class="fi__lista" role="list" aria-label="Tus 3 caminos" tabindex="0">
+        {
+          caminos.map((c, i) => (
+            <li class="fi__item">
+              <button type="button" class="fi" data-abrir={c.id} aria-haspopup="dialog" data-placeholder="true">
+                <Image src={c.foto} alt="" width={640} height={800} class="fi__img" loading="lazy" />
+                <span class="fi__velo" aria-hidden="true"></span>
+                <span class="fi__n" aria-hidden="true">{i + 1}</span>
+                <span class="fi__txt">
+                  <small class="fi__tipo">{c.tipo}</small>
+                  <b class="fi__nombre">{c.nombre}</b>
+                  <span class="fi__resumen">{c.resumen}</span>
+                  <span class="fi__ver">Ver el camino <span aria-hidden="true">→</span></span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="res__nota">No tienes que elegir ya. Repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
+
+      <Acompanamiento />
+    </div>
+  </main>
+
+  {
+    caminos.map((c, i) => (
+      <dialog class="hoja" id={`hoja-${c.id}`} aria-labelledby={`hoja-t-${c.id}`}>
+        <div class="hoja__marco">
+          <header class="hoja__cab">
+            <Image src={c.foto} alt="" width={640} height={420} class="hoja__img" loading="lazy" />
+            <span class="hoja__velo" aria-hidden="true"></span>
+            <button type="button" class="hoja__cerrar" data-cerrar aria-label="Cerrar">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+            </button>
+            <div class="hoja__tit">
+              <small>Camino {i + 1} · {c.tipo}</small>
+              <h2 id={`hoja-t-${c.id}`}>{c.nombre}</h2>
+            </div>
+          </header>
+
+          <div class="hoja__cuerpo">
+            <ul class="hoja__chips" role="list" aria-label="Se te da bien">
+              {c.chips.map((t) => <li>{t}</li>)}
+            </ul>
+
+            <section class="hoja__bloque">
+              <h3>En qué consiste</h3>
+              <dl>
+                <div><dt>Qué haces</dt><dd>{c.que}</dd></div>
+                <div><dt>Un día normal</dt><dd>{c.dia}</dd></div>
+                <div><dt>Por qué encaja contigo</dt><dd>{c.porque}</dd></div>
+              </dl>
+            </section>
+
+            <section class="hoja__bloque">
+              <h3>La formación</h3>
+              <p>{c.formacion}</p>
+            </section>
+
+            <section class="hoja__bloque">
+              <h3>Cómo llegar <small>Hay más de una vía</small></h3>
+              <ol class="hoja__pasos" role="list">
+                {
+                  c.rutas.map((r) => (
+                    <li>
+                      <i aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></i>
+                      <span><b>{r.titulo}</b><small>{r.detalle}</small></span>
+                    </li>
+                  ))
+                }
+              </ol>
+            </section>
+          </div>
+
+          <footer class="hoja__pie">
+            <a class="boton" href="#coach" data-cerrar>Hablar con un coach</a>
+          </footer>
+        </div>
+      </dialog>
+    ))
+  }
+</V5>
+
+<script>
+  // Hoja de cada camino: se abre con la tarjeta, se cierra con la X, Esc o pulsando fuera
+  const hojas = new Map<string, HTMLDialogElement>();
+  document.querySelectorAll<HTMLDialogElement>('dialog.hoja').forEach((d) => hojas.set(d.id.replace('hoja-', ''), d));
+  let origen: HTMLElement | null = null;
+
+  document.querySelectorAll<HTMLElement>('[data-abrir]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const d = hojas.get(b.dataset.abrir!);
+      if (!d) return;
+      origen = b;
+      d.showModal();
+      d.querySelector<HTMLElement>('.hoja__cuerpo')!.scrollTop = 0;
+    })
+  );
+  hojas.forEach((d) => {
+    d.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t === d || t.closest('[data-cerrar]')) d.close();
+    });
+    d.addEventListener('close', () => origen?.focus({ preventScroll: true }));
+  });
+</script>
+
+<style is:global>
+  /* Tarjetas grandes con foto. En móvil se pasan con el dedo; en escritorio, tres a la vez */
+  .fi__lista { list-style: none; margin: 0.5rem 0 0; padding: 0; display: flex; gap: 0.9rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 0.25rem; margin-inline: calc(var(--margen) * -1); padding-inline: var(--margen); scroll-padding-inline: var(--margen); }
+  .fi__lista::-webkit-scrollbar { display: none; }
+  .fi__lista:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+  .fi__item { flex: 0 0 min(80%, 20rem); scroll-snap-align: start; }
+  .fi { position: relative; display: block; width: 100%; aspect-ratio: 4 / 5.4; padding: 0; border: 1px solid var(--linea); border-radius: 1.5rem; overflow: hidden; background: var(--tarjeta); color: var(--crema); font: inherit; text-align: left; cursor: pointer; isolation: isolate; transition: transform 250ms ease, border-color 200ms ease; }
+  .fi:hover { transform: translateY(-4px); border-color: rgb(246 241 232 / 0.4); }
+  .fi:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+  .fi__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .fi__velo { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(14 13 12 / 0) 28%, rgb(14 13 12 / 0.78) 62%, rgb(14 13 12 / 0.96) 100%); }
+  .fi__n { position: absolute; top: 0.9rem; left: 0.9rem; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-weight: 800; }
+  .fi__txt { position: absolute; left: 0; right: 0; bottom: 0; display: grid; gap: 0.35rem; padding: 1.1rem 1.15rem 1.2rem; }
+  .fi__tipo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acento-texto); }
+  .fi__nombre { font-family: var(--titular); font-weight: 800; font-size: clamp(1.5rem, 1.3rem + 0.9vw, 1.9rem); line-height: 1.06; letter-spacing: -0.02em; }
+  .fi__resumen { font-size: var(--t2); line-height: 1.4; color: rgb(246 241 232 / 0.85); }
+  .fi__ver { margin-top: 0.4rem; font-size: var(--t2); font-weight: 700; color: var(--acento-texto); }
+
+  /* La hoja de cada camino */
+  .hoja { border: 0; padding: 0; color: var(--crema); background: var(--tarjeta); max-width: none; max-height: none; overflow: hidden; }
+  .hoja::backdrop { background: rgb(0 0 0 / 0.65); }
+  .hoja__marco { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+  .hoja__cab { position: relative; height: 12rem; overflow: hidden; }
+  .hoja__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+  .hoja__velo { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(14 13 12 / 0.2), rgb(36 32 28 / 1)); }
+  .hoja__cerrar { position: absolute; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; border: 0; background: rgb(14 13 12 / 0.7); color: var(--crema); cursor: pointer; }
+  .hoja__cerrar:hover { background: var(--crema); color: var(--negro); }
+  .hoja__cerrar:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+  .hoja__tit { position: absolute; left: 1.25rem; right: 4rem; bottom: 0.9rem; display: grid; gap: 0.2rem; }
+  .hoja__tit small { font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acento-texto); }
+  .hoja__tit h2 { font-family: var(--titular); font-weight: 800; font-size: clamp(1.75rem, 1.5rem + 1.2vw, 2.25rem); line-height: 1.05; letter-spacing: -0.02em; }
+  .hoja__cuerpo { overflow-y: auto; display: grid; gap: 1.6rem; align-content: start; padding: 1.2rem 1.25rem 1.5rem; overscroll-behavior: contain; }
+  .hoja__chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .hoja__chips li { padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid var(--linea); font-size: var(--t1); }
+  .hoja__bloque { display: grid; gap: 0.75rem; }
+  .hoja__bloque h3 { font-family: var(--titular); font-weight: 800; font-size: 1.1875rem; line-height: 1.15; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
+  .hoja__bloque h3 small { font-family: var(--sans); font-weight: 500; font-size: var(--t1); color: var(--gris); }
+  .hoja__bloque p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.88); }
+  .hoja__bloque dl { display: grid; gap: 0.85rem; margin: 0; }
+  .hoja__bloque dt { font-size: var(--t1); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.15rem; }
+  .hoja__bloque dd { margin: 0; font-size: var(--t2); line-height: 1.5; color: rgb(246 241 232 / 0.92); }
+  /* Cómo llegar: pasos unidos por una línea */
+  .hoja__pasos { list-style: none; margin: 0; padding: 0; display: grid; }
+  .hoja__pasos li { position: relative; display: flex; align-items: center; gap: 0.9rem; padding: 0.55rem 0; }
+  .hoja__pasos li:not(:last-child)::before { content: ''; position: absolute; left: 1.15rem; top: 2.6rem; bottom: -0.5rem; border-left: 2px dotted rgb(246 241 232 / 0.35); }
+  .hoja__pasos i { flex: none; position: relative; display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%; background: var(--acento); color: var(--acento-txt); }
+  .hoja__pasos span { display: grid; gap: 0.1rem; min-width: 0; }
+  .hoja__pasos b { font-size: var(--t2); line-height: 1.3; }
+  .hoja__pasos small { font-size: var(--t1); color: var(--gris); }
+  .hoja__pie { padding: 0.9rem 1.25rem calc(0.9rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--linea); background: var(--tarjeta); }
+  .hoja__pie .boton { width: 100%; justify-content: center; }
+
+  /* Móvil: hoja que sube desde abajo */
+  @media (max-width: 47.99rem) {
+    .hoja { width: 100%; max-height: 90svh; height: 90svh; margin: auto 0 0; border-radius: 1.5rem 1.5rem 0 0; }
+    .hoja[open] { animation: hoja-sube 320ms cubic-bezier(.2,.8,.2,1); }
+    @keyframes hoja-sube { from { transform: translateY(100%); } }
+  }
+  /* Escritorio: tres tarjetas y hoja lateral */
+  @media (min-width: 48rem) {
+    .fi__lista { overflow: visible; display: grid; grid-template-columns: repeat(3, 1fr); margin-inline: 0; padding-inline: 0; }
+    .fi__item { flex: none; }
+    .hoja { width: min(100%, 34rem); height: 100svh; margin: 0 0 0 auto; border-radius: 1.5rem 0 0 1.5rem; }
+    .hoja[open] { animation: hoja-entra 320ms cubic-bezier(.2,.8,.2,1); }
+    @keyframes hoja-entra { from { transform: translateX(100%); } }
+  }
+  body:has(dialog.hoja[open]) { overflow: hidden; }
+  @media (prefers-reduced-motion: reduce) { .fi { transition: none; } .hoja[open] { animation: none; } }
+</style>
