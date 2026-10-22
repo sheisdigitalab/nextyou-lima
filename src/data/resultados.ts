@@ -10,11 +10,16 @@ export interface Ruta {
   titulo: string;
   detalle: string;
   tipo: 'fp' | 'uni' | 'curso' | 'solo';
+  // Duración aproximada en meses, solo para dibujar la línea de cada vía; null = a tu ritmo
+  meses: number | null;
+  // Duración en pocas palabras, visible junto a la línea de la vía
+  duracion: string;
 }
 
 export interface Camino {
   id: string;
   tipo: string; // «Lo que más te pega», «El puente», «El salto»
+  definicion: string; // qué significa ese tipo (sale en la ficha, bajo «Camino N · tipo»)
   nombre: string;
   foto: ImageMetadata;
   chips: string[];
@@ -35,6 +40,7 @@ export const caminos: Camino[] = [
   {
     id: 'contenido',
     tipo: 'Lo que más te pega',
+    definicion: 'El que mejor encaja con cómo eres.',
     nombre: 'Creación de contenido',
     foto: noa,
     chips: ['Creatividad', 'Comunicación', 'Redes'],
@@ -52,16 +58,17 @@ export const caminos: Camino[] = [
       'Grabar y editar vídeo, escribir textos cortos que enganchen y entender los números: qué funciona y por qué. Las empresas no te piden un título concreto. Te piden ver lo que ya has hecho.',
     // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y requisitos de acceso
     rutas: [
-      { titulo: 'FP de Realización de Proyectos Audiovisuales y Espectáculos', detalle: 'Grado superior · 2 años · Grabación, montaje y postproducción', tipo: 'fp' },
-      { titulo: 'FP de Marketing y Publicidad', detalle: 'Grado superior · 2 años · Redes y campañas para marcas', tipo: 'fp' },
-      { titulo: 'Grado en Comunicación Audiovisual', detalle: 'Universidad · 4 años', tipo: 'uni' },
-      { titulo: 'Cursos de vídeo y redes', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
-      { titulo: 'Por tu cuenta', detalle: 'Abre un canal y aprende publicando', tipo: 'solo' },
+      { titulo: 'FP de Realización de Proyectos Audiovisuales y Espectáculos', detalle: 'Grado superior · 2 años · Grabación, montaje y postproducción', tipo: 'fp', meses: 24, duracion: '2 años' },
+      { titulo: 'FP de Marketing y Publicidad', detalle: 'Grado superior · 2 años · Redes y campañas para marcas', tipo: 'fp', meses: 24, duracion: '2 años' },
+      { titulo: 'Grado en Comunicación Audiovisual', detalle: 'Universidad · 4 años', tipo: 'uni', meses: 48, duracion: '4 años' },
+      { titulo: 'Cursos de vídeo y redes', detalle: 'Unos meses · Muchos son online', tipo: 'curso', meses: 6, duracion: 'Unos meses' },
+      { titulo: 'Por tu cuenta', detalle: 'Abre un canal y aprende publicando', tipo: 'solo', meses: null, duracion: 'A tu ritmo' },
     ],
   },
   {
     id: 'animacion',
     tipo: 'El puente',
+    definicion: 'Cerca de algo que ya te gusta.',
     nombre: 'Animación 3D',
     foto: laia,
     chips: ['Dibujo', 'Tecnología', 'En equipo'],
@@ -79,15 +86,16 @@ export const caminos: Camino[] = [
       'Dibujar y entender cómo se mueven las cosas (el peso, el equilibrio, el ritmo), y manejar programas 3D. En este sector tu portfolio pesa tanto como el título: lo que importa es lo que eres capaz de hacer.',
     // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y si los cursos son online
     rutas: [
-      { titulo: 'FP de Animaciones 3D, Juegos y Entornos Interactivos', detalle: 'Grado superior · 2 años', tipo: 'fp' },
-      { titulo: 'Grado en Animación o en Diseño de Videojuegos', detalle: 'Universidad o escuela superior · 4 años', tipo: 'uni' },
-      { titulo: 'Cursos de modelado y animación 3D', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
-      { titulo: 'Por tu cuenta', detalle: 'Blender es gratis y hay miles de tutoriales para empezar', tipo: 'solo' },
+      { titulo: 'FP de Animaciones 3D, Juegos y Entornos Interactivos', detalle: 'Grado superior · 2 años', tipo: 'fp', meses: 24, duracion: '2 años' },
+      { titulo: 'Grado en Animación o en Diseño de Videojuegos', detalle: 'Universidad o escuela superior · 4 años', tipo: 'uni', meses: 48, duracion: '4 años' },
+      { titulo: 'Cursos de modelado y animación 3D', detalle: 'Unos meses · Muchos son online', tipo: 'curso', meses: 6, duracion: 'Unos meses' },
+      { titulo: 'Por tu cuenta', detalle: 'Blender es gratis y hay miles de tutoriales para empezar', tipo: 'solo', meses: null, duracion: 'A tu ritmo' },
     ],
   },
   {
     id: 'ciberseguridad',
     tipo: 'El salto',
+    definicion: 'Uno que quizá no te habías planteado.',
     nombre: 'Ciberseguridad',
     foto: aitana,
     chips: ['Lógica', 'Retos', 'Tecnología'],
@@ -104,10 +112,10 @@ export const caminos: Camino[] = [
       'Cómo funcionan los ordenadores y las redes, y después cómo se protegen y cómo se atacan (siempre de forma legal). Se aprende practicando: hay webs gratuitas con retos para empezar desde cero.',
     // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones, requisitos de acceso y la duración del curso de especialización
     rutas: [
-      { titulo: 'FP de Informática + curso de especialización en Ciberseguridad', detalle: 'Grado superior como ASIR (2 años) y después un curso de unos 9 meses', tipo: 'fp' },
-      { titulo: 'Grado en Ingeniería de la Ciberseguridad', detalle: 'Universidad · 4 años', tipo: 'uni' },
-      { titulo: 'Cursos y certificaciones', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
-      { titulo: 'Por tu cuenta', detalle: 'Retos gratis de hacking ético, como picoCTF o TryHackMe', tipo: 'solo' },
+      { titulo: 'FP de Informática + curso de especialización en Ciberseguridad', detalle: 'Grado superior como ASIR (2 años) y después un curso de unos 9 meses', tipo: 'fp', meses: 33, duracion: '2 años + curso' },
+      { titulo: 'Grado en Ingeniería de la Ciberseguridad', detalle: 'Universidad · 4 años', tipo: 'uni', meses: 48, duracion: '4 años' },
+      { titulo: 'Cursos y certificaciones', detalle: 'Unos meses · Muchos son online', tipo: 'curso', meses: 6, duracion: 'Unos meses' },
+      { titulo: 'Por tu cuenta', detalle: 'Retos gratis de hacking ético, como picoCTF o TryHackMe', tipo: 'solo', meses: null, duracion: 'A tu ritmo' },
     ],
   },
 ];
@@ -116,15 +124,17 @@ export const caminos: Camino[] = [
 export const acompanamiento = {
   foto: coach,
   eti: 'Acompañamiento premium',
-  titulo: 'Un coach te guía hasta que lo tengas claro',
-  texto:
-    'Sesiones 1 a 1 por videollamada con alguien que conoce estas profesiones. Repasáis tus 3 caminos, resolvéis tus dudas y sales con un plan de por dónde empezar.',
-  puntos: [
-    'Sesiones individuales online',
-    'Revisáis juntos tus 3 caminos y tus dudas',
-    'Sales con un plan claro para dar el primer paso',
-  ],
+  // Opción C · banda discreta (la que se ve)
+  frase: 'Si dudas entre tus 3 caminos, lo vemos juntos y sales con un plan.',
+  firma: 'Coach de orientación · Sesiones 1 a 1 por videollamada',
+  // Opción B · «Tus 3 caminos llevan al coach» (montada, oculta mientras coachVariante sea 'C')
+  titulo: { antes: '¿Aún dudas entre tus ', enfasis: '3 caminos', despues: '?' },
+  intro: 'Un coach los repasa contigo, uno a uno, hasta que sepas cuál probar primero.',
+  tuCoach: 'Tu coach',
+  plan: { titulo: 'Tu plan', texto: 'Qué estudiar y por dónde empezar' },
+  chips: ['Online', 'Por videollamada', '1 a 1'],
+  // Común a las dos
   cta: 'Quiero hablar con un coach',
-  // PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones y enlace de contratación
-  nota: 'Es opcional: tus 3 caminos y sus fichas son gratis.',
+  // PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach
+  nota: 'Opcional · Tus 3 caminos y sus fichas son gratis.',
 };

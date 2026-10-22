@@ -1,6 +1,7 @@
 ---
-// Página de resultados del test: los 3 caminos (cada uno se abre para ver en qué consiste, qué formación
-// requiere y cómo llegar) y, debajo, el acompañamiento premium que se puede contratar.
+// Página de resultados del test: un mapa fino con «Tú» y tres ramas hacia los 3 caminos. Al elegir uno se ve su
+// ficha (qué haces, el dato, qué necesitas saber y cómo llegar, con las vías comparadas por duración) y, debajo,
+// el acompañamiento premium que se puede contratar.
 //
 // PENDIENTE CLIENTA / DESARROLLO:
 //  - Los caminos de esta página son de EJEMPLO (src/data/resultados.ts). En el producto real salen de las respuestas del test.
@@ -10,6 +11,10 @@ import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
 import { caminos, acompanamiento as coach } from '../../data/resultados';
 
+// Bloque del coach: 'C' = banda discreta (la que se ve) · 'B' = «tus 3 caminos llevan al coach» (montada, oculta)
+const coachVariante: 'C' | 'B' = 'C';
+const MAX_MESES = 48; // la línea más larga (4 años) ocupa todo el ancho
+const ramas = ['M150 0 V10 C150 38 50 34 50 70', 'M150 0 V70', 'M150 0 V10 C150 38 250 34 250 70'];
 const iconos = {
   fp: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
   uni: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
@@ -31,98 +36,178 @@ const iconos = {
         <p class="res__saludo" data-saludo>¡Listo!</p>
         <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
         <p class="res__lead">Salen de tus respuestas. No son una lista cerrada: son tres pistas para empezar a explorar.</p>
-        <ul class="res__guia" role="list">
-          <li><b>1 · Lo que más te pega:</b> el que mejor encaja con cómo eres.</li>
-          <li><b>2 · El puente:</b> cerca de algo que ya te gusta.</li>
-          <li><b>3 · El salto:</b> uno que quizá no te habías planteado.</li>
-          <li>Toca cada uno para ver de qué va y cómo llegar.</li>
-        </ul>
+        <p class="res__toca">Toca cada uno para ver de qué va y cómo llegar.</p>
         <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
       </header>
 
-      <ol class="res__lista" role="list">
+      <section class="mp" data-mapa data-sel="0" aria-label="Mapa de tus caminos">
+        <div class="mp__tu"><span class="mp__punto" aria-hidden="true"></span><b>Tú</b></div>
+        <svg class="mp__ramas" viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true">
+          {ramas.map((d, i) => <path class="mp__rama" data-r={i} d={d} />)}
+        </svg>
+        <div class="mp__destinos" role="tablist" aria-label="Tus 3 caminos">
+          {
+            caminos.map((c, i) => (
+              <button type="button" role="tab" class="mp__dest" id={`tab-${c.id}`} aria-controls={`panel-${c.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-i={i}>
+                <span class="mp__foto">
+                  <Image src={c.foto} alt="" width={140} height={140} loading="lazy" />
+                  <span class="mp__n" aria-hidden="true">{i + 1}</span>
+                </span>
+                <small class="mp__tipo">{c.tipo}</small>
+                <b class="mp__nombre">{c.nombre}</b>
+              </button>
+            ))
+          }
+        </div>
+      </section>
+
+      <nav class="mp__fija" aria-label="Cambiar de camino" data-fija>
         {
           caminos.map((c, i) => (
-            <li>
-              <details class="cam" name="camino" open={i === 0} data-placeholder="true">
-                <summary class="cam__cabeza">
-                  <span class="cam__n" aria-hidden="true">{i + 1}</span>
-                  <span class="cam__tx">
-                    <small class="cam__tipo">{c.tipo}</small>
-                    <b class="cam__nombre">{c.nombre}</b>
-                    <span class="cam__resumen">{c.resumen}</span>
-                  </span>
-                  <Image src={c.foto} alt="" width={160} height={160} class="cam__foto" loading="lazy" />
-                  <span class="cam__mas" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                  </span>
-                </summary>
-
-                <div class="cam__cuerpo">
-                  <ul class="cam__chips" role="list" aria-label="Se te da bien">
-                    {c.chips.map((t) => <li>{t}</li>)}
-                  </ul>
-
-                  <section class="cam__bloque" aria-label={`En qué consiste ${c.nombre}`}>
-                    <h2 class="cam__h">En qué consiste</h2>
-                    <dl class="cam__datos">
-                      <div><dt>Qué haces</dt><dd>{c.que}</dd></div>
-                      {c.trabajo && <div><dt>Cómo se llama este trabajo</dt><dd>{c.trabajo}</dd></div>}
-                      <div><dt>Un día normal</dt><dd>{c.dia}</dd></div>
-                      <div><dt>Por qué encaja contigo</dt><dd>{c.porque}</dd></div>
-                    </dl>
-                  </section>
-
-                  <section class="cam__bloque" aria-label={`El dato de ${c.nombre}`}>
-                    <Fragment set:html="<!-- PENDIENTE CLIENTA: validar dato -->" />
-                    <h2 class="cam__h">El dato</h2>
-                    <p class="cam__p">{c.dato}</p>
-                  </section>
-
-                  <p class="cam__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
-
-                  <section class="cam__bloque" aria-label={`${c.formacionTitulo ?? 'Formación'} de ${c.nombre}`}>
-                    <h2 class="cam__h">{c.formacionTitulo ?? 'La formación'}</h2>
-                    <p class="cam__p">{c.formacion}</p>
-                  </section>
-
-                  <section class="cam__bloque" aria-label={`Cómo llegar a ${c.nombre}`}>
-                    <h2 class="cam__h">Cómo llegar <small>Hay más de un camino</small></h2>
-                    <ul class="cam__rutas" role="list">
-                      {c.rutas.map((r) => (
-                        <li>
-                          <i aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></i>
-                          <span><b>{r.titulo}</b><small>{r.detalle}</small></span>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-
-                  <a class="cam__coach" href="#coach">¿Quieres ayuda para decidir? <b>Habla con un coach</b> <span aria-hidden="true">↓</span></a>
-                </div>
-              </details>
-            </li>
+            <button type="button" class="mp__fb" data-i={i} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Camino ${i + 1}: ${c.nombre}`}>
+              <span class="mp__fn" aria-hidden="true">{i + 1}</span>
+              <span class="mp__ft">{c.nombre}</span>
+            </button>
           ))
         }
-      </ol>
+      </nav>
+
+      {
+        caminos.map((c, i) => (
+          <section class="mp__panel" role="tabpanel" id={`panel-${c.id}`} aria-labelledby={`tab-${c.id}`} hidden={i !== 0} data-placeholder="true" tabindex="0">
+            <header class="mp__cab">
+              <p class="mp__sup">Camino {i + 1} · {c.tipo}</p>
+              <p class="mp__def">{c.definicion}</p>
+              <h2 class="mp__h2">{c.nombre}</h2>
+              <p class="mp__gancho">{c.resumen}</p>
+              <ul class="mp__chips" role="list" aria-label="Se te da bien">
+                {c.chips.map((t) => <li>{t}</li>)}
+              </ul>
+            </header>
+
+            <div class="mp__bloque">
+              <h3 class="mp__h3">En qué consiste</h3>
+              <dl class="mp__datos">
+                <div class="mp__dato mp__dato--que"><dt>Qué haces</dt><dd>{c.que}</dd></div>
+                {c.trabajo && <div class="mp__dato mp__dato--trabajo"><dt>Cómo se llama este trabajo</dt><dd>{c.trabajo}</dd></div>}
+                <div class="mp__dato mp__dato--dia"><dt>Un día normal</dt><dd>{c.dia}</dd></div>
+                <div class="mp__dato mp__dato--porque"><dt>Por qué encaja contigo</dt><dd>{c.porque}</dd></div>
+              </dl>
+            </div>
+
+            <div class="mp__bloque">
+              <h3 class="mp__h3">Cómo llegar <small>Hay más de un camino</small></h3>
+              <ol class="vias" role="list">
+                {
+                  c.rutas.map((r) => (
+                    <li>
+                      <details class={`via via--${r.tipo}`} style={r.meses ? `--w: ${Math.round((r.meses / MAX_MESES) * 100)}%` : undefined}>
+                        <summary>
+                          <span class="via__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></span>
+                          <b class="via__tit">{r.titulo}</b>
+                          <span class="via__mas" aria-hidden="true"></span>
+                          <span class="via__pista">
+                            <span class="via__linea" aria-hidden="true"><span class="via__barra"></span></span>
+                            <span class="via__dur">{r.duracion}</span>
+                          </span>
+                        </summary>
+                        <p class="via__det">{r.detalle}</p>
+                      </details>
+                    </li>
+                  ))
+                }
+              </ol>
+              <p class="mp__ref">Cuanto más larga la línea, más tiempo de formación. Toca una vía para ver qué aprendes. Las duraciones son aproximadas.</p>
+            </div>
+
+            <div class="mp__mas">
+              <details class="mp__det">
+                <Fragment set:html="<!-- PENDIENTE CLIENTA: validar dato -->" />
+                <summary><span>El dato</span><i aria-hidden="true"></i></summary>
+                <p class="mp__p">{c.dato}</p>
+                <p class="mp__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
+              </details>
+              <details class="mp__det">
+                <summary><span>{c.formacionTitulo ?? 'La formación'}</span><i aria-hidden="true"></i></summary>
+                <p class="mp__p">{c.formacion}</p>
+              </details>
+            </div>
+
+            <a class="mp__coach" href="#coach">¿Quieres ayuda para decidir? <b>Habla con un coach</b> <span aria-hidden="true">↓</span></a>
+          </section>
+        ))
+      }
 
       <p class="res__nota"><strong>No tienes que elegir ya.</strong><br />Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
 
       <!-- ===================== Acompañamiento premium ===================== -->
-      <section id="coach" class="prem" aria-labelledby="prem-titulo" data-placeholder="true">
-        <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones y enlace de contratación -->" />
-        <Image src={coach.foto} alt="" width={900} height={600} class="prem__foto" loading="lazy" />
-        <div class="prem__texto">
-          <p class="prem__eti"><span aria-hidden="true">★</span> {coach.eti}</p>
-          <h2 id="prem-titulo" class="prem__titulo">{coach.titulo}</h2>
-          <p class="prem__p">{coach.texto}</p>
-          <ul class="prem__lista" role="list">
-            {coach.puntos.map((t) => <li>{t}</li>)}
-          </ul>
-          <a class="boton boton--grande" href="#">{coach.cta}</a>
-          <p class="prem__nota">{coach.nota}</p>
-        </div>
-      </section>
+      {
+        coachVariante === 'C' && (
+          <section id="coach" class="coach coach--c" aria-label="Acompañamiento premium" data-placeholder="true">
+            <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach -->" />
+            <Image src={coach.foto} alt="" width={220} height={220} class="coach__av" loading="lazy" />
+            <div class="coach__txt">
+              <p class="mp__sup"><span aria-hidden="true">★</span> {coach.eti}</p>
+              <blockquote class="coach__frase">«{coach.frase}»</blockquote>
+              <p class="coach__firma">{coach.firma}</p>
+            </div>
+            <div class="coach__cta">
+              <a class="boton" href="#">{coach.cta} <span aria-hidden="true">→</span></a>
+              <small>{coach.nota}</small>
+            </div>
+          </section>
+        )
+      }
+      {
+        coachVariante === 'B' && (
+          <section id="coach" class="coach coach--b" aria-labelledby="coach-titulo" data-placeholder="true">
+            <Fragment set:html="<!-- PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach -->" />
+            <p class="mp__sup"><span aria-hidden="true">★</span> {coach.eti}</p>
+            <h2 id="coach-titulo" class="coach__tit">{coach.titulo.antes}<em>{coach.titulo.enfasis}</em>{coach.titulo.despues}</h2>
+            <p class="coach__intro">{coach.intro}</p>
+
+            <div class="coach__flujo">
+              <ul class="coach__cams" role="list" aria-label="Tus 3 caminos">
+                {
+                  caminos.map((c, i) => (
+                    <li class={i === 2 ? 'salto' : undefined}>
+                      <Image src={c.foto} alt="" width={68} height={68} loading="lazy" />
+                      {c.nombre}
+                    </li>
+                  ))
+                }
+              </ul>
+              <svg class="coach__lin" viewBox="0 0 120 180" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 30 C60 30 60 90 120 90" />
+                <path d="M0 90 H120" />
+                <path d="M0 150 C60 150 60 90 120 90" class="pt" />
+              </svg>
+              <div class="coach__yo">
+                <Image src={coach.foto} alt="" width={192} height={192} loading="lazy" />
+                <b>{coach.tuCoach}</b>
+              </div>
+              <svg class="coach__lin coach__lin--lima" viewBox="0 0 120 180" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 90 H120" />
+              </svg>
+              <div class="coach__plan">
+                <span class="coach__ok" aria-hidden="true">✓</span>
+                <b>{coach.plan.titulo}</b>
+                <small>{coach.plan.texto}</small>
+              </div>
+            </div>
+
+            <div class="coach__pie">
+              <ul class="mp__chips coach__chips" role="list">
+                {coach.chips.map((t) => <li>{t}</li>)}
+              </ul>
+              <div class="coach__cta">
+                <a class="boton boton--grande" href="#">{coach.cta} <span aria-hidden="true">→</span></a>
+                <small>{coach.nota}</small>
+              </div>
+            </div>
+          </section>
+        )
+      }
     </div>
   </main>
 </V5>
@@ -132,6 +217,81 @@ const iconos = {
   const nombre = (new URLSearchParams(location.search).get('nombre') || '').trim().slice(0, 40);
   const saludo = document.querySelector<HTMLElement>('[data-saludo]');
   if (saludo && nombre) saludo.textContent = `¡Listo, ${nombre}!`;
+
+  // Pestañas: elegir un camino muestra su ficha y resalta su rama del mapa (también con las flechas del teclado)
+  const mapa = document.querySelector<HTMLElement>('[data-mapa]');
+  if (mapa) {
+    const tabs = [...mapa.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const paneles = [...document.querySelectorAll<HTMLElement>('.mp__panel')];
+    const fija = document.querySelector<HTMLElement>('[data-fija]');
+    const botones = fija ? [...fija.querySelectorAll<HTMLButtonElement>('.mp__fb')] : [];
+    const menu = document.querySelector<HTMLElement>('.menu');
+    const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // El menú de la web es fijo: la barra de caminos se pega justo debajo y la ficha se alinea bajo las dos
+    const medir = () => document.documentElement.style.setProperty('--menu-h', `${menu?.offsetHeight ?? 0}px`);
+    medir();
+    window.addEventListener('resize', medir);
+
+    const elegir = (i: number, opciones: { foco?: boolean; ir?: boolean } = {}) => {
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      botones.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
+      paneles.forEach((p, k) => (p.hidden = k !== i));
+      mapa.dataset.sel = String(i);
+      if (opciones.foco) tabs[i].focus();
+      // Llevar la vista a la ficha para que se note el cambio (solo si queda lejos de lo que se está viendo)
+      if (opciones.ir && paneles[i].getBoundingClientRect().top > window.innerHeight * 0.5) {
+        paneles[i].scrollIntoView({ behavior: sinMovimiento.matches ? 'auto' : 'smooth', block: 'start' });
+      }
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => elegir(i, { ir: true }));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); elegir((i + 1) % n, { foco: true }); }
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); elegir((i + n - 1) % n, { foco: true }); }
+        else if (e.key === 'Home') { e.preventDefault(); elegir(0, { foco: true }); }
+        else if (e.key === 'End') { e.preventDefault(); elegir(n - 1, { foco: true }); }
+      });
+    });
+
+    // Barra 1·2·3: cambia de camino y lleva al principio de su ficha
+    botones.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        elegir(i);
+        paneles[i].scrollIntoView({ behavior: sinMovimiento.matches ? 'auto' : 'smooth', block: 'start' });
+      })
+    );
+
+    // La barra solo aparece cuando los tres caminos del mapa ya han quedado arriba, y se va al llegar al bloque del coach
+    const destinos = mapa.querySelector<HTMLElement>('.mp__destinos');
+    const bloqueCoach = document.querySelector<HTMLElement>('#coach');
+    if (fija && destinos && 'IntersectionObserver' in window) {
+      let mapaFuera = false;
+      let coachCerca = false;
+      const actualizar = () => fija.classList.toggle('is-on', mapaFuera && !coachCerca);
+      const altoMenu = menu?.offsetHeight ?? 0;
+      new IntersectionObserver(
+        ([e]) => {
+          mapaFuera = !e.isIntersecting && e.boundingClientRect.top < 0;
+          actualizar();
+        },
+        { rootMargin: `-${altoMenu + 4}px 0px 0px 0px` }
+      ).observe(destinos);
+      if (bloqueCoach) {
+        new IntersectionObserver(
+          ([e]) => {
+            coachCerca = e.isIntersecting;
+            actualizar();
+          },
+          { rootMargin: `-${altoMenu}px 0px -35% 0px` }
+        ).observe(bloqueCoach);
+      }
+    }
+  }
 </script>
 
 <style is:global>
@@ -141,79 +301,170 @@ const iconos = {
   .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
   .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
   .res__tres { display: inline-block; padding: 0 0.22em; border-radius: 0.2em; background: var(--acento); color: var(--acento-txt); }
-  .res__guia { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.2rem; max-width: 38rem; font-size: var(--t1); line-height: 1.45; color: var(--gris); }
-  .res__guia b { color: var(--crema); font-weight: 700; }
-  .res__guia li:last-child { margin-top: 0.25rem; }
-  .cam__ref { margin: -0.6rem 0 0; font-size: var(--t1); line-height: 1.4; color: var(--gris); }
+  .res__toca { margin: 0; font-size: var(--t1); line-height: 1.45; color: var(--gris); }
   .res__lead { max-width: 38rem; font-size: var(--t3, 1.125rem); line-height: 1.55; color: var(--gris); }
 
-  .res__lista { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.85rem; }
+  /* El mapa fino: «Tú» y tres ramas de 1 px hacia los tres caminos (como el de la web) */
+  .mp { display: grid; justify-items: center; margin-top: 0.5rem; }
+  .mp__tu { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.4rem 1rem 0.4rem 0.5rem; border-radius: 999px; background: var(--crema); color: var(--negro); font-size: var(--t2); }
+  .mp__punto { width: 1rem; height: 1rem; border-radius: 50%; background: var(--acento); border: 3px solid var(--negro); }
+  .mp__ramas { width: 100%; height: 4.5rem; display: block; overflow: visible; }
+  .mp__rama { fill: none; stroke: rgb(246 241 232 / 0.5); stroke-width: 1.25; stroke-linecap: round; vector-effect: non-scaling-stroke; transition: stroke 250ms ease, stroke-width 250ms ease; }
+  .mp__rama[data-r='2'] { stroke-dasharray: 2 5; } /* el salto, punteado como en la web */
+  .mp[data-sel='0'] .mp__rama[data-r='0'], .mp[data-sel='1'] .mp__rama[data-r='1'], .mp[data-sel='2'] .mp__rama[data-r='2'] { stroke: var(--acento); stroke-width: 1.75; }
+  .mp__destinos { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .mp__dest { display: grid; justify-items: center; align-content: start; gap: 0.3rem; padding: 0.7rem 0.3rem 0.9rem; min-height: 44px; border-radius: 1.1rem; border: 1px solid var(--linea); background: transparent; color: var(--crema); font: inherit; cursor: pointer; text-align: center; transition: background-color 200ms ease, border-color 200ms ease; }
+  .mp__dest:hover { background: rgb(246 241 232 / 0.04); }
+  .mp__dest[aria-selected='true'] { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 6%, transparent); }
+  .mp__dest:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+  .mp__foto { position: relative; width: clamp(3.4rem, 2.4rem + 4vw, 5rem); aspect-ratio: 1; margin-bottom: 0.2rem; }
+  .mp__foto img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid var(--linea); }
+  .mp__dest[aria-selected='true'] .mp__foto img { border-color: var(--acento); }
+  .mp__n { position: absolute; right: -0.25rem; top: -0.25rem; display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--negro); border: 1px solid var(--acento); color: var(--crema); font-weight: 700; font-size: 0.875rem; }
+  .mp__tipo { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--acento-texto); line-height: 1.15; }
+  .mp__nombre { font-family: var(--titular); font-weight: 700; font-size: clamp(0.9375rem, 0.85rem + 0.5vw, 1.2rem); line-height: 1.12; letter-spacing: -0.02em; overflow-wrap: break-word; }
 
-  /* Cada camino: tarjeta que se abre */
-  .cam { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 1.25rem; transition: border-color 200ms ease, background-color 200ms ease; }
-  .cam[open] { border-color: rgb(246 241 232 / 0.28); }
-  .cam__cabeza { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 0.9rem; padding: 1rem 1.1rem; min-height: 44px; cursor: pointer; list-style: none; border-radius: 1.25rem; }
-  .cam__cabeza::-webkit-details-marker { display: none; }
-  .cam__cabeza:hover { background: rgb(246 241 232 / 0.04); }
-  .cam__cabeza:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
-  .cam__n { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--crema); color: var(--negro); font-weight: 800; font-size: 1rem; }
-  .cam__tx { display: grid; gap: 0.15rem; min-width: 0; }
-  .cam__tipo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acento-texto); }
-  .cam__nombre { font-family: var(--titular); font-weight: 800; font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.6rem); line-height: 1.12; letter-spacing: -0.01em; }
-  .cam__resumen { font-size: var(--t2); line-height: 1.45; color: var(--gris); }
-  .cam__foto { width: 3.6rem; height: 3.6rem; border-radius: 50%; object-fit: cover; }
-  .cam__mas { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 1px solid var(--linea); color: var(--crema); transition: transform 250ms ease; }
-  .cam[open] .cam__mas { transform: rotate(180deg); }
+  /* Ficha del camino elegido */
+  .mp__panel { scroll-margin-top: calc(var(--menu-h, 4.5rem) + 3.6rem); display: grid; gap: 1.9rem; padding: clamp(1.2rem, 1rem + 1.5vw, 2rem); border-radius: 1.25rem; border: 1px solid var(--linea); }
+  .mp__panel[hidden] { display: none; }
+  .mp__panel:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+  .mp__cab { display: grid; gap: 0.6rem; }
+  .mp__sup { font-size: var(--t1); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--acento-texto); }
+  .mp__def { margin: -0.25rem 0 0; font-size: var(--t2); line-height: 1.4; color: rgb(246 241 232 / 0.78); }
+  .mp__h2 { font-family: var(--titular); font-weight: 700; font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem); line-height: 1.05; letter-spacing: -0.02em; }
+  .mp__gancho { font-size: var(--t3, 1.125rem); line-height: 1.45; color: rgb(246 241 232 / 0.88); max-width: 38rem; }
+  .mp__chips { list-style: none; margin: 0.25rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .mp__chips li { padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid var(--linea); font-size: var(--t1); }
+  .mp__bloque { display: grid; gap: 0.85rem; }
+  .mp__h3 { font-family: var(--titular); font-weight: 700; font-size: 1.1875rem; line-height: 1.15; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
+  .mp__h3 small { font-family: var(--sans); font-weight: 500; font-size: var(--t1); color: var(--gris); }
+  .mp__p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
+  .mp__ref { font-size: var(--t1); line-height: 1.4; color: var(--gris); }
+  /* Datos de la ficha: una fila por dato (aro fino con icono, etiqueta en lima, texto cómodo), separadas por líneas de 1 px */
+  .mp__datos { display: grid; margin: 0; }
+  .mp__dato { display: grid; grid-template-columns: 2.4rem 1fr; column-gap: 1rem; align-content: start; padding-block: 1.15rem; border-top: 1px solid var(--linea); }
+  .mp__dato:first-child { border-top: 0; padding-top: 0.25rem; }
+  .mp__dato::before { content: ''; grid-row: 1 / span 2; width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1px solid var(--acento); background: center / 1.2rem no-repeat; }
+  .mp__dato--que::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6f1e8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18'/%3E%3C/svg%3E"); }
+  .mp__dato--trabajo::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6f1e8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12V4h8l10 10-8 8z'/%3E%3Ccircle cx='7.5' cy='8.5' r='1'/%3E%3C/svg%3E"); }
+  .mp__dato--dia::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6f1e8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E"); }
+  .mp__dato--porque::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6f1e8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E"); }
+  .mp__datos dt { grid-column: 2; margin: 0.15rem 0 0.3rem; font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acento-texto); }
+  .mp__datos dd { grid-column: 2; margin: 0; font-size: var(--t2); line-height: 1.55; color: rgb(246 241 232 / 0.92); }
+  .mp__dato--trabajo dd { font-weight: 600; color: var(--crema); }
 
-  .cam__cuerpo { display: grid; gap: 1.4rem; padding: 0.4rem 1.1rem 1.4rem; border-top: 1px solid var(--linea); margin-top: 0.1rem; padding-top: 1.2rem; }
-  .cam__chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .cam__chips li { padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid var(--linea); font-size: var(--t1); color: var(--crema); }
-  .cam__bloque { display: grid; gap: 0.7rem; }
-  .cam__h { font-family: var(--titular); font-weight: 800; font-size: 1.1875rem; line-height: 1.15; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
-  .cam__h small { font-family: var(--sans); font-weight: 500; font-size: var(--t1); color: var(--gris); }
-  .cam__p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
-  .cam__datos { display: grid; gap: 0.85rem; margin: 0; }
-  .cam__datos dt { font-size: var(--t1); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.15rem; }
-  .cam__datos dd { margin: 0; font-size: var(--t2); line-height: 1.5; color: rgb(246 241 232 / 0.92); }
-  .cam__rutas { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
-  .cam__rutas li { display: flex; align-items: center; gap: 0.85rem; padding: 0.8rem 0.95rem; border-radius: 0.9rem; background: rgb(246 241 232 / 0.05); }
-  .cam__rutas i { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--acento); color: var(--acento-txt); }
-  .cam__rutas span { display: grid; gap: 0.1rem; min-width: 0; }
-  .cam__rutas b { font-size: var(--t2); line-height: 1.3; }
-  .cam__rutas small { font-size: var(--t1); color: var(--gris); }
-  .cam__coach { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; min-height: 44px; padding: 0.7rem 1rem; border-radius: 0.9rem; border: 1px dashed rgb(246 241 232 / 0.3); color: var(--crema); text-decoration: none; font-size: var(--t2); }
-  .cam__coach b { color: var(--acento-texto); }
-  .cam__coach:hover { border-color: var(--acento); }
-  .cam__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+  /* Lo de menos importancia, plegado en acordeones finos (se abre al tocar) */
+  .mp__mas { display: grid; border-top: 1px solid var(--linea); }
+  .mp__det { border-bottom: 1px solid var(--linea); }
+  .mp__det summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.25rem; padding-block: 0.4rem; cursor: pointer; list-style: none; font-family: var(--titular); font-weight: 700; font-size: 1.0625rem; line-height: 1.2; }
+  .mp__det summary::-webkit-details-marker { display: none; }
+  .mp__det summary:hover { color: var(--acento-texto); }
+  .mp__det summary:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.4rem; }
+  .mp__det summary i { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--linea); }
+  .mp__det summary i::before { content: ''; width: 0.45rem; height: 0.45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 200ms ease; }
+  .mp__det[open] summary i { border-color: var(--acento); }
+  .mp__det[open] summary i::before { transform: translateY(2px) rotate(-135deg); }
+  .mp__det > .mp__p { padding-bottom: 0.4rem; }
+  .mp__det > .mp__ref { padding-bottom: 1rem; margin-top: 0.4rem; }
+  .mp__det > .mp__p:last-child { padding-bottom: 1.1rem; }
+
+  /* Barra fija 1·2·3 (solo móvil): aparece al bajar, pegada bajo el menú, para cambiar de camino sin volver arriba */
+  .mp__fija { display: none; }
+  @media (max-width: 47.99rem) {
+    .mp__fija { position: fixed; z-index: 15; left: 0; right: 0; top: var(--menu-h, 4.5rem); display: flex; gap: 0.5rem; padding: 0.4rem var(--margen); background: rgb(22 20 18 / 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); transform: translateY(-110%); opacity: 0; pointer-events: none; transition: transform 220ms ease, opacity 220ms ease; }
+    .mp__fija.is-on { transform: none; opacity: 1; pointer-events: auto; }
+    .mp__fb { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex: 0 0 auto; min-width: 2.75rem; min-height: 2.75rem; padding: 0.25rem 0.5rem; border-radius: 999px; border: 1px solid var(--linea); background: transparent; color: var(--crema); font: inherit; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: flex-grow 220ms ease, border-color 200ms ease, background-color 200ms ease; }
+    .mp__fn { display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; border: 1px solid var(--acento); font-weight: 700; }
+    .mp__ft { display: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .mp__fb[aria-pressed='true'] { flex: 1 1 auto; justify-content: flex-start; padding-right: 0.9rem; border-color: var(--acento); background: color-mix(in srgb, var(--acento) 8%, transparent); }
+    .mp__fb[aria-pressed='true'] .mp__ft { display: block; }
+    .mp__fb:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+  }
+
+  /* Vías para llegar: título, una línea fina más larga cuanto más dura y su duración; el detalle se abre al tocar */
+  .vias { list-style: none; margin: 0; padding: 0; display: grid; }
+  .vias > li { border-top: 1px solid var(--linea); }
+  .vias > li:first-child { border-top: 0; }
+  .via > summary { display: grid; grid-template-columns: 2rem 1fr 1.75rem; column-gap: 0.75rem; row-gap: 0.45rem; align-items: center; padding-block: 0.85rem; cursor: pointer; list-style: none; }
+  .via > summary::-webkit-details-marker { display: none; }
+  .via > summary:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.5rem; }
+  .via__ic { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--acento); color: var(--crema); }
+  .via__tit { font-size: var(--t2); line-height: 1.3; font-weight: 600; }
+  .via__mas { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 1px solid var(--linea); }
+  .via__mas::before { content: ''; width: 0.4rem; height: 0.4rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 200ms ease; }
+  .via[open] .via__mas { border-color: var(--acento); }
+  .via[open] .via__mas::before { transform: translateY(2px) rotate(-135deg); }
+  .via__pista { grid-column: 2 / 4; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.75rem; }
+  .via__linea { position: relative; display: flex; align-items: center; height: 0.75rem; margin-right: 0.35rem; }
+  .via__linea::before { content: ''; position: absolute; inset: 50% 0 auto; border-top: 1px solid var(--linea); }
+  .via__barra { position: relative; height: 3px; width: var(--w, 100%); border-radius: 3px; background: var(--crema); }
+  .via__barra::after { content: ''; position: absolute; right: -4px; top: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--acento); }
+  .via--solo .via__barra { height: 0; background: none; border-top: 1px dashed rgb(246 241 232 / 0.65); border-radius: 0; }
+  .via--solo .via__barra::after { display: none; }
+  .via__dur { font-size: var(--t1); font-weight: 600; color: var(--crema); white-space: nowrap; }
+  .via__det { margin: 0; padding: 0 0 1rem 2.75rem; font-size: var(--t1); line-height: 1.5; color: rgb(246 241 232 / 0.8); }
+
+  .mp__coach { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; min-height: 44px; padding: 0.7rem 1rem; border-radius: 0.9rem; border: 1px dashed rgb(246 241 232 / 0.3); color: var(--crema); text-decoration: none; font-size: var(--t2); }
+  .mp__coach b { color: var(--acento-texto); }
+  .mp__coach:hover { border-color: var(--acento); }
+  .mp__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
 
   .res__nota { font-size: var(--t2); line-height: 1.5; color: var(--gris); text-align: center; margin-top: 0.25rem; }
 
-  /* Acompañamiento premium: bloque claro para que destaque sobre el negro */
-  .prem { margin-top: 1.25rem; display: grid; border-radius: 1.5rem; overflow: hidden; background: var(--crema); color: var(--negro); scroll-margin-top: 6rem; }
-  .prem__foto { width: 100%; height: 15rem; object-fit: cover; object-position: center 25%; }
-  .prem__texto { display: grid; gap: 0.9rem; padding: clamp(1.4rem, 1rem + 2vw, 2.4rem); justify-items: start; }
-  .prem__eti { font-size: var(--t1); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris-oscuro); }
-  .prem__eti span { display: inline-block; margin-right: 0.35rem; padding: 0.05em 0.4em; border-radius: 999px; background: var(--acento); color: var(--acento-txt); }
-  .prem__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem); line-height: 1.08; letter-spacing: -0.02em; }
-  .prem__p { font-size: var(--t2); line-height: 1.6; color: #3a342e; }
-  .prem__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
-  .prem__lista li { position: relative; padding-left: 1.9rem; font-size: var(--t2); line-height: 1.45; font-weight: 600; }
-  .prem__lista li::before { content: ''; position: absolute; left: 0; top: 0.2em; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--negro) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat; }
-  .prem__nota { font-size: var(--t1); color: var(--gris-oscuro); }
+  /* Bloque del coach: sobre el fondo oscuro, sin caja crema */
+  .coach { margin-top: 1.25rem; scroll-margin-top: 6rem; }
+  .coach__cta { display: grid; justify-items: start; gap: 0.6rem; }
+  .coach__cta small { font-size: var(--t1); line-height: 1.4; color: var(--gris); text-wrap: balance; }
+  .coach--c .coach__cta small { max-width: 16rem; }
+  .coach--c .boton { padding-inline: 1.5rem; }
+  .coach .boton { white-space: nowrap; }
+
+  /* Opción C · banda discreta: foto, una frase y el botón entre dos líneas finas */
+  .coach--c { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1.125rem, 2.2vw, 1.5rem); padding-block: 1.9rem; border-block: 1px solid rgb(255 255 255 / 0.12); }
+  .coach__av { width: 6.875rem; height: 6.875rem; border-radius: 50%; object-fit: cover; object-position: center 25%; }
+  .coach__frase { margin: 0.5rem 0 0; font-family: var(--titular); font-weight: 900; font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.875rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--crema); }
+  .coach__firma { margin: 0.5rem 0 0; font-size: var(--t1); line-height: 1.4; color: var(--gris); }
+
+  /* Opción B · «tus 3 caminos llevan al coach»: recuadro fino con el gráfico caminos → coach → plan */
+  .coach--b { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; border: 1px solid var(--linea); border-radius: 1.5rem; padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); }
+  .coach__tit { margin: 0.6rem 0 0; font-family: var(--titular); font-weight: 900; font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.6rem); line-height: 1.05; letter-spacing: -0.02em; }
+  .coach__tit em { font-style: normal; background: linear-gradient(var(--acento), var(--acento)) no-repeat left 92% / 100% 0.2em; }
+  .coach__intro { max-width: 32rem; margin: 0.75rem 0 0; font-size: var(--t3, 1.125rem); line-height: 1.5; color: rgb(246 241 232 / 0.85); }
+  .coach__flujo { width: 100%; display: grid; grid-template-columns: minmax(0, 1.3fr) 4.4rem auto 4.4rem minmax(0, 1fr); align-items: center; margin-block: 2.1rem 1.9rem; text-align: left; }
+  .coach__cams { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+  .coach__cams li { display: flex; align-items: center; gap: 0.65rem; padding: 0.4rem 1rem 0.4rem 0.4rem; border: 1px solid var(--linea); border-radius: 999px; background: var(--tarjeta); font-weight: 700; font-size: 0.9rem; line-height: 1.2; }
+  .coach__cams li.salto { border-style: dashed; }
+  .coach__cams img { flex: none; width: 2.1rem; height: 2.1rem; border-radius: 50%; object-fit: cover; }
+  .coach__lin { align-self: stretch; width: 100%; height: 100%; min-height: 9.4rem; display: block; }
+  .coach__lin path { fill: none; stroke: rgb(246 241 232 / 0.5); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .coach__lin .pt { stroke-dasharray: 2 5; }
+  .coach__lin--lima path { stroke: var(--acento); }
+  .coach__yo { display: grid; justify-items: center; gap: 0.35rem; text-align: center; font-size: 0.9375rem; }
+  .coach__yo img { width: 6rem; height: 6rem; border-radius: 50%; object-fit: cover; object-position: center 25%; border: 2px solid var(--acento); }
+  .coach__plan { display: grid; gap: 0.15rem; padding: 1rem; border-radius: 1.1rem; background: var(--acento); color: var(--acento-txt); }
+  .coach__ok { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; margin-bottom: 0.4rem; border-radius: 50%; background: var(--negro); color: var(--acento); font-weight: 800; }
+  .coach__plan b { font-size: 1.0625rem; font-weight: 800; }
+  .coach__plan small { font-size: var(--t1); line-height: 1.35; }
+  .coach__pie { display: grid; justify-items: center; gap: 1rem; }
+  .coach__chips { justify-content: center; margin: 0; }
+  .coach--b .coach__cta { justify-items: center; text-align: center; }
 
   @media (min-width: 48rem) {
-    .cam__cabeza { padding: 1.15rem 1.4rem; }
-    .cam__cuerpo { padding: 1.4rem 1.4rem 1.6rem; }
-    .cam__foto { width: 4.4rem; height: 4.4rem; }
-    .cam__datos { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-    .cam__datos:has(> div:nth-child(4)) { grid-template-columns: repeat(2, 1fr); }
-    .cam__rutas { grid-template-columns: 1fr 1fr; }
-    .prem { grid-template-columns: 0.9fr 1.1fr; }
-    .prem__foto { height: 100%; min-height: 22rem; }
+    .mp__datos { grid-template-columns: repeat(2, 1fr); column-gap: 3rem; }
+    .mp__dato:nth-child(2) { border-top: 0; padding-top: 0.25rem; }
+    .mp__ramas { height: 5.5rem; }
   }
-  @media (max-width: 30rem) {
-    .cam__cabeza { grid-template-columns: auto 1fr auto; gap: 0.75rem; padding: 0.95rem; }
-    .cam__foto { display: none; }
+  @media (max-width: 760px) {
+    .coach--c { grid-template-columns: auto minmax(0, 1fr); padding-block: 1.5rem; }
+    .coach--c .coach__av { width: 4.5rem; height: 4.5rem; }
+    .coach--c .coach__cta { grid-column: 1 / -1; justify-items: stretch; text-align: center; }
+    .coach--c .coach__cta small { max-width: none; }
+    .coach--c .boton { width: 100%; justify-content: center; }
+    .coach--b .coach__flujo { grid-template-columns: 1fr; justify-items: center; gap: 1.125rem; margin-block: 1.6rem; }
+    .coach__cams { width: 100%; }
+    .coach__lin { display: none; }
+    .coach__plan { width: 100%; justify-items: center; text-align: center; }
+    .coach--b .boton { width: 100%; justify-content: center; padding-inline: 1.25rem; }
   }
-  @media (prefers-reduced-motion: reduce) { .cam, .cam__mas { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .mp__rama, .mp__dest, .mp__fija, .mp__fb, .mp__det summary i::before, .via__mas::before { transition: none; } }
 </style>
