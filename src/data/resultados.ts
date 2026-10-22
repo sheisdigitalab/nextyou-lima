@@ -23,6 +23,9 @@ export interface Camino {
   dia: string;
   porque: string;
   formacion: string;
+  // El dato (cifra de contexto) y lo que se gana al empezar (opcional: si falta, el bloque no se muestra)
+  dato: string;
+  ganancia?: string;
   // Opcionales: cómo se llama el trabajo y el título del bloque de formación (por defecto, «La formación»)
   trabajo?: string;
   formacionTitulo?: string;
@@ -36,21 +39,27 @@ export const caminos: Camino[] = [
     nombre: 'Creación de contenido',
     foto: noa,
     chips: ['Creatividad', 'Comunicación', 'Redes'],
-    resumen: 'Haces vídeos para redes, como los que ves en TikTok, Instagram o YouTube, pero como trabajo.',
-    que: 'Piensas una idea, la grabas, la editas y la publicas. Lo haces para una marca (una tienda, una empresa…) o para tu propio canal.',
-    trabajo: 'Creador de contenido, editor de vídeo o community manager.',
-    dia: 'Cada día es distinto. Unos días grabas y editas vídeos. Otros planificas qué vas a publicar la semana que viene y contestas a los comentarios de la gente.',
-    porque: 'Dijiste que te gusta crear y contar cosas a los demás. Este trabajo es justo eso.',
+    // Gancho (la línea de la tarjeta cerrada)
+    resumen: 'Lo que ves en TikTok, Instagram o YouTube, pero desde el otro lado: como trabajo.',
+    que: 'Piensas una idea, la grabas, la editas y la publicas. A veces para tu propio canal y, muchas más, para marcas: una tienda, un festival, un club, una empresa.',
+    trabajo: 'Creador/a de contenido, editor/a de vídeo, community manager o social media.',
+    dia: 'Por la mañana grabas tres vídeos cortos para una marca. Por la tarde los editas, miras qué funcionó la semana pasada y preparas lo de la siguiente. Y sí: también contestas comentarios.',
+    porque: 'Dijiste que te gusta crear y contar cosas a los demás. Aquí haces exactamente eso, todos los días.',
+    // PENDIENTE CLIENTA: validar dato
+    // FUENTE: informe 2btube y MarketingDirecto, mayo de 2025 (más de 15.000 creadores con más de 100.000 seguidores; +16 % sobre 2024). Revisar cada año.
+    dato: 'En España hay más de 15.000 creadores con más de 100.000 seguidores, y el número crece cada año. Pero la mayoría de quienes viven de esto no son famosos: trabajan creando contenido para marcas.',
+    // PENDIENTE CLIENTA: validar dato (afirmación general sobre sueldos; sin cifra ni fuente concreta)
+    ganancia: 'Depende mucho de si trabajas para una empresa o por tu cuenta. En empresa, lo normal es empezar con un sueldo parecido al de otros trabajos de comunicación y subir a medida que demuestras resultados. Por tu cuenta, al principio no hay sueldo fijo.',
     formacionTitulo: 'Qué necesitas saber',
     formacion:
-      'Grabar y editar vídeo, escribir textos cortos y entender qué funciona en redes. Muchas empresas piden ver lo que ya has hecho, así que tu mejor carta de presentación son tus propios vídeos.',
-    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y requisitos de acceso (borrador con datos de fichas oficiales)
+      'Grabar y editar vídeo, escribir textos cortos que enganchen y entender los números: qué funciona y por qué. Las empresas no te piden un título concreto. Te piden ver lo que ya has hecho.',
+    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y requisitos de acceso
     rutas: [
-      { titulo: 'FP de Realización de Proyectos Audiovisuales', detalle: 'FP de grado superior · 2 años · Vídeo, montaje y postproducción', tipo: 'fp' },
-      { titulo: 'FP de Marketing y Publicidad', detalle: 'FP de grado superior · 2 años · Marketing y redes para marcas', tipo: 'fp' },
+      { titulo: 'FP de Realización de Proyectos Audiovisuales y Espectáculos', detalle: 'Grado superior · 2 años · Grabación, montaje y postproducción', tipo: 'fp' },
+      { titulo: 'FP de Marketing y Publicidad', detalle: 'Grado superior · 2 años · Redes y campañas para marcas', tipo: 'fp' },
       { titulo: 'Grado en Comunicación Audiovisual', detalle: 'Universidad · 4 años', tipo: 'uni' },
       { titulo: 'Cursos de vídeo y redes', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
-      { titulo: 'Por tu cuenta', detalle: 'Abre tu canal y aprende publicando', tipo: 'solo' },
+      { titulo: 'Por tu cuenta', detalle: 'Abre un canal y aprende publicando', tipo: 'solo' },
     ],
   },
   {
@@ -59,20 +68,27 @@ export const caminos: Camino[] = [
     nombre: 'Animación 3D',
     foto: laia,
     chips: ['Dibujo', 'Tecnología', 'En equipo'],
-    resumen: 'Das movimiento a personajes y objetos en 3D, como los de los videojuegos, las películas o los anuncios.',
-    que: 'Coges un personaje o un objeto creado en 3D y le das movimiento: cómo anda, cómo salta, cómo gesticula. Lo haces para videojuegos, películas, series o anuncios.',
-    trabajo: 'Animador 3D o modelador 3D (el que crea los personajes y los escenarios).',
-    dia: 'Cada día es distinto. Unos días pones al personaje en las poses importantes y ajustas el movimiento para que parezca natural. Otros lo preparas para poder moverlo, con un esqueleto digital por dentro. En equipos pequeños, a veces haces las dos cosas.',
-    porque: 'Dijiste que te gusta dibujar y la tecnología. Este trabajo junta las dos cosas.',
+    resumen: 'Los personajes de los videojuegos y las pelis no se mueven solos. Alguien les da vida.',
+    que: 'Coges un personaje o un objeto en 3D y le das movimiento: cómo anda, cómo salta, cómo pone cara de sorpresa. Para videojuegos, películas, series o anuncios.',
+    trabajo: 'Animador/a 3D. Si lo que te gusta es crear los personajes y los escenarios, modelador/a 3D.',
+    dia: 'Coges una escena de cinco segundos y la trabajas fotograma a fotograma hasta que el salto del personaje parezca de verdad. Luego la revisas con tu equipo, te dicen qué cambiar y vuelta a empezar. Es un trabajo de mucha paciencia y mucho detalle.',
+    porque: 'Dijiste que te gusta dibujar y también la tecnología. La animación 3D junta las dos cosas.',
+    // PENDIENTE CLIENTA: validar dato
+    // FUENTE: Libro Blanco del Desarrollo Español de Videojuegos (DEV), mayo de 2025. Revisar cada año.
+    // Resumen ejecutivo del Libro Blanco: 10.508 empleos directos en 2024; previsión de 12.750 en 2027 y 13.770 en 2028.
+    dato: 'El videojuego en España da trabajo directo a más de 10.000 personas, y se espera que lleguen a unos 12.750 en 2027. Y no solo hay videojuegos: la animación se usa también en cine, publicidad, arquitectura y medicina.',
+    // PENDIENTE CLIENTA: validar dato
+    // FUENTE: Ilerna, enero de 2025 (blog «sueldo animador 3D»: media de unos 2.053 € brutos/mes, según SaltyAnimators). La cifra 1.300-1.600 € que venía en el encargo no aparece en Ilerna (la da un agregador), así que se sustituyó por la media publicada.
+    ganancia: 'El sueldo medio de un animador/a 3D en España ronda los 2.050 € brutos al mes, según Ilerna. Varía mucho según la experiencia, el tipo de proyectos y la ciudad.',
     formacionTitulo: 'Qué necesitas saber',
     formacion:
-      'Dibujar y entender cómo se mueven las cosas (el peso, el equilibrio), modelar y animar en 3D con programas de ordenador, y practicar mucho con proyectos. Hay programas gratis para empezar, como Blender.',
-    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones, si los cursos son online y qué centros recomienda
+      'Dibujar y entender cómo se mueven las cosas (el peso, el equilibrio, el ritmo), y manejar programas 3D. En este sector tu portfolio pesa tanto como el título: lo que importa es lo que eres capaz de hacer.',
+    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y si los cursos son online
     rutas: [
-      { titulo: 'FP de Animaciones 3D, Juegos y Entornos Interactivos', detalle: 'FP de grado superior · 2 años · Modelado y animación 3D', tipo: 'fp' },
-      { titulo: 'Grado en Animación', detalle: 'Grado · 4 años · En universidad o escuela superior', tipo: 'uni' },
+      { titulo: 'FP de Animaciones 3D, Juegos y Entornos Interactivos', detalle: 'Grado superior · 2 años', tipo: 'fp' },
+      { titulo: 'Grado en Animación o en Diseño de Videojuegos', detalle: 'Universidad o escuela superior · 4 años', tipo: 'uni' },
       { titulo: 'Cursos de modelado y animación 3D', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
-      { titulo: 'Por tu cuenta', detalle: 'Blender es gratis: puedes bajarlo y empezar hoy', tipo: 'solo' },
+      { titulo: 'Por tu cuenta', detalle: 'Blender es gratis y hay miles de tutoriales para empezar', tipo: 'solo' },
     ],
   },
   {
@@ -81,20 +97,26 @@ export const caminos: Camino[] = [
     nombre: 'Ciberseguridad',
     foto: aitana,
     chips: ['Lógica', 'Retos', 'Tecnología'],
-    resumen: 'Proteges a empresas y personas de los ataques informáticos, buscando los fallos antes que los hackers malos.',
-    que: 'Proteges los ordenadores, las redes y los datos de empresas y personas contra ataques informáticos. Buscas los fallos de seguridad antes de que los encuentre alguien malintencionado, o vigilas para detectar un ataque a tiempo.',
-    trabajo: 'Hacker ético (o pentester), analista de seguridad o auditor de ciberseguridad.',
-    dia: 'Cada día es distinto. Unos días intentas entrar en un sistema, con permiso de la empresa, para encontrar sus fallos antes que un atacante de verdad. Otros vigilas las alertas de seguridad y decides cuáles son urgentes. Después cuentas lo que has encontrado en un informe.',
-    porque: 'Dijiste que te gusta resolver retos y la tecnología. En este trabajo, cada fallo por encontrar es un reto.',
+    resumen: 'Hackear, pero del lado de los buenos y con permiso.',
+    que: 'Proteges los ordenadores, las redes y los datos de empresas y personas. Buscas los fallos antes de que los encuentre alguien con malas intenciones, o vigilas para detectar un ataque a tiempo.',
+    trabajo: 'Hacker ético (pentester), analista de seguridad o auditor/a de ciberseguridad.',
+    dia: 'Unos días intentas entrar en el sistema de una empresa, con su permiso, para encontrar sus puntos débiles. Otros vigilas alertas y decides cuáles son urgentes. Después lo cuentas en un informe para que lo arreglen.',
+    porque: 'Dijiste que te gusta resolver retos y la tecnología. Aquí cada fallo por encontrar es un reto nuevo.',
+    // PENDIENTE CLIENTA: validar dato
+    // FUENTE: INCIBE, previsión publicada en diciembre de 2023. OJO: el estudio original es de marzo de 2022 («Análisis y Diagnóstico del Talento en Ciberseguridad en España») y proyecta la demanda para 2024; la nota de diciembre de 2023 repite la cifra.
+    dato: 'Es una de las profesiones donde más gente falta: el INCIBE calculó que en España harían falta más de 83.000 profesionales, el doble de los que hay formados.',
+    // PENDIENTE CLIENTA: validar dato
+    // FUENTE: KeepCoding, noviembre de 2025 (22.000-30.000 € brutos/año para analista junior). Otras fuentes (convenio TIC, Jobrise) dan algo más.
+    ganancia: 'Un perfil junior suele empezar entre 22.000 y 30.000 € brutos al año, y sube rápido con la experiencia y las certificaciones.',
     formacionTitulo: 'Qué necesitas saber',
     formacion:
-      'Cómo funcionan los ordenadores y las redes, y después cómo se protegen y cómo se atacan (siempre de forma legal). Se aprende practicando con retos y entornos de prueba, y hay webs gratis para empezar.',
-    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones, requisitos de acceso y si recomienda cursos concretos
+      'Cómo funcionan los ordenadores y las redes, y después cómo se protegen y cómo se atacan (siempre de forma legal). Se aprende practicando: hay webs gratuitas con retos para empezar desde cero.',
+    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones, requisitos de acceso y la duración del curso de especialización
     rutas: [
-      { titulo: 'FP de Informática y curso de ciberseguridad', detalle: 'FP de grado superior (como ASIR) · 2 años, y después un curso de especialización', tipo: 'fp' },
-      { titulo: 'Grado en Ciberseguridad', detalle: 'Universidad · 4 años', tipo: 'uni' },
-      { titulo: 'Cursos de ciberseguridad', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
-      { titulo: 'Por tu cuenta', detalle: 'Practica con retos de hacking ético gratis, como picoCTF o TryHackMe', tipo: 'solo' },
+      { titulo: 'FP de Informática + curso de especialización en Ciberseguridad', detalle: 'Grado superior como ASIR (2 años) y después un curso de unos 9 meses', tipo: 'fp' },
+      { titulo: 'Grado en Ingeniería de la Ciberseguridad', detalle: 'Universidad · 4 años', tipo: 'uni' },
+      { titulo: 'Cursos y certificaciones', detalle: 'Unos meses · Muchos son online', tipo: 'curso' },
+      { titulo: 'Por tu cuenta', detalle: 'Retos gratis de hacking ético, como picoCTF o TryHackMe', tipo: 'solo' },
     ],
   },
 ];
@@ -105,13 +127,13 @@ export const acompanamiento = {
   eti: 'Acompañamiento premium',
   titulo: 'Un coach te guía hasta que lo tengas claro',
   texto:
-    'Sesiones individuales online con un coach que te acompaña de forma personalizada: revisa contigo tus 3 caminos, resuelve tus dudas y te ayuda a decidir qué estudiar y por dónde empezar.',
+    'Sesiones 1 a 1 por videollamada con alguien que conoce estas profesiones. Repasáis tus 3 caminos, resolvéis tus dudas y sales con un plan de por dónde empezar.',
   puntos: [
-    'Sesiones 1 a 1 por videollamada',
+    'Sesiones individuales online',
     'Revisáis juntos tus 3 caminos y tus dudas',
-    'Sales con un plan claro de por dónde empezar',
+    'Sales con un plan claro para dar el primer paso',
   ],
-  cta: 'Contratar un coach',
+  cta: 'Quiero hablar con un coach',
   // PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones y enlace de contratación
   nota: 'Es opcional: tus 3 caminos y sus fichas son gratis.',
 };

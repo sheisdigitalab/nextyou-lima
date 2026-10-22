@@ -30,7 +30,13 @@ const iconos = {
       <header class="res__cab">
         <p class="res__saludo" data-saludo>¡Listo!</p>
         <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
-        <p class="res__lead">Elegidos con tus respuestas. Toca uno para ver en qué consiste, qué formación necesitas y cómo llegar.</p>
+        <p class="res__lead">Salen de tus respuestas. No son una lista cerrada: son tres pistas para empezar a explorar.</p>
+        <ul class="res__guia" role="list">
+          <li><b>1 · Lo que más te pega:</b> el que mejor encaja con cómo eres.</li>
+          <li><b>2 · El puente:</b> cerca de algo que ya te gusta.</li>
+          <li><b>3 · El salto:</b> uno que quizá no te habías planteado.</li>
+          <li>Toca cada uno para ver de qué va, qué se gana y cómo llegar.</li>
+        </ul>
         <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
       </header>
 
@@ -67,6 +73,23 @@ const iconos = {
                     </dl>
                   </section>
 
+                  <section class="cam__bloque" aria-label={`El dato de ${c.nombre}`}>
+                    <Fragment set:html="<!-- PENDIENTE CLIENTA: validar dato -->" />
+                    <h2 class="cam__h">El dato</h2>
+                    <p class="cam__p">{c.dato}</p>
+                  </section>
+
+                  {
+                    c.ganancia && (
+                      <section class="cam__bloque" aria-label={`Lo que se gana al empezar como ${c.nombre}`}>
+                        <Fragment set:html="<!-- PENDIENTE CLIENTA: validar dato -->" />
+                        <h2 class="cam__h">Lo que se gana al empezar</h2>
+                        <p class="cam__p">{c.ganancia}</p>
+                      </section>
+                    )
+                  }
+                  <p class="cam__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
+
                   <section class="cam__bloque" aria-label={`${c.formacionTitulo ?? 'Formación'} de ${c.nombre}`}>
                     <h2 class="cam__h">{c.formacionTitulo ?? 'La formación'}</h2>
                     <p class="cam__p">{c.formacion}</p>
@@ -92,7 +115,7 @@ const iconos = {
         }
       </ol>
 
-      <p class="res__nota">No tienes que elegir ya. Repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
+      <p class="res__nota"><strong>No tienes que elegir ya.</strong><br />Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
 
       <!-- ===================== Acompañamiento premium ===================== -->
       <section id="coach" class="prem" aria-labelledby="prem-titulo" data-placeholder="true">
@@ -127,6 +150,10 @@ const iconos = {
   .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
   .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
   .res__tres { display: inline-block; padding: 0 0.22em; border-radius: 0.2em; background: var(--acento); color: var(--acento-txt); }
+  .res__guia { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.2rem; max-width: 38rem; font-size: var(--t1); line-height: 1.45; color: var(--gris); }
+  .res__guia b { color: var(--crema); font-weight: 700; }
+  .res__guia li:last-child { margin-top: 0.25rem; }
+  .cam__ref { margin: -0.6rem 0 0; font-size: var(--t1); line-height: 1.4; color: var(--gris); }
   .res__lead { max-width: 38rem; font-size: var(--t3, 1.125rem); line-height: 1.55; color: var(--gris); }
 
   .res__lista { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.85rem; }
