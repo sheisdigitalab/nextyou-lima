@@ -120,6 +120,23 @@ export const caminos: Camino[] = [
   },
 ];
 
+// Tu perfil: tres rasgos que se muestran bajo «Así eres, según tus respuestas».
+// PENDIENTE CLIENTA: son de ejemplo; los reales dependen de la lógica del test.
+export interface Rasgo {
+  icono: 'crear' | 'contar' | 'retos';
+  titulo: string;
+  texto: string;
+}
+
+export const perfil: { eti: string; rasgos: Rasgo[] } = {
+  eti: 'Así eres, según tus respuestas',
+  rasgos: [
+    { icono: 'crear', titulo: 'Te mueve crear', texto: 'Disfrutas haciendo cosas que antes no existían.' },
+    { icono: 'contar', titulo: 'Te gusta contar cosas', texto: 'Explicar, mostrar y compartir te sale natural.' },
+    { icono: 'retos', titulo: 'Te motivan los retos', texto: 'Cuando algo es difícil, te pica la curiosidad.' },
+  ],
+};
+
 // Acompañamiento premium (los textos parten de los del bloque «Cómo funciona»)
 export const acompanamiento = {
   foto: coach,

@@ -10,7 +10,7 @@
 import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
 import { CTA_PRINCIPAL } from '../../config';
-import { caminos, acompanamiento as coach } from '../../data/resultados';
+import { caminos, perfil, acompanamiento as coach } from '../../data/resultados';
 
 // Bloque del coach: 'C' = banda discreta (la que se ve) · 'B' = «tus 3 caminos llevan al coach» (montada, oculta)
 const coachVariante: 'C' | 'B' = 'C';
@@ -18,6 +18,11 @@ const coachVariante: 'C' | 'B' = 'C';
 const mostrarGuardar = true;
 const MAX_MESES = 48; // la línea más larga (4 años) ocupa todo el ancho
 const ramas = ['M150 0 V10 C150 38 50 34 50 70', 'M150 0 V70', 'M150 0 V10 C150 38 250 34 250 70'];
+const iconosPerfil = {
+  crear: '<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
+  contar: '<path d="M5 6h14v9H10l-4 3.5V15H5z"/><path d="M9 10.5h6"/>',
+  retos: '<path d="M6 21V4"/><path d="M6 5h11l-2.5 4 2.5 4H6"/>',
+};
 const iconos = {
   fp: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
   uni: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
@@ -41,9 +46,25 @@ const iconos = {
         <p class="res__saludo" data-saludo>¡Listo!</p>
         <h1 class="res__titulo">Tus <span class="res__tres">3</span> caminos</h1>
         <p class="res__lead">Salen de tus respuestas. No son una lista cerrada: son tres pistas para empezar a explorar.</p>
-        <p class="res__toca">Toca cada uno para ver de qué va y cómo llegar.</p>
         {/* PENDIENTE: caminos de ejemplo; en el producto real salen del test */}
       </header>
+
+      {/* PENDIENTE CLIENTA: rasgos de ejemplo; los reales dependen de la lógica del test */}
+      <section class="perfil" aria-labelledby="perfil-tit">
+        <p id="perfil-tit" class="mp__sup">{perfil.eti}</p>
+        <ul class="perfil__lista" role="list">
+          {
+            perfil.rasgos.map((r) => (
+              <li class="perfil__rasgo">
+                <span class="via__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconosPerfil[r.icono]} /></span>
+                <span class="perfil__tx"><b>{r.titulo}</b><span>{r.texto}</span></span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <p class="res__toca">Toca cada uno para ver de qué va y cómo llegar.</p>
 
       <section class="mp" data-mapa data-sel="0" aria-label="Mapa de tus caminos">
         <div class="mp__tu"><span class="mp__punto" aria-hidden="true"></span><b>Tú</b></div>
@@ -122,7 +143,7 @@ const iconos = {
                   ))
                 }
               </ol>
-              <p class="mp__ref">Cuanto más larga la línea, más tiempo de formación. Toca una vía para ver qué aprendes. Las duraciones son aproximadas.</p>
+              <p class="mp__ref mp__ref--leyenda">Cuanto más larga la línea, más tiempo de formación. Toca una vía para ver qué aprendes. Las duraciones son aproximadas.</p>
             </div>
 
             <div class="mp__mas">
@@ -139,14 +160,16 @@ const iconos = {
             </div>
 
             <a class="mp__coach" href="#coach">¿Quieres ayuda para decidir? <b>Habla con un coach</b> <span aria-hidden="true">↓</span></a>
+            <button type="button" class="mp__sig" data-ir={i === caminos.length - 1 ? 0 : i + 1}>
+              {i === caminos.length - 1 ? `← Volver al primer camino: ${caminos[0].nombre}` : `Siguiente camino: ${caminos[i + 1].nombre} →`}
+            </button>
           </section>
         ))
       }
 
       <div class="res__cierre">
         <h3 class="res__cierre-t">No tienes que elegir ya.</h3>
-        <p class="res__cierre-p">Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y repite el test cuando quieras: si cambias tú, cambian tus caminos.</p>
-        <a class="boton boton--contorno" href={CTA_PRINCIPAL.href}>Repetir el test</a>
+        <p class="res__cierre-p">Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y <a href={CTA_PRINCIPAL.href}>repite el test</a> cuando quieras: si cambias tú, cambian tus caminos.</p>
       </div>
 
       {
@@ -309,9 +332,19 @@ const iconos = {
       })
     );
 
-    // La barra solo aparece cuando los tres caminos del mapa ya han quedado arriba, y se va al llegar al bloque del coach
+    // «Siguiente camino» / «Volver al primer camino»: abre esa ficha y lleva la vista a su inicio, bajo el menú fijo
+    document.querySelectorAll<HTMLElement>('[data-ir]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const i = Number(b.dataset.ir);
+        elegir(i);
+        paneles[i].scrollIntoView({ behavior: sinMovimiento.matches ? 'auto' : 'smooth', block: 'start' });
+        paneles[i].focus({ preventScroll: true });
+      })
+    );
+
+    // La barra solo aparece cuando los tres caminos del mapa ya han quedado arriba, y se va al llegar al cierre
     const destinos = mapa.querySelector<HTMLElement>('.mp__destinos');
-    const bloqueCoach = document.querySelector<HTMLElement>('#coach');
+    const bloqueCoach = document.querySelector<HTMLElement>('.res__cierre');
     if (fija && destinos && 'IntersectionObserver' in window) {
       let mapaFuera = false;
       let coachCerca = false;
@@ -344,8 +377,16 @@ const iconos = {
   .res__saludo { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-texto); }
   .res__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); line-height: 1.02; letter-spacing: -0.025em; }
   .res__tres { display: inline-block; padding: 0 0.22em; border-radius: 0.2em; background: var(--acento); color: var(--acento-txt); }
-  .res__toca { margin: 0; font-size: var(--t1); line-height: 1.45; color: var(--gris); }
+  .res__toca { margin: 0 0 -0.5rem; font-size: var(--t1); line-height: 1.45; color: var(--gris); text-align: center; }
   .res__lead { max-width: 38rem; font-size: var(--t3, 1.125rem); line-height: 1.55; color: var(--gris); }
+
+  /* Tu perfil: tres rasgos sin cajas, con una línea fina arriba de cada uno */
+  .perfil { display: grid; gap: 0.9rem; }
+  .perfil__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+  .perfil__rasgo { display: grid; grid-template-columns: 2rem 1fr; column-gap: 0.85rem; align-items: start; padding-top: 0.95rem; border-top: 1px solid var(--linea); }
+  .perfil__tx { display: grid; gap: 0.2rem; }
+  .perfil__tx b { font-size: var(--t2); font-weight: 700; line-height: 1.25; color: var(--crema); }
+  .perfil__tx span { font-size: var(--t2); line-height: 1.45; color: rgb(246 241 232 / 0.78); }
 
   /* El mapa fino: «Tú» y tres ramas de 1 px hacia los tres caminos (como el de la web) */
   .mp { display: grid; justify-items: center; margin-top: 0.5rem; }
@@ -384,6 +425,7 @@ const iconos = {
   .mp__p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
   .mp__p, .mp__datos dd, .via__det, .mp__ref { max-width: 51ch; } /* ≈ 68 caracteres por línea */
   .mp__ref { font-size: var(--t1); line-height: 1.4; color: var(--gris); }
+  .mp__ref--leyenda { font-size: 0.875rem; color: rgb(246 241 232 / 0.78); }
   /* Datos de la ficha: una fila por dato (aro fino con icono, etiqueta en lima, texto cómodo), separadas por líneas de 1 px */
   .mp__datos { display: grid; margin: 0; }
   .mp__dato { display: grid; grid-template-columns: 2.4rem 1fr; column-gap: 1rem; align-content: start; padding-block: 1.15rem; border-top: 1px solid var(--linea); }
@@ -450,6 +492,9 @@ const iconos = {
 
   .mp__coach { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; min-height: 44px; padding: 0.7rem 1rem; border-radius: 0.9rem; border: 1px dashed rgb(246 241 232 / 0.3); color: var(--crema); text-decoration: none; font-size: var(--t2); }
   .mp__coach b { color: var(--acento-texto); }
+  .mp__sig { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; padding: 0.4rem 0.2rem; border: 0; background: none; color: var(--acento-texto); font: inherit; font-weight: 600; font-size: var(--t2); line-height: 1.3; text-align: right; cursor: pointer; }
+  .mp__sig:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  .mp__sig:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.4rem; }
   .mp__coach:hover { border-color: var(--acento); }
   .mp__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
 
@@ -457,7 +502,9 @@ const iconos = {
   .res__cierre { display: grid; justify-items: center; gap: 0.9rem; text-align: center; margin-top: clamp(1.5rem, 0.5rem + 3vw, 3rem); }
   .res__cierre-t { margin: 0; font-family: var(--titular); font-weight: 700; font-size: var(--t4); line-height: 1.15; letter-spacing: -0.015em; color: var(--crema); }
   .res__cierre-p { margin: 0; max-width: 54ch; font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
-  .res__cierre .boton { margin-top: 0.6rem; }
+  .res__cierre-p a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
+  .res__cierre-p a:hover { color: var(--acento-texto); }
+  .res__cierre-p a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.2rem; }
 
   /* Guardar y compartir (solo diseño): botones de contorno, lima al pasar el ratón */
   .res__guardar { display: grid; justify-items: center; gap: 0.75rem; }
@@ -507,8 +554,10 @@ const iconos = {
   .coach--b .coach__cta { justify-items: center; text-align: center; }
 
   @media (min-width: 48rem) {
-    .mp__panel { gap: 2.5rem; }
-    .coach { margin-top: 2rem; margin-bottom: 1.5rem; }
+    .perfil__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2.5rem; }
+    .mp__panel { gap: 2.5rem; scroll-margin-top: calc(var(--menu-h, 4.5rem) + 1.25rem); }
+    .res { padding-bottom: 4rem; }
+    .coach { margin-top: 2rem; margin-bottom: 0; }
     .mp__datos { grid-template-columns: repeat(2, 1fr); column-gap: 3rem; }
     .mp__dato:nth-child(2) { border-top: 0; padding-top: 0.25rem; }
     .mp__ramas { height: 5.5rem; }
@@ -518,7 +567,7 @@ const iconos = {
     .mp__datos { column-gap: 3.5rem; }
     .vias { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.5rem; }
     .vias > li:nth-child(-n + 2) { border-top: 0; }
-    .coach { margin-top: 2.5rem; margin-bottom: 2rem; }
+    .coach { margin-top: 2.5rem; margin-bottom: 0; }
     .coach--c { padding-block: 2.75rem; }
   }
   @media (max-width: 47.99rem) {
