@@ -23,9 +23,8 @@ export interface Camino {
   dia: string;
   porque: string;
   formacion: string;
-  // El dato (cifra de contexto) y lo que se gana al empezar (opcional: si falta, el bloque no se muestra)
+  // El dato: una cifra de contexto sobre la profesión
   dato: string;
-  ganancia?: string;
   // Opcionales: cómo se llama el trabajo y el título del bloque de formación (por defecto, «La formación»)
   trabajo?: string;
   formacionTitulo?: string;
@@ -48,8 +47,6 @@ export const caminos: Camino[] = [
     // PENDIENTE CLIENTA: validar dato
     // FUENTE: informe 2btube y MarketingDirecto, mayo de 2025 (más de 15.000 creadores con más de 100.000 seguidores; +16 % sobre 2024). Revisar cada año.
     dato: 'En España hay más de 15.000 creadores con más de 100.000 seguidores, y el número crece cada año. Pero la mayoría de quienes viven de esto no son famosos: trabajan creando contenido para marcas.',
-    // PENDIENTE CLIENTA: validar dato (afirmación general sobre sueldos; sin cifra ni fuente concreta)
-    ganancia: 'Depende mucho de si trabajas para una empresa o por tu cuenta. En empresa, lo normal es empezar con un sueldo parecido al de otros trabajos de comunicación y subir a medida que demuestras resultados. Por tu cuenta, al principio no hay sueldo fijo.',
     formacionTitulo: 'Qué necesitas saber',
     formacion:
       'Grabar y editar vídeo, escribir textos cortos que enganchen y entender los números: qué funciona y por qué. Las empresas no te piden un título concreto. Te piden ver lo que ya has hecho.',
@@ -77,9 +74,6 @@ export const caminos: Camino[] = [
     // FUENTE: Libro Blanco del Desarrollo Español de Videojuegos (DEV), mayo de 2025. Revisar cada año.
     // Resumen ejecutivo del Libro Blanco: 10.508 empleos directos en 2024; previsión de 12.750 en 2027 y 13.770 en 2028.
     dato: 'El videojuego en España da trabajo directo a más de 10.000 personas, y se espera que lleguen a unos 12.750 en 2027. Y no solo hay videojuegos: la animación se usa también en cine, publicidad, arquitectura y medicina.',
-    // PENDIENTE CLIENTA: validar dato
-    // FUENTE: Ilerna, enero de 2025 (blog «sueldo animador 3D»: media de unos 2.053 € brutos/mes, según SaltyAnimators). La cifra 1.300-1.600 € que venía en el encargo no aparece en Ilerna (la da un agregador), así que se sustituyó por la media publicada.
-    ganancia: 'El sueldo medio de un animador/a 3D en España ronda los 2.050 € brutos al mes, según Ilerna. Varía mucho según la experiencia, el tipo de proyectos y la ciudad.',
     formacionTitulo: 'Qué necesitas saber',
     formacion:
       'Dibujar y entender cómo se mueven las cosas (el peso, el equilibrio, el ritmo), y manejar programas 3D. En este sector tu portfolio pesa tanto como el título: lo que importa es lo que eres capaz de hacer.',
@@ -105,9 +99,6 @@ export const caminos: Camino[] = [
     // PENDIENTE CLIENTA: validar dato
     // FUENTE: INCIBE, previsión publicada en diciembre de 2023. OJO: el estudio original es de marzo de 2022 («Análisis y Diagnóstico del Talento en Ciberseguridad en España») y proyecta la demanda para 2024; la nota de diciembre de 2023 repite la cifra.
     dato: 'Es una de las profesiones donde más gente falta: el INCIBE calculó que en España harían falta más de 83.000 profesionales, el doble de los que hay formados.',
-    // PENDIENTE CLIENTA: validar dato
-    // FUENTE: KeepCoding, noviembre de 2025 (22.000-30.000 € brutos/año para analista junior). Otras fuentes (convenio TIC, Jobrise) dan algo más.
-    ganancia: 'Un perfil junior suele empezar entre 22.000 y 30.000 € brutos al año, y sube rápido con la experiencia y las certificaciones.',
     formacionTitulo: 'Qué necesitas saber',
     formacion:
       'Cómo funcionan los ordenadores y las redes, y después cómo se protegen y cómo se atacan (siempre de forma legal). Se aprende practicando: hay webs gratuitas con retos para empezar desde cero.',

@@ -35,7 +35,7 @@ const iconos = {
           <li><b>1 · Lo que más te pega:</b> el que mejor encaja con cómo eres.</li>
           <li><b>2 · El puente:</b> cerca de algo que ya te gusta.</li>
           <li><b>3 · El salto:</b> uno que quizá no te habías planteado.</li>
-          <li>Toca cada uno para ver de qué va, qué se gana y cómo llegar.</li>
+          <li>Toca cada uno para ver de qué va y cómo llegar.</li>
         </ul>
         <Fragment set:html="<!-- PENDIENTE: caminos de ejemplo; en el producto real salen del test -->" />
       </header>
@@ -79,15 +79,6 @@ const iconos = {
                     <p class="cam__p">{c.dato}</p>
                   </section>
 
-                  {
-                    c.ganancia && (
-                      <section class="cam__bloque" aria-label={`Lo que se gana al empezar como ${c.nombre}`}>
-                        <Fragment set:html="<!-- PENDIENTE CLIENTA: validar dato -->" />
-                        <h2 class="cam__h">Lo que se gana al empezar</h2>
-                        <p class="cam__p">{c.ganancia}</p>
-                      </section>
-                    )
-                  }
                   <p class="cam__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
 
                   <section class="cam__bloque" aria-label={`${c.formacionTitulo ?? 'Formación'} de ${c.nombre}`}>
@@ -223,7 +214,6 @@ const iconos = {
   @media (max-width: 30rem) {
     .cam__cabeza { grid-template-columns: auto 1fr auto; gap: 0.75rem; padding: 0.95rem; }
     .cam__foto { display: none; }
-    .cam__resumen { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { .cam, .cam__mas { transition: none; } }
 </style>
