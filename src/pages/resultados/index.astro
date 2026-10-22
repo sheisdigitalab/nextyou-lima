@@ -61,13 +61,14 @@ const iconos = {
                     <h2 class="cam__h">En qué consiste</h2>
                     <dl class="cam__datos">
                       <div><dt>Qué haces</dt><dd>{c.que}</dd></div>
+                      {c.trabajo && <div><dt>Cómo se llama este trabajo</dt><dd>{c.trabajo}</dd></div>}
                       <div><dt>Un día normal</dt><dd>{c.dia}</dd></div>
                       <div><dt>Por qué encaja contigo</dt><dd>{c.porque}</dd></div>
                     </dl>
                   </section>
 
-                  <section class="cam__bloque" aria-label={`Formación de ${c.nombre}`}>
-                    <h2 class="cam__h">La formación</h2>
+                  <section class="cam__bloque" aria-label={`${c.formacionTitulo ?? 'Formación'} de ${c.nombre}`}>
+                    <h2 class="cam__h">{c.formacionTitulo ?? 'La formación'}</h2>
                     <p class="cam__p">{c.formacion}</p>
                   </section>
 
@@ -187,6 +188,7 @@ const iconos = {
     .cam__cuerpo { padding: 1.4rem 1.4rem 1.6rem; }
     .cam__foto { width: 4.4rem; height: 4.4rem; }
     .cam__datos { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .cam__datos:has(> div:nth-child(4)) { grid-template-columns: repeat(2, 1fr); }
     .cam__rutas { grid-template-columns: 1fr 1fr; }
     .prem { grid-template-columns: 0.9fr 1.1fr; }
     .prem__foto { height: 100%; min-height: 22rem; }
