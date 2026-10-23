@@ -15,9 +15,18 @@ import { caminos, perfil, acompanamiento as coach } from '../../data/resultados'
 // Bloque del coach: 'C' = banda discreta (la que se ve) · 'B' = «tus 3 caminos llevan al coach» (montada, oculta)
 const coachVariante: 'C' | 'B' = 'C';
 // Fila «Envíame mis caminos» / «Compartir»: solo diseño, sin funcionalidad ni datos (pon false para quitarla)
-const mostrarGuardar = true;
+const mostrarGuardar = false;
+// El detalle de cada vía sin la duración, que ya se ve a la derecha («Universidad · 4 años» → «Universidad»)
+const sinDuracion = (detalle: string, duracion: string) =>
+  detalle.split(' · ').filter((t) => t !== duracion && !/^\d+ años$/.test(t) && t !== 'Unos meses').join(' · ');
 const MAX_MESES = 48; // la línea más larga (4 años) ocupa todo el ancho
 const ramas = ['M150 0 V10 C150 38 50 34 50 70', 'M150 0 V70', 'M150 0 V10 C150 38 250 34 250 70'];
+// Icono de la profesión de cada camino, en las tarjetas del gráfico (en lugar de foto)
+const iconosCamino: Record<string, string> = {
+  contenido: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><circle cx="12" cy="11" r="2.6"/><path d="M10.5 18.5h3"/>',
+  animacion: '<path d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5z"/><path d="M3.5 7.25L12 12l8.5-4.75M12 12v9.5"/>',
+  ciberseguridad: '<path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6z"/><rect x="9" y="10.5" width="6" height="5" rx="1"/><path d="M10 10.5V9a2 2 0 0 1 4 0v1.5"/>',
+};
 const iconosPerfil = {
   crear: '<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
   contar: '<path d="M5 6h14v9H10l-4 3.5V15H5z"/><path d="M9 10.5h6"/>',
@@ -56,7 +65,7 @@ const iconos = {
           {
             perfil.rasgos.map((r) => (
               <li class="perfil__rasgo">
-                <span class="via__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconosPerfil[r.icono]} /></span>
+                <span class="perfil__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconosPerfil[r.icono]} /></span>
                 <span class="perfil__tx"><b>{r.titulo}</b><span>{r.texto}</span></span>
               </li>
             ))
@@ -76,7 +85,7 @@ const iconos = {
             caminos.map((c, i) => (
               <button type="button" role="tab" class="mp__dest" id={`tab-${c.id}`} aria-controls={`panel-${c.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-i={i}>
                 <span class="mp__foto">
-                  <Image src={c.foto} alt="" width={140} height={140} loading="lazy" />
+                  <span class="mp__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={iconosCamino[c.id]} /></span>
                   <span class="mp__n" aria-hidden="true">{i + 1}</span>
                 </span>
                 <small class="mp__tipo">{c.tipo}</small>
@@ -121,42 +130,39 @@ const iconos = {
               </dl>
             </div>
 
+            <div class="mp__par">
+              <div class="mp__bloque">
+                {/* PENDIENTE CLIENTA: validar dato */}
+                <h3 class="mp__h3">El dato</h3>
+                <p class="mp__p">{c.dato}</p>
+                <p class="mp__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
+              </div>
+              <div class="mp__bloque">
+                <h3 class="mp__h3">{c.formacionTitulo ?? 'La formación'}</h3>
+                <p class="mp__p">{c.formacion}</p>
+              </div>
+            </div>
+
             <div class="mp__bloque">
               <h3 class="mp__h3">Cómo llegar <small>Hay más de un camino</small></h3>
               <ol class="vias" role="list">
                 {
-                  c.rutas.map((r) => (
-                    <li>
-                      <details class={`via via--${r.tipo}`} style={r.meses ? `--w: ${Math.round((r.meses / MAX_MESES) * 100)}%` : undefined}>
-                        <summary>
-                          <span class="via__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></span>
+                  c.rutas.map((r) => {
+                    const detalle = sinDuracion(r.detalle, r.duracion);
+                    return (
+                      <li class={`via via--${r.tipo}`} style={r.meses ? `--w: ${Math.round((r.meses / MAX_MESES) * 100)}%` : undefined}>
+                        <span class="via__i" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></span>
+                        <span class="via__tx">
                           <b class="via__tit">{r.titulo}</b>
-                          <span class="via__mas" aria-hidden="true"></span>
-                          <span class="via__pista">
-                            <span class="via__linea" aria-hidden="true"><span class="via__barra"></span></span>
-                            <span class="via__dur">{r.duracion}</span>
-                          </span>
-                        </summary>
-                        <p class="via__det">{r.detalle}</p>
-                      </details>
-                    </li>
-                  ))
+                          {/* El detalle solo se ve en «Por tu cuenta» (es el cómo); en las demás queda para lectores de pantalla */}
+                          {detalle && <small class={r.tipo === 'solo' ? 'via__det' : 'solo-lector'}>{r.tipo === 'solo' ? detalle : `. ${detalle}`}</small>}
+                        </span>
+                        <span class="via__dur">{r.duracion}</span>
+                      </li>
+                    );
+                  })
                 }
               </ol>
-              <p class="mp__ref mp__ref--leyenda">Cuanto más larga la línea, más tiempo de formación. Toca una vía para ver qué aprendes. Las duraciones son aproximadas.</p>
-            </div>
-
-            <div class="mp__mas">
-              <details class="mp__det">
-                {/* PENDIENTE CLIENTA: validar dato */}
-                <summary><span>El dato</span><i aria-hidden="true"></i></summary>
-                <p class="mp__p">{c.dato}</p>
-                <p class="mp__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
-              </details>
-              <details class="mp__det">
-                <summary><span>{c.formacionTitulo ?? 'La formación'}</span><i aria-hidden="true"></i></summary>
-                <p class="mp__p">{c.formacion}</p>
-              </details>
             </div>
 
             <a class="mp__coach" href="#coach">¿Quieres ayuda para decidir? <b>Habla con un coach</b> <span aria-hidden="true">↓</span></a>
@@ -166,11 +172,6 @@ const iconos = {
           </section>
         ))
       }
-
-      <div class="res__cierre">
-        <h3 class="res__cierre-t">No tienes que elegir ya.</h3>
-        <p class="res__cierre-p">Lo importante ahora es explorar: empieza por el camino que más curiosidad te dé. Y <a href={CTA_PRINCIPAL.href}>repite el test</a> cuando quieras: si cambias tú, cambian tus caminos.</p>
-      </div>
 
       {
         mostrarGuardar && (
@@ -342,9 +343,9 @@ const iconos = {
       })
     );
 
-    // La barra solo aparece cuando los tres caminos del mapa ya han quedado arriba, y se va al llegar al cierre
+    // La barra solo aparece cuando los tres caminos del mapa ya han quedado arriba, y se va al llegar al coach
     const destinos = mapa.querySelector<HTMLElement>('.mp__destinos');
-    const bloqueCoach = document.querySelector<HTMLElement>('.res__cierre');
+    const bloqueCoach = document.querySelector<HTMLElement>('#coach');
     if (fija && destinos && 'IntersectionObserver' in window) {
       let mapaFuera = false;
       let coachCerca = false;
@@ -384,6 +385,7 @@ const iconos = {
   .perfil { display: grid; gap: 0.9rem; }
   .perfil__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
   .perfil__rasgo { display: grid; grid-template-columns: 2rem 1fr; column-gap: 0.85rem; align-items: start; padding-top: 0.95rem; border-top: 1px solid var(--linea); }
+  .perfil__ic { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--acento); color: var(--crema); }
   .perfil__tx { display: grid; gap: 0.2rem; }
   .perfil__tx b { font-size: var(--t2); font-weight: 700; line-height: 1.25; color: var(--crema); }
   .perfil__tx span { font-size: var(--t2); line-height: 1.45; color: rgb(246 241 232 / 0.78); }
@@ -399,13 +401,16 @@ const iconos = {
   .mp__destinos { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
   .mp__dest { display: grid; justify-items: center; align-content: start; gap: 0.3rem; padding: 0.7rem 0.3rem 0.9rem; min-height: 44px; border-radius: 1.1rem; border: 1px solid var(--linea); background: transparent; color: var(--crema); font: inherit; cursor: pointer; text-align: center; transition: background-color 200ms ease, border-color 200ms ease; }
   .mp__dest:hover { background: rgb(246 241 232 / 0.04); }
-  .mp__dest[aria-selected='true'] { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 6%, transparent); }
-  .mp__dest:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
-  .mp__foto { position: relative; width: clamp(3.4rem, 2.4rem + 4vw, 5rem); aspect-ratio: 1; margin-bottom: 0.2rem; }
-  .mp__foto img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid var(--linea); }
-  .mp__dest[aria-selected='true'] .mp__foto img { border-color: var(--acento); }
-  .mp__n { position: absolute; right: -0.25rem; top: -0.25rem; display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--negro); border: 1px solid var(--acento); color: var(--crema); font-weight: 700; font-size: 0.875rem; }
-  .mp__tipo { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--acento-texto); line-height: 1.15; }
+  .mp__dest[aria-selected='true'] { border-color: rgb(246 241 232 / 0.55); background: rgb(246 241 232 / 0.06); }
+  .mp__dest:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
+  .mp__foto { position: relative; margin-bottom: 0.2rem; }
+  .mp__ico { display: grid; place-items: center; width: clamp(3.25rem, 2.6rem + 2.4vw, 4rem); aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--linea); color: var(--crema); transition: border-color 200ms ease, color 200ms ease; }
+  .mp__ico svg { width: 46%; height: 46%; }
+  .mp__dest[aria-selected='true'] .mp__ico { border-color: var(--acento); background: var(--acento); color: var(--negro); }
+  .mp__n { position: absolute; right: -0.25rem; top: -0.25rem; display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--negro); border: 1px solid var(--linea); color: var(--crema); font-weight: 700; font-size: 0.875rem; }
+  .mp__dest[aria-selected='true'] .mp__n { border-color: var(--crema); }
+  .mp__tipo { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gris); line-height: 1.15; }
+  .mp__dest[aria-selected='true'] .mp__tipo { color: var(--acento-texto); }
   .mp__nombre { font-family: var(--titular); font-weight: 700; font-size: clamp(0.9375rem, 0.85rem + 0.5vw, 1.2rem); line-height: 1.12; letter-spacing: -0.02em; overflow-wrap: break-word; }
 
   /* Ficha del camino elegido */
@@ -425,7 +430,6 @@ const iconos = {
   .mp__p { font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
   .mp__p, .mp__datos dd, .via__det, .mp__ref { max-width: 51ch; } /* ≈ 68 caracteres por línea */
   .mp__ref { font-size: var(--t1); line-height: 1.4; color: var(--gris); }
-  .mp__ref--leyenda { font-size: 0.875rem; color: rgb(246 241 232 / 0.78); }
   /* Datos de la ficha: una fila por dato (aro fino con icono, etiqueta en lima, texto cómodo), separadas por líneas de 1 px */
   .mp__datos { display: grid; margin: 0; }
   .mp__dato { display: grid; grid-template-columns: 2.4rem 1fr; column-gap: 1rem; align-content: start; padding-block: 1.15rem; border-top: 1px solid var(--linea); }
@@ -439,23 +443,22 @@ const iconos = {
   .mp__datos dd { grid-column: 2; margin: 0; font-size: var(--t2); line-height: 1.55; color: rgb(246 241 232 / 0.92); }
   .mp__dato--trabajo dd { font-weight: 600; color: var(--crema); }
 
-  /* Lo de menos importancia, plegado en acordeones finos (se abre al tocar) */
-  .mp__mas { display: grid; border-top: 1px solid var(--linea); }
-  .mp__det { border-bottom: 1px solid var(--linea); }
-  .mp__det summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.25rem; padding-block: 0.4rem; cursor: pointer; list-style: none; font-family: var(--titular); font-weight: 700; font-size: 1.0625rem; line-height: 1.2; }
-  .mp__det summary::-webkit-details-marker { display: none; }
-  .mp__det summary:hover { color: var(--acento-texto); }
-  .mp__det summary:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.4rem; }
-  .mp__det summary i { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--linea); }
-  .mp__det summary i::before { content: ''; width: 0.45rem; height: 0.45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 200ms ease; }
-  .mp__det[open] summary i { border-color: var(--acento); }
-  .mp__det[open] summary i::before { transform: translateY(2px) rotate(-135deg); }
-  .mp__det > .mp__p { padding-bottom: 0.4rem; }
-  .mp__det > .mp__ref { padding-bottom: 1rem; margin-top: 0.4rem; }
-  .mp__det > .mp__p:last-child { padding-bottom: 1.1rem; }
+  /* «El dato» y «Qué necesitas saber»: siempre visibles; en escritorio, uno junto al otro */
+  .mp__par { display: grid; gap: inherit; }
 
   /* Barra fija 1·2·3 (solo móvil): aparece al bajar, pegada bajo el menú, para cambiar de camino sin volver arriba */
   .mp__fija { display: none; }
+  @media (min-width: 48rem) {
+    /* Escritorio: tira fija con los 3 caminos; aparece al bajar, para cambiar de camino sin volver arriba */
+    .mp__fija { position: fixed; z-index: 15; left: 0; right: 0; top: var(--menu-h, 4.5rem); display: flex; justify-content: center; gap: 0.75rem; padding: 0.4rem max(var(--margen), calc((100% - 68.75rem) / 2)); background: rgb(22 20 18 / 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); transform: translateY(-110%); opacity: 0; pointer-events: none; transition: transform 220ms ease, opacity 220ms ease; }
+    .mp__fija.is-on { transform: none; opacity: 1; pointer-events: auto; }
+    .mp__fb { flex: 1 1 0; display: flex; align-items: center; gap: 0.6rem; min-width: 0; min-height: 2.75rem; padding: 0.25rem 1rem 0.25rem 0.5rem; border-radius: 999px; border: 1px solid var(--linea); background: transparent; color: var(--crema); font: inherit; font-weight: 600; font-size: var(--t1); cursor: pointer; text-align: left; transition: border-color 200ms ease, background-color 200ms ease; }
+    .mp__fb:hover { background: rgb(246 241 232 / 0.04); }
+    .mp__fb[aria-pressed='true'] { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 8%, transparent); }
+    .mp__fb:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+    .mp__fn { flex: none; display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; border: 1px solid var(--acento); font-weight: 700; }
+    .mp__ft { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  }
   @media (max-width: 47.99rem) {
     .mp__fija { position: fixed; z-index: 15; left: 0; right: 0; top: var(--menu-h, 4.5rem); display: flex; gap: 0.5rem; padding: 0.4rem var(--margen); background: rgb(22 20 18 / 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); transform: translateY(-110%); opacity: 0; pointer-events: none; transition: transform 220ms ease, opacity 220ms ease; }
     .mp__fija.is-on { transform: none; opacity: 1; pointer-events: auto; }
@@ -467,28 +470,15 @@ const iconos = {
     .mp__fb:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
   }
 
-  /* Vías para llegar: título, una línea fina más larga cuanto más dura y su duración; el detalle se abre al tocar */
+  /* Cómo llegar: lista discreta, una fila por vía y sin desplegables; la línea de abajo marca el tiempo de formación */
   .vias { list-style: none; margin: 0; padding: 0; display: grid; }
-  .vias > li { border-top: 1px solid var(--linea); }
-  .vias > li:first-child { border-top: 0; }
-  .via > summary { display: grid; grid-template-columns: 2rem 1fr 1.75rem; column-gap: 0.75rem; row-gap: 0.45rem; align-items: center; padding-block: 0.85rem; cursor: pointer; list-style: none; }
-  .via > summary::-webkit-details-marker { display: none; }
-  .via > summary:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.5rem; }
-  .via__ic { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--acento); color: var(--crema); }
+  .via { position: relative; display: grid; grid-template-columns: 1.25rem minmax(0, 1fr) auto; column-gap: 0.7rem; align-items: baseline; padding-block: 1rem; border-bottom: 1px solid var(--linea); }
+  .via::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 3px; width: var(--w, 0); max-width: 100%; border-radius: 3px; background: var(--acento); }
+  .via__i { align-self: start; display: grid; margin-top: 0.2rem; color: var(--acento-texto); }
+  .via__tx { display: grid; gap: 0.2rem; min-width: 0; }
   .via__tit { font-size: var(--t2); line-height: 1.3; font-weight: 600; }
-  .via__mas { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 1px solid var(--linea); }
-  .via__mas::before { content: ''; width: 0.4rem; height: 0.4rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 200ms ease; }
-  .via[open] .via__mas { border-color: var(--acento); }
-  .via[open] .via__mas::before { transform: translateY(2px) rotate(-135deg); }
-  .via__pista { grid-column: 2 / 4; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.75rem; }
-  .via__linea { position: relative; display: flex; align-items: center; height: 0.75rem; margin-right: 0.35rem; }
-  .via__linea::before { content: ''; position: absolute; inset: 50% 0 auto; border-top: 1px solid var(--linea); }
-  .via__barra { position: relative; height: 3px; width: var(--w, 100%); border-radius: 3px; background: var(--crema); }
-  .via__barra::after { content: ''; position: absolute; right: -4px; top: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--acento); }
-  .via--solo .via__linea { display: none; }
-  .via--solo .via__dur { grid-column: 1 / -1; justify-self: end; }
+  .via__det { margin: 0; font-size: 0.875rem; line-height: 1.4; color: rgb(246 241 232 / 0.72); }
   .via__dur { font-size: var(--t1); font-weight: 600; color: var(--crema); white-space: nowrap; }
-  .via__det { margin: 0; padding: 0 0 1rem 2.75rem; font-size: var(--t1); line-height: 1.5; color: rgb(246 241 232 / 0.8); }
 
   .mp__coach { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; min-height: 44px; padding: 0.7rem 1rem; border-radius: 0.9rem; border: 1px dashed rgb(246 241 232 / 0.3); color: var(--crema); text-decoration: none; font-size: var(--t2); }
   .mp__coach b { color: var(--acento-texto); }
@@ -498,13 +488,6 @@ const iconos = {
   .mp__coach:hover { border-color: var(--acento); }
   .mp__coach:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
 
-  /* Cierre: titular corto, párrafo legible y botón de contorno */
-  .res__cierre { display: grid; justify-items: center; gap: 0.9rem; text-align: center; margin-top: clamp(1.5rem, 0.5rem + 3vw, 3rem); }
-  .res__cierre-t { margin: 0; font-family: var(--titular); font-weight: 700; font-size: var(--t4); line-height: 1.15; letter-spacing: -0.015em; color: var(--crema); }
-  .res__cierre-p { margin: 0; max-width: 54ch; font-size: var(--t2); line-height: 1.6; color: rgb(246 241 232 / 0.86); }
-  .res__cierre-p a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
-  .res__cierre-p a:hover { color: var(--acento-texto); }
-  .res__cierre-p a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 0.2rem; }
 
   /* Guardar y compartir (solo diseño): botones de contorno, lima al pasar el ratón */
   .res__guardar { display: grid; justify-items: center; gap: 0.75rem; }
@@ -524,7 +507,7 @@ const iconos = {
   .coach .boton { white-space: nowrap; }
 
   /* Opción C · banda discreta: foto, una frase y el botón entre dos líneas finas */
-  .coach--c { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1.125rem, 2.2vw, 1.5rem); padding-block: 1.9rem; border-block: 1px solid rgb(255 255 255 / 0.12); }
+  .coach--c { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1.125rem, 2.2vw, 1.5rem); padding: 1.25rem; border: 1px solid var(--linea); border-radius: 1.25rem; }
   .coach__av { width: 6.875rem; height: 6.875rem; border-radius: 50%; object-fit: cover; object-position: center 25%; }
   .coach__frase { margin: 0.5rem 0 0; font-family: var(--titular); font-weight: 900; font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.875rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--crema); }
   .coach__firma { margin: 0.5rem 0 0; font-size: var(--t1); line-height: 1.4; color: var(--gris); }
@@ -555,9 +538,10 @@ const iconos = {
 
   @media (min-width: 48rem) {
     .perfil__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2.5rem; }
-    .mp__panel { gap: 2.5rem; scroll-margin-top: calc(var(--menu-h, 4.5rem) + 1.25rem); }
+    .mp__panel { gap: 2.5rem; scroll-margin-top: calc(var(--menu-h, 4.5rem) + 4.1rem); }
     .res { padding-bottom: 4rem; }
     .coach { margin-top: 2rem; margin-bottom: 0; }
+    .coach--c { padding: 1.75rem; }
     .mp__datos { grid-template-columns: repeat(2, 1fr); column-gap: 3rem; }
     .mp__dato:nth-child(2) { border-top: 0; padding-top: 0.25rem; }
     .mp__ramas { height: 5.5rem; }
@@ -565,10 +549,10 @@ const iconos = {
   @media (min-width: 64rem) {
     .mp__panel { gap: 3rem; padding: 2.75rem; }
     .mp__datos { column-gap: 3.5rem; }
+    .mp__par { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.5rem; }
     .vias { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.5rem; }
-    .vias > li:nth-child(-n + 2) { border-top: 0; }
     .coach { margin-top: 2.5rem; margin-bottom: 0; }
-    .coach--c { padding-block: 2.75rem; }
+    .coach--c { padding: 2rem 2.75rem; }
   }
   @media (max-width: 47.99rem) {
     /* Perfil compacto en móvil: tres tarjetas que se deslizan; la siguiente asoma para que se vea que hay más */
@@ -579,7 +563,7 @@ const iconos = {
     .res__guardar .boton { width: 100%; }
   }
   @media (max-width: 760px) {
-    .coach--c { grid-template-columns: auto minmax(0, 1fr); padding-block: 1.5rem; }
+    .coach--c { grid-template-columns: auto minmax(0, 1fr); }
     .coach--c .coach__av { width: 4.5rem; height: 4.5rem; }
     .coach--c .coach__cta { grid-column: 1 / -1; justify-items: stretch; text-align: center; }
     .coach--c .coach__cta small { max-width: none; }
@@ -590,5 +574,5 @@ const iconos = {
     .coach__plan { width: 100%; justify-items: center; text-align: center; }
     .coach--b .boton { width: 100%; justify-content: center; padding-inline: 1.25rem; }
   }
-  @media (prefers-reduced-motion: reduce) { .mp__rama, .mp__dest, .mp__fija, .mp__fb, .mp__det summary i::before, .via__mas::before { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .mp__rama, .mp__dest, .mp__ico, .mp__fija, .mp__fb { transition: none; } }
 </style>
