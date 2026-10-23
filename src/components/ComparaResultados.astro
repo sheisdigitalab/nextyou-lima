@@ -1,0 +1,29 @@
+---
+// Barra solo para la presentación: cambiar entre las dos versiones de «Tus caminos». Se quita borrando su uso en las dos páginas.
+import { BASE } from '../config';
+const { actual } = Astro.props as { actual: 'negro' | 'crema' };
+---
+
+<div class="comparar" role="group" aria-label="Versión de los resultados">
+  <span class="comparar__eti">Comparar los resultados:</span>
+  <a href={`${BASE}resultados/`} data-cmp aria-current={actual === 'negro' ? 'page' : undefined}>A · Fondo negro</a>
+  <a href={`${BASE}resultados-crema/`} data-cmp aria-current={actual === 'crema' ? 'page' : undefined}>B · Fondo crema</a>
+</div>
+
+<script>
+  // Mantiene el nombre (?nombre=…) al cambiar de versión
+  const nombre = new URLSearchParams(location.search).get('nombre');
+  if (nombre) document.querySelectorAll<HTMLAnchorElement>('[data-cmp]').forEach((a) => (a.href += `?nombre=${encodeURIComponent(nombre)}`));
+</script>
+
+<style is:global>
+  .comparar { position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; justify-content: center; gap: 0.5rem; height: 3rem; padding-inline: var(--margen); background: #ffffff; border-bottom: 1px solid rgb(0 0 0 / 0.12); font-family: var(--sans); }
+  .comparar__eti { margin-right: 0.25rem; font-size: 0.875rem; font-weight: 600; color: #574e46; }
+  .comparar a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 0.875rem; border-radius: 999px; border: 1px solid rgb(0 0 0 / 0.18); background: #fff; color: #161412; font: 600 0.875rem var(--sans); text-decoration: none; white-space: nowrap; }
+  .comparar a[aria-current='page'] { background: #161412; color: #fff; border-color: #161412; }
+  .comparar a:focus-visible { outline: 2px solid #161412; outline-offset: 2px; }
+  .paletas { display: none !important; }
+  .menu, [data-selector='si'] .menu { top: 3rem !important; }
+  body { padding-top: 3rem; }
+  @media (max-width: 47.99rem) { .comparar { justify-content: flex-start; overflow-x: auto; gap: 0.3rem; } .comparar__eti { display: none; } .comparar a { padding: 0 0.7rem; font-size: 0.8125rem; } }
+</style>
