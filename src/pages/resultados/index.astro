@@ -380,6 +380,9 @@ const iconos = {
   .res { --tinta: 246 241 232; --fondo: 22 20 18; background: var(--negro); color: var(--crema); padding-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) var(--aire, 6rem); min-height: calc(100svh - 125px); }
   /* Tema crema: el mismo diseño sobre fondo crema (como el móvil de «Cómo funciona»): texto negro, tarjetas blancas, lima solo en rellenos */
   .res--crema { --tinta: 22 20 18; --fondo: 246 241 232; --crema: #161412; --negro: #f6f1e8; --linea: rgb(22 20 18 / 0.14); --gris: #574e46; --acento-texto: #574e46; --tarjeta: #ffffff; }
+  /* La página sigue negra y el contenido es un módulo crema */
+  .res--crema { background: #161412; }
+  .res--crema .res__caja { background: #f6f1e8; color: #161412; border-radius: 1.75rem; padding: clamp(1.25rem, 0.8rem + 2vw, 2.5rem); }
   .res--crema .boton:not(.boton--contorno) { background: #161412; color: #f6f1e8; }
   .res--crema .perfil__ic, .res--crema .mp__dato::before { background-color: var(--acento); border-color: var(--acento); }
   .res--crema .perfil__ic { color: #161412; }

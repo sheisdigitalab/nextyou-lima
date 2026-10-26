@@ -25,5 +25,6 @@ const { actual } = Astro.props as { actual: 'negro' | 'crema' };
   .paletas { display: none !important; }
   .menu, [data-selector='si'] .menu { top: 3rem !important; }
   body { padding-top: 3rem; }
+  .mp__fija { top: calc(var(--menu-h, 4.5rem) + 3rem) !important; }
   @media (max-width: 47.99rem) { .comparar { justify-content: flex-start; overflow-x: auto; gap: 0.3rem; } .comparar__eti { display: none; } .comparar a { padding: 0 0.7rem; font-size: 0.8125rem; } }
 </style>
