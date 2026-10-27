@@ -1,0 +1,37 @@
+---
+// Cabecera y estilos comunes de las páginas de guía de marca (/redes/ y /logo/): menú pequeño, titular grande y tarjetas claras sobre negro.
+import { BASE } from '../config';
+const { actual, titulo, lead } = Astro.props as { actual: 'redes' | 'redes2' | 'logo'; titulo: string; lead: string };
+---
+
+<nav class="rs__nav" aria-label="Guía de marca">
+  <a href={`${BASE}redes/`} aria-current={actual === 'redes' ? 'page' : undefined}>Redes sociales</a>
+  <a href={`${BASE}redes-v2/`} aria-current={actual === 'redes2' ? 'page' : undefined}>Redes v2</a>
+  <a href={`${BASE}logo/`} aria-current={actual === 'logo' ? 'page' : undefined}>Logo</a>
+</nav>
+<header class="rs__cab">
+  <p class="rs__eti">Marca en uso</p>
+  <h1 class="rs__h1">{titulo}</h1>
+  <p class="rs__lead">{lead}</p>
+</header>
+
+<style is:global>
+  .rs { background: #000; color: #fff; padding-block: 1.5rem 5rem; }
+  .menu, .pie, .paletas { display: none !important; }
+  .rs__caja { display: grid; gap: clamp(1.5rem, 1rem + 2vw, 2.5rem); max-width: 68.75rem; }
+  .rs__nav { display: flex; gap: 0.5rem; }
+  .rs__nav a { padding: 0.45rem 1rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.25); color: #fff; font-size: 0.875rem; font-weight: 600; text-decoration: none; }
+  .rs__nav a[aria-current='page'] { background: #fff; color: #000; }
+  .rs__cab { display: grid; gap: 0.9rem; padding-block: clamp(1.5rem, 1rem + 4vw, 4rem) 1rem; }
+  .rs__eti { margin: 0; font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.7); }
+  .rs__h1 { margin: 0; font-family: var(--titular); font-weight: 400; font-size: clamp(3rem, 1.5rem + 7vw, 7.5rem); line-height: 0.95; letter-spacing: -0.035em; }
+  .rs__lead { margin: 0; max-width: 40rem; font-size: 1.125rem; line-height: 1.55; color: rgb(255 255 255 / 0.78); }
+  .rs__fila { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+  .rs__bloque { display: grid; }
+  @media (min-width: 48rem) { .rs__fila { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rs__fila--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .rs__card--ancha { grid-column: 1 / -1; } }
+  .rs__card { margin: 0; display: grid; gap: 1rem; align-content: start; padding: clamp(1rem, 0.5rem + 2vw, 2rem); border-radius: 1rem; background: #e9e6df; color: #161412; }
+  .rs__card--centro { justify-items: center; align-content: center; }
+  .rs__card figcaption { font-size: 0.8125rem; line-height: 1.4; color: #574e46; }
+  .rs__card--centro figcaption { text-align: center; }
+
+</style>

@@ -1,0 +1,620 @@
+---
+// Redes sociales v2: la estrategia de contenidos de NextYou organizada por TIPOS de contenido (no por redes).
+// Cada bloque dice para qué sirve, dónde se publica y enseña 2-3 piezas. Fotos y datos DE EJEMPLO: no es ninguna cuenta real.
+// Fotos (cada persona sale una sola vez): Los de dentro → dentro-4 (arquitecta), prof-fot, prof-dev · Perfil/feed → prof-coc, prof-ele, prof-enf, prof-fis.
+import { Image } from 'astro:assets';
+import V5 from '../../layouts/V5.astro';
+import LogoV3 from '../../components/LogoV3.astro';
+import GuiaCabecera from '../../components/GuiaCabecera.astro';
+import { BASE } from '../../config';
+import fotoArq from '../../assets/muestra/dentro-4.jpg';
+import fotoFot from '../../assets/muestra/prof-fot.jpg';
+import fotoDev from '../../assets/muestra/prof-dev.jpg';
+import fotoCoc from '../../assets/muestra/prof-coc.jpg';
+import fotoEle from '../../assets/muestra/prof-ele.jpg';
+import fotoEnf from '../../assets/muestra/prof-enf.jpg';
+import fotoFis from '../../assets/muestra/prof-fis.jpg';
+
+const monograma = `${BASE}favicon.svg`;
+const svg = (d: string, s = 20, w = 1.7) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const I = {
+  corazon: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  coment: '<path d="M4 5h16v11H9l-5 4z"/>',
+  guardar: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+  enviar: '<path d="M21 3L3 10l7 3 3 7z"/><path d="M10 13l11-10"/>',
+  enlace: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  mas: '<path d="M12 5v14M5 12h14"/>',
+  flecha: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  pulgar: '<path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.5 1 2.5 2.5V9H19a2 2 0 0 1 2 2.3l-1 6A2 2 0 0 1 18 19H7"/>',
+  carrusel: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M3 8v8M21 8v8"/>',
+  libro: '<path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-7"/>',
+};
+
+const dentro = [
+  { foto: fotoArq, gancho: 'Lo que nadie te cuenta de ser arquitecta', tag: 'Arquitecta · 31 años', bajo: true },
+  { foto: fotoFot, gancho: '¿Se puede vivir de la fotografía?', tag: 'Fotógrafa · 27 años' },
+  { foto: fotoDev, gancho: 'Cómo llegué a programar sin saber nada', tag: 'Programador · 24 años' },
+];
+const caminos = [
+  { n: 1, tipo: 'Lo que más te pega', nombre: 'Creación de contenido' },
+  { n: 2, tipo: 'El puente', nombre: 'Animación 3D' },
+  { n: 3, tipo: 'El salto', nombre: 'Ciberseguridad' },
+];
+const senales = [
+  { n: 1, t: 'Te interesan muchas cosas', s: 'No es falta de rumbo. Es tener de dónde elegir.' },
+  { n: 2, t: 'Dudas, y está bien', s: 'Dudar es parte de elegir con calma.' },
+  { n: 3, t: 'Quieres probar antes de decidir', s: 'Probar es la mejor forma de saber qué te gusta.' },
+];
+const destacadas = [
+  { t: 'Test', i: '<circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-4 0 2-6z"/>' },
+  { t: 'Caminos', i: '<path d="M5 20c0-6 3-9 7-11M12 9c3 1 6 4 7 11M12 9V3"/>' },
+  { t: 'Dentro', i: '<circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-6 7-6s7 2 7 6"/>' },
+  { t: 'Familias', i: '<circle cx="9" cy="9" r="3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M16 7a3 3 0 0 1 0 6M18 19c0-2-1-3-2-4"/>' },
+];
+---
+
+<V5 titulo="NextYou en redes sociales · v2" descripcion="Qué publica NextYou y por qué." actual="" ruta="" robots="noindex, nofollow">
+  <main id="contenido" class="rs">
+    <div class="ancho rs__caja">
+      <GuiaCabecera
+        actual="redes2"
+        titulo="Qué publica NextYou"
+        lead="Dos públicos y una sola marca: jóvenes que no saben qué estudiar (Instagram y TikTok) y las familias y centros que les acompañan (Instagram, Facebook y LinkedIn). Fotos y datos de ejemplo."
+      />
+
+      <p class="lema">Tu futuro no se adivina, <span class="explora">se explora.</span></p>
+
+      {/* 1 · LOS DE DENTRO */}
+      <section class="v2b v2b--grande" aria-labelledby="b1">
+        <header class="v2b__cab">
+          <p class="v2b__n">01</p>
+          <h2 id="b1" class="v2b__t">Los de dentro</h2>
+          <p class="v2b__p">Gente real que cuenta su trabajo. Es lo que diferencia a NextYou.</p>
+          <ul class="v2b__donde" role="list" aria-label="Dónde se publica"><li>Instagram</li><li>TikTok</li></ul>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="v2f v2f--movil">
+            {dentro.map((d) => (
+              <div class="tk">
+                <Image src={d.foto} alt="" width={700} height={1300} class={d.bajo ? 'tk__img tk__img--bajo' : 'tk__img'} />
+                <div class="tk__tabs" aria-hidden="true"><span>Siguiendo</span><span class="on">Para ti</span></div>
+                <p class="tk__gancho">{d.gancho}</p>
+                <div class="tk__lat" aria-hidden="true">
+                  <span class="tk__av"><img src={monograma} alt="" width="40" height="40" /><i set:html={svg(I.mas, 10, 2.6)} /></span>
+                  <span set:html={svg(I.corazon, 28)} /><span set:html={svg(I.coment, 28)} /><span set:html={svg(I.guardar, 28)} /><span set:html={svg(I.enviar, 28)} />
+                </div>
+                <div class="tk__pie">
+                  <span class="tk__tag">{d.tag}</span>
+                  <b>@nextyou</b>
+                  <span>Los de dentro</span>
+                </div>
+                <LogoV3 clase="tk__ex" />
+              </div>
+            ))}
+          </div>
+          <p class="nota"><i set:html={svg('<rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-3h5L16 7"/>', 18)} /><span><b>Dirección de foto.</b> Vídeos reales: grabados con móvil, luz natural, en su sitio de trabajo. Mejor auténtico que perfecto.</span></p>
+          <figcaption>Portadas de reel / TikTok 9:16 · el gancho arriba, la persona en el centro y la profesión y la edad en una etiqueta lima</figcaption>
+        </figure>
+      </section>
+
+      {/* 2 · ¿ESTO O ESTO? */}
+      <section class="v2b" aria-labelledby="b2">
+        <header class="v2b__cab">
+          <p class="v2b__n">02</p>
+          <h2 id="b2" class="v2b__t">¿Esto o esto?</h2>
+          <p class="v2b__p">Las preguntas del test convertidas en encuestas. Generan respuesta y llevan al test.</p>
+          <ul class="v2b__donde" role="list" aria-label="Dónde se publica"><li>Instagram</li><li>TikTok</li></ul>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="v2f v2f--movil">
+            <div class="st">
+              <div class="st__top" aria-hidden="true"><span class="st__bar"><i></i></span><span class="st__cuenta"><img src={monograma} alt="" width="24" height="24" />nextyou<small>ahora</small></span></div>
+              <p class="st__q st__q--p">Un sábado libre, ¿qué te apetece más?</p>
+              <div class="enc"><p class="enc__t">Para empezar</p><div class="enc__ops"><span>Crear algo desde cero</span><span>Resolver un reto</span></div></div>
+              <span class="st__enlace"><i set:html={svg(I.enlace, 16)} />Haz el test</span>
+            </div>
+            <div class="st">
+              <div class="st__top" aria-hidden="true"><span class="st__bar"><i></i></span><span class="st__cuenta"><img src={monograma} alt="" width="24" height="24" />nextyou<small>2 h</small></span></div>
+              <p class="st__q">Y tú, ¿con qué te quedas?</p>
+              <div class="enc enc--votada"><p class="enc__t">Resultado</p>
+                <div class="enc__ops">
+                  <span class="gana" style="--p:62%"><b>Trabajar con gente</b><em>62%</em></span>
+                  <span style="--p:38%"><b>Trabajar con tus manos</b><em>38%</em></span>
+                </div>
+              </div>
+              <span class="st__enlace"><i set:html={svg(I.enlace, 16)} />Haz el test</span>
+            </div>
+            <div class="share">
+              <p class="share__t">Mis 3 caminos</p>
+              <ol class="share__l" role="list">
+                {caminos.map((c) => <li><i>{c.n}</i><span><small>{c.tipo}</small><b>{c.nombre}</b></span></li>)}
+              </ol>
+              <span class="explora share__ex">se explora</span>
+              <p class="share__pie"><b>¿Y los tuyos?</b>nextyou.example</p>
+            </div>
+          </div>
+          <figcaption>Stories 9:16 · dos encuestas, una ya votada. A la derecha, la tarjeta para compartir al terminar el test: la pieza pensada para crecer.</figcaption>
+        </figure>
+      </section>
+
+      {/* 3 · CARRUSELES PARA GUARDAR */}
+      <section class="v2b" aria-labelledby="b3">
+        <header class="v2b__cab">
+          <p class="v2b__n">03</p>
+          <h2 id="b3" class="v2b__t">Carruseles para guardar</h2>
+          <p class="v2b__p">Contenido útil que se guarda y se comparte.</p>
+          <ul class="v2b__donde" role="list" aria-label="Dónde se publica"><li>Instagram</li><li>TikTok</li><li>LinkedIn</li></ul>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="car" tabindex="0" role="group" aria-label="Carrusel de 6 diapositivas, desliza para verlo entero">
+            <div class="sl sl--negra">
+              <p class="sl__n">1/6</p>
+              <div class="sl__c"><p class="sl__t sl__t--g">¿No sabes qué estudiar?</p><p class="sl__s">3 señales de que vas bien</p></div>
+              <p class="sl__pie">Desliza <i set:html={svg(I.flecha, 16)} /></p>
+            </div>
+            {senales.map((s) => (
+              <div class={s.n % 2 ? 'sl' : 'sl sl--blanca'}>
+                <p class="sl__n">{s.n + 1}/6</p>
+                <div class="sl__c"><i class="sl__num">{s.n}</i><p class="sl__t">{s.t}</p><p class="sl__s">{s.s}</p></div>
+                <p class="sl__pie"><LogoV3 clase="sl__logo" /></p>
+              </div>
+            ))}
+            <div class="sl sl--blanca">
+              <p class="sl__n">5/6</p>
+              <div class="sl__c"><p class="sl__t">Haz el test y mira tus 3 caminos</p><span class="sl__btn">nextyou.example/test</span></div>
+              <p class="sl__pie"><LogoV3 clase="sl__logo" /></p>
+            </div>
+            <div class="sl sl--negra">
+              <p class="sl__n">6/6</p>
+              <div class="sl__c"><span class="sl__ic" set:html={svg(I.guardar, 34)} /><p class="sl__t">Guárdalo para cuando lo necesites</p></div>
+              <p class="sl__pie"><LogoV3 clase="sl__logo" /></p>
+            </div>
+          </div>
+          <figcaption>Carrusel 4:5 de 6 diapositivas · portada corta, una idea por diapositiva, cierre con llamada a la acción y recordatorio de guardar</figcaption>
+
+          <div class="serie">
+            <div class="sl sl--serie">
+              <p class="sl__n">Serie · Cómo llegar a…</p>
+              <div class="sl__c"><p class="sl__t">Cómo llegar a… Animación 3D</p><p class="sl__s">4 caminos (y no todos son la uni)</p></div>
+              <p class="sl__pie">Desliza <i set:html={svg(I.flecha, 16)} /></p>
+            </div>
+            <p class="serie__tx"><b>Portada de un segundo carrusel</b>Una serie fija: el mismo formato, una profesión distinta cada vez, para que se reconozca de un vistazo.</p>
+          </div>
+        </figure>
+      </section>
+
+      {/* 4 · PARA FAMILIAS Y CENTROS */}
+      <section class="v2b" aria-labelledby="b4">
+        <header class="v2b__cab">
+          <p class="v2b__n">04</p>
+          <h2 id="b4" class="v2b__t">Para familias, centros y orientadores</h2>
+          <p class="v2b__p">Familias en Instagram y Facebook; centros y orientadores en LinkedIn. Mismo tono sereno.</p>
+          <ul class="v2b__donde" role="list" aria-label="Dónde se publica"><li>Instagram</li><li>Facebook</li><li>LinkedIn</li></ul>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="v2f v2f--li">
+            <article class="igp">
+              <header class="igp__cab"><span class="igp__av"><img src={monograma} alt="" width="40" height="40" /></span><b>nextyou</b><span class="igp__mas" aria-hidden="true">···</span></header>
+              <div class="igp__img">
+                <p class="igp__t">Tu hijo no sabe qué estudiar. Y está bien.</p>
+                <p class="igp__s">Cómo acompañarle sin presionar: 5 ideas</p>
+                <LogoV3 clase="igp__logo" />
+              </div>
+              <div class="igp__acc" aria-hidden="true"><span set:html={svg(I.corazon, 24)} /><span set:html={svg(I.coment, 24)} /><span set:html={svg(I.enviar, 24)} /><span class="igp__g" set:html={svg(I.guardar, 24)} /></div>
+              <p class="igp__pie"><b>nextyou</b> Tu hijo no sabe qué estudiar. Y está bien. <span>…más</span></p>
+            </article>
+            <div class="li-col">
+            <div class="li2">
+              <div class="li2__banner"><LogoV3 clase="li2__logo" /></div>
+              <div class="li2__perfil">
+                <div class="li2__av"><img src={monograma} alt="" width="80" height="80" /></div>
+                <p class="li2__nombre">NextYou</p>
+                <p class="li2__desc">Te ayudamos a explorar qué estudiar y a qué dedicarte, con gente real que ya trabaja en ello. Para jóvenes y para las familias y centros que les acompañan.</p>
+                <p class="li2__meta">Educación · España</p>
+              </div>
+            </div>
+            <article class="lp">
+              <header class="lp__cab"><span class="lp__av"><img src={monograma} alt="" width="48" height="48" /></span><span><b>NextYou</b><small>Educación · 1 sem</small></span></header>
+              <p class="lp__tx">Tu hijo no sabe qué estudiar. Es más normal de lo que crees.<br />A los 16 o 17 años casi nadie lo tiene claro. Lo que ayuda no es elegir ya, sino probar y hablar con gente que trabaja en ello. <span>…ver más</span></p>
+              <div class="lp__img">
+                <p class="lp__dato"><b>Elegir con 16 años da vértigo.</b>Y es normal.</p>
+                <LogoV3 clase="lp__logo" />
+              </div>
+              <div class="lp__reac" aria-hidden="true"><span set:html={svg(I.pulgar, 18) + ' Me gusta'} /><span set:html={svg(I.coment, 18) + ' Comentar'} /><span set:html={svg(I.enviar, 18) + ' Compartir'} /></div>
+            </article>
+            </div>
+          </div>
+          <figcaption>Familias en Instagram y Facebook; centros y orientadores en LinkedIn.</figcaption>
+        </figure>
+      </section>
+
+      {/* 5 · EL PERFIL */}
+      <section class="v2b v2b--peq" aria-labelledby="b5">
+        <header class="v2b__cab">
+          <p class="v2b__n">05</p>
+          <h2 id="b5" class="v2b__t">El perfil</h2>
+          <p class="v2b__p">Lo que ve quien llega: la mezcla real de contenidos, no un tablero.</p>
+          <ul class="v2b__donde" role="list" aria-label="Dónde se publica"><li>Instagram</li></ul>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="v2f v2f--perfil">
+            <div class="ig2">
+              <div class="ig2__cab">
+                <div class="av"><span><img src={monograma} alt="Monograma de NextYou" width="96" height="96" /></span></div>
+                <ul class="ig2__c" role="list"><li><b>24</b>publicaciones</li><li><b>—</b>seguidores</li><li><b>—</b>seguidos</li></ul>
+              </div>
+              <p class="ig2__nombre">NextYou</p>
+              <p class="ig2__cat">Educación</p>
+              <p class="ig2__bio">¿No sabes qué estudiar? Explora tus 3 caminos con gente que ya trabaja en ello.</p>
+              <p class="ig2__enlace">nextyou.example/test</p>
+              <div class="ig2__bot"><span class="s">Seguir</span><span>Mensaje</span></div>
+              <ul class="ig2__d" role="list">{destacadas.map((d) => <li><span><i set:html={svg(d.i, 22)} /></span>{d.t}</li>)}</ul>
+              <div class="ig2__tabs" aria-hidden="true"><span class="on" set:html={svg('<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>', 22)} /><span set:html={svg('<rect x="5" y="3" width="14" height="18" rx="3"/><path d="M10 9l5 3-5 3z"/>', 22)} /><span set:html={svg('<circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-6 7-6s7 2 7 6"/>', 22)} /></div>
+            </div>
+
+            <div class="fd">
+              <div class="fp fp--foto"><Image src={fotoCoc} alt="" width={500} height={500} /><p>Lo que no ves en una cocina</p><span>Cocinero · 34</span></div>
+              <div class="fp fp--car fp--negra"><i set:html={svg(I.carrusel, 16)} /><p>¿No sabes qué estudiar?</p><small>3 señales de que vas bien</small></div>
+              <div class="fp fp--foto"><Image src={fotoEle} alt="" width={500} height={500} /><p>Mi primer día con las herramientas</p><span>Electricista · 29</span></div>
+              <div class="fp fp--frase fp--negra"><p>No hace falta elegir ya.</p><span class="explora">se explora</span></div>
+              <div class="fp fp--foto"><Image src={fotoEnf} alt="" width={500} height={500} /><p>Por qué elegí enfermería</p><span>Enfermera · 36</span></div>
+              <div class="fp fp--enc"><small>¿Esto o esto?</small><span class="a">Crear algo desde cero</span><span>Resolver un reto</span></div>
+              <div class="fp fp--car fp--cre"><i set:html={svg(I.carrusel, 16)} /><p>Cómo llegar a… Animación 3D</p><small>4 caminos</small></div>
+              <div class="fp fp--foto"><Image src={fotoFis} alt="" width={500} height={500} /><p>Un día en mi consulta</p><span>Fisioterapeuta · 32</span></div>
+              <div class="fp fp--frase fp--negra"><p>Probar también es avanzar.</p><span class="explora">se explora</span></div>
+            </div>
+          </div>
+          <figcaption>Perfil de Instagram y 9 publicaciones: 4 portadas de «Los de dentro», 2 carruseles, 1 encuesta y 2 frases de marca</figcaption>
+        </figure>
+      </section>
+
+      {/* 6 · UNA SEMANA TIPO */}
+      <section class="v2b v2b--peq" aria-labelledby="b6">
+        <header class="v2b__cab">
+          <p class="v2b__n">06</p>
+          <h2 id="b6" class="v2b__t">Una semana tipo</h2>
+          <p class="v2b__p">Tres publicaciones a la semana. Suficiente para mantener el ritmo sin quemarse.</p>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="sem">
+            <article class="sem__c">
+              <p class="sem__dia">Lunes</p>
+              <div class="sem__mini">
+                <div class="esc esc--reel" aria-hidden="true">
+                  <div class="tk">
+                    <Image src={dentro[0].foto} alt="" width={700} height={1300} class="tk__img tk__img--bajo" />
+                    <div class="tk__tabs"><span>Siguiendo</span><span class="on">Para ti</span></div>
+                    <p class="tk__gancho">{dentro[0].gancho}</p>
+                    <div class="tk__lat">
+                      <span class="tk__av"><img src={monograma} alt="" width="40" height="40" /><i set:html={svg(I.mas, 10, 2.6)} /></span>
+                      <span set:html={svg(I.corazon, 28)} /><span set:html={svg(I.coment, 28)} /><span set:html={svg(I.guardar, 28)} /><span set:html={svg(I.enviar, 28)} />
+                    </div>
+                    <div class="tk__pie"><span class="tk__tag">{dentro[0].tag}</span><b>@nextyou</b><span>Los de dentro</span></div>
+                    <LogoV3 clase="tk__ex" />
+                  </div>
+                </div>
+              </div>
+              <h3 class="sem__t">Reel de «Los de dentro»</h3>
+              <p class="sem__d">Instagram + TikTok</p>
+              <p class="sem__o"><i set:html={svg('<path d="M5 12l5 5 9-10"/>', 14, 2.2)} />Que te conozcan</p>
+            </article>
+            <article class="sem__c">
+              <p class="sem__dia">Miércoles</p>
+              <div class="sem__mini">
+                <div class="esc esc--car" aria-hidden="true">
+                  <div class="esc__fila">
+                    <div class="sl sl--negra">
+                      <p class="sl__n">1/6</p>
+                      <div class="sl__c"><p class="sl__t sl__t--g">¿No sabes qué estudiar?</p><p class="sl__s">3 señales de que vas bien</p></div>
+                      <p class="sl__pie">Desliza <i set:html={svg(I.flecha, 16)} /></p>
+                    </div>
+                    <div class="sl">
+                      <p class="sl__n">2/6</p>
+                      <div class="sl__c"><i class="sl__num">1</i><p class="sl__t">{senales[0].t}</p><p class="sl__s">{senales[0].s}</p></div>
+                      <p class="sl__pie"><LogoV3 clase="sl__logo" /></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h3 class="sem__t">Carrusel para guardar</h3>
+              <p class="sem__d">Instagram (+ LinkedIn adaptado para familias)</p>
+              <p class="sem__o"><i set:html={svg('<path d="M5 12l5 5 9-10"/>', 14, 2.2)} />Que te guarden</p>
+            </article>
+            <article class="sem__c">
+              <p class="sem__dia">Viernes</p>
+              <div class="sem__mini">
+                <div class="esc esc--st" aria-hidden="true">
+                  <div class="st">
+                    <div class="st__top"><span class="st__bar"><i></i></span><span class="st__cuenta"><img src={monograma} alt="" width="24" height="24" />nextyou<small>ahora</small></span></div>
+                    <p class="st__q st__q--p">Un sábado libre, ¿qué te apetece más?</p>
+                    <div class="enc"><p class="enc__t">Para empezar</p><div class="enc__ops"><span>Crear algo desde cero</span><span>Resolver un reto</span></div></div>
+                    <span class="st__enlace"><i set:html={svg(I.enlace, 16)} />Haz el test</span>
+                  </div>
+                </div>
+              </div>
+              <h3 class="sem__t">Encuesta «¿Esto o esto?»</h3>
+              <p class="sem__d">Stories de Instagram</p>
+              <p class="sem__o"><i set:html={svg('<path d="M5 12l5 5 9-10"/>', 14, 2.2)} />Que respondan y hagan el test</p>
+            </article>
+          </div>
+          <figcaption>Una semana tipo · miniaturas de las piezas que ya salen más arriba en esta página</figcaption>
+        </figure>
+      </section>
+
+      {/* 7 · TONO */}
+      <section class="v2b v2b--peq" aria-labelledby="b7">
+        <header class="v2b__cab">
+          <p class="v2b__n">07</p>
+          <h2 id="b7" class="v2b__t">Tono</h2>
+          <p class="v2b__p">Una sola marca, dos maneras de hablar.</p>
+        </header>
+        <figure class="rs__card rs__card--ancha">
+          <div class="ton">
+            <div class="ton__c">
+              <p class="ton__t">Jóvenes</p>
+              <ul role="list"><li><b>Cercano y directo.</b> Hablamos de tú, con frases cortas.</li><li><b>Sin presión.</b> No saberlo todavía es normal.</li><li><b>Curioso.</b> Preguntas y cosas para probar.</li></ul>
+              <blockquote>«Está bien no saberlo todavía. Empieza por probar.»</blockquote>
+            </div>
+            <div class="ton__c">
+              <p class="ton__t">Familias</p>
+              <ul role="list"><li><b>Sereno.</b> Tranquilidad antes que urgencia.</li><li><b>Explicativo.</b> Qué hacemos y por qué.</li><li><b>Que acompaña.</b> Ayudamos, no decidimos por nadie.</li></ul>
+              <blockquote>«Es normal que aún no lo sepa. Os contamos cómo explorar sin prisa.»</blockquote>
+            </div>
+          </div>
+          <figcaption>Tono de voz por público</figcaption>
+        </figure>
+      </section>
+
+      <footer class="rs__pie"><p>Prototipo con fotos y datos de ejemplo. Nada de lo que aparece es una cuenta real.</p></footer>
+    </div>
+  </main>
+</V5>
+
+<style is:global>
+  .menu, .pie, .paletas { display: none !important; }
+
+  /* Bloques por tipo de contenido */
+  .v2b { display: grid; gap: 1.25rem; margin-top: clamp(1rem, 0.5rem + 2vw, 2.5rem); }
+  .v2b__cab { display: grid; gap: 0.5rem; justify-items: start; }
+  .v2b__n { margin: 0; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; color: #c8f53b; }
+  .v2b__t { margin: 0; font-family: var(--titular); font-weight: 400; font-size: clamp(2rem, 1.2rem + 3.5vw, 4rem); line-height: 1; letter-spacing: -0.03em; }
+  .v2b--grande .v2b__t { font-size: clamp(2.6rem, 1.4rem + 5vw, 6rem); }
+  .v2b__p { margin: 0; max-width: 40rem; font-size: 1.125rem; line-height: 1.5; color: rgb(255 255 255 / 0.8); }
+  .v2b__donde { list-style: none; margin: 0.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .v2b__donde li { padding: 0.25rem 0.8rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.3); font-size: 0.875rem; font-weight: 600; }
+
+  /* Filas de piezas: en móvil se deslizan dentro de su contenedor */
+  .v2f { display: flex; gap: 1rem; justify-content: center; align-items: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.5rem; }
+  .v2f > * { scroll-snap-align: center; flex: none; }
+  @media (max-width: 63.99rem) { .v2f { justify-content: flex-start; } }
+  .v2f--li { flex-wrap: wrap; overflow: visible; align-items: stretch; }
+  .v2f--perfil { display: grid; grid-template-columns: 24rem 28rem; justify-content: center; align-items: stretch; gap: 1.5rem; overflow: visible; }
+  @media (max-width: 63.99rem) { .v2f--perfil { grid-template-columns: minmax(0, 28rem); } }
+
+  /* TikTok / reel */
+  .tk { position: relative; width: 17rem; aspect-ratio: 9 / 18; border-radius: 1.6rem; overflow: hidden; background: #161412; color: #fff; display: grid; font-family: var(--sans); box-shadow: 0 30px 40px -28px rgb(22 20 18 / 0.7); }
+  .tk::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgb(0 0 0 / 0.6), transparent 34%, transparent 52%, rgb(0 0 0 / 0.82)); }
+  .tk > * { position: relative; z-index: 1; }
+  .tk__img { position: absolute !important; z-index: 0 !important; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .tk__img--bajo { height: 122% !important; object-position: 50% 0; }
+  .tk__tabs { position: absolute; top: 0.8rem; left: 0; right: 0; display: flex; justify-content: center; gap: 1rem; font-size: 0.8125rem; font-weight: 600; opacity: 0.9; }
+  .tk__tabs span { opacity: 0.65; padding-bottom: 0.2rem; }
+  .tk__tabs .on { opacity: 1; border-bottom: 2px solid #fff; }
+  .tk__gancho { position: absolute; top: 3rem; left: 1rem; right: 4.2rem; margin: 0; font-family: var(--titular); font-weight: 800; font-size: 1.55rem; line-height: 1.05; letter-spacing: -0.02em; text-shadow: 0 2px 14px rgb(0 0 0 / 0.45); }
+  .tk__lat { position: absolute; right: 0.7rem; bottom: 4.8rem; display: grid; gap: 1.1rem; justify-items: center; color: #fff; }
+  .tk__av { position: relative; display: block; width: 2.6rem; height: 2.6rem; margin-bottom: 0.5rem; }
+  .tk__av img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; background: #c8f53b; display: block; }
+  .tk__av i { position: absolute; left: 50%; bottom: -0.45rem; translate: -50% 0; display: grid; place-items: center; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: #fe2c55; color: #fff; }
+  .tk__pie { position: absolute; left: 1rem; right: 4.2rem; bottom: 1rem; display: grid; gap: 0.3rem; justify-items: start; font-size: 0.8125rem; line-height: 1.3; }
+  .tk__pie b { font-size: 0.9375rem; }
+  .tk__tag { padding: 0.25rem 0.7rem; border-radius: 999px; background: #c8f53b; color: #161412; font-weight: 700; font-size: 0.8125rem; }
+
+  /* Stories */
+  .st { position: relative; width: 17rem; aspect-ratio: 9 / 18; border-radius: 1.6rem; overflow: hidden; padding: 1rem 1.1rem 1.4rem; display: grid; align-content: start; gap: 0.9rem; background: #faf8f4; color: #161412; font-family: var(--sans); box-shadow: 0 30px 40px -28px rgb(22 20 18 / 0.7); }
+  .st__top { display: grid; gap: 0.5rem; }
+  .st__bar { display: block; height: 3px; border-radius: 2px; background: #e4dfd5; }
+  .st__bar i { display: block; width: 45%; height: 100%; border-radius: 2px; background: #161412; }
+  .st__cuenta { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8125rem; font-weight: 700; }
+  .st__cuenta img { width: 1.5rem; height: 1.5rem; border-radius: 50%; }
+  .st__cuenta small { font-weight: 500; color: #6b645c; }
+  .st__q { margin: 1.4rem 0 0; font-family: var(--titular); font-weight: 800; font-size: 2rem; line-height: 1.02; letter-spacing: -0.03em; text-align: center; }
+  .st__q--g { margin-top: 0.4rem; text-align: left; font-size: 2.1rem; }
+  .st__q em { font-style: normal; background: #c8f53b; border-radius: 0.2em; padding: 0 0.2em; }
+  .enc { margin-top: 0.5rem; padding: 0.9rem; border-radius: 1.1rem; background: #fff; box-shadow: 0 8px 24px -14px rgb(0 0 0 / 0.4); display: grid; gap: 0.7rem; }
+  .enc__t { margin: 0; text-align: center; font-weight: 700; font-size: 0.875rem; color: #574e46; }
+  .enc__ops { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .enc__ops span { display: grid; place-items: center; min-height: 3.6rem; padding: 0.5rem; border-radius: 0.8rem; background: #f1eee7; text-align: center; font-weight: 700; font-size: 0.875rem; line-height: 1.15; }
+  .enc--votada .enc__ops { grid-template-columns: 1fr; }
+  .enc--votada .enc__ops span { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; min-height: 3rem; padding-inline: 0.8rem; text-align: left; overflow: hidden; background: #f1eee7; isolation: isolate; }
+  .enc--votada .enc__ops span::before { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--p); background: #e4dfd5; z-index: -1; }
+  .enc--votada .enc__ops span.gana::before { background: #c8f53b; }
+  .enc--votada em { font-style: normal; font-weight: 800; }
+  .st__enlace { align-self: end; justify-self: center; display: inline-flex; align-items: center; gap: 0.4rem; margin-top: auto; padding: 0.55rem 1rem; border-radius: 0.8rem; background: #fff; box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.5); font-weight: 700; font-size: 0.875rem; }
+  .st { display: flex; flex-direction: column; padding-bottom: 4.6rem; }
+  .st .st__q { margin-top: auto; }
+  .st .enc { margin-top: 1.4rem; margin-bottom: auto; }
+  .st .st__enlace { position: absolute; left: 50%; bottom: 1.3rem; translate: -50% 0; margin: 0; }
+  .st__q--p { font-size: 1.7rem; }
+
+
+  /* Sello de marca: «se explora» en rotulador lima */
+  .explora { font-family: var(--mano); font-weight: 400; font-style: normal; letter-spacing: 0; color: #c8f53b; display: inline-block; rotate: -4deg; transform-origin: left center; line-height: 1; }
+  .lema { margin: clamp(0.5rem, 0.2rem + 1.5vw, 1.5rem) 0 0; max-width: 60rem; font-family: var(--titular); font-weight: 800; font-size: clamp(1.7rem, 0.9rem + 4.2vw, 4.8rem); line-height: 1.04; letter-spacing: -0.03em; color: #f6f1e8; overflow-wrap: break-word; }
+  .lema .explora { font-size: 1.05em; margin-left: 0.05em; max-width: 100%; transform-origin: left center; }
+  .tk__ex { position: absolute; z-index: 2; right: 1rem; bottom: 1.1rem; width: 3.6rem; height: auto; color: #fff; --logo-you: #fff; opacity: 0.9; }
+  .fp--frase .explora { font-size: clamp(0.95rem, 0.5rem + 1.5vw, 1.45rem); }
+  .nota { margin: 1.1rem auto 0; display: flex; align-items: flex-start; gap: 0.7rem; max-width: 40rem; padding: 0.8rem 1rem; border-radius: 0.8rem; background: #fff; border: 1px solid #e4dfd5; font-size: 0.9375rem; line-height: 1.4; color: #574e46; }
+  .nota b { color: #161412; }
+  .nota i { flex: none; margin-top: 0.1rem; color: #161412; }
+
+  /* Tarjeta para compartir «Mis 3 caminos» (9:16, sin usuario ni foto) */
+  .share { width: 17rem; aspect-ratio: 9 / 18; border-radius: 1.6rem; padding: 1.8rem 1.4rem 1.4rem; background: #161412; color: #f6f1e8; display: flex; flex-direction: column; gap: 1.3rem; box-shadow: 0 30px 40px -28px rgb(22 20 18 / 0.7); font-family: var(--titular); position: relative; overflow: hidden; }
+  .share__t { margin: 0; font-weight: 800; font-size: 2.6rem; line-height: 0.98; letter-spacing: -0.035em; }
+  .share__l { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+  .share__l li { display: flex; align-items: flex-start; gap: 0.8rem; }
+  .share__l i { flex: none; font-style: normal; font-weight: 800; font-size: 2rem; line-height: 0.9; color: rgb(246 241 232 / 0.4); min-width: 1.2rem; }
+  .share__l small { display: block; margin-bottom: 0.15rem; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c8f53b; }
+  .share__l b { font-weight: 800; font-size: 1.5rem; line-height: 1.02; letter-spacing: -0.025em; }
+  .share__ex { align-self: flex-end; margin-top: auto; font-size: 2.1rem; }
+  .share__pie { margin: 0; display: grid; gap: 0.1rem; font-family: var(--sans); font-size: 0.8125rem; color: rgb(246 241 232 / 0.8); }
+  .share__pie b { font-size: 1.05rem; color: #f6f1e8; }
+
+  /* Carrusel (4:5 en fila deslizable) */
+  .car { display: flex; gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.75rem; }
+  .car:focus-visible { outline: 2px solid #161412; outline-offset: 2px; }
+  .sl { flex: none; scroll-snap-align: start; width: 15.5rem; aspect-ratio: 4 / 5; padding: 1.1rem; border-radius: 0.8rem; display: grid; grid-template-rows: auto 1fr auto; background: #faf8f4; border: 1px solid #e4dfd5; color: #161412; font-family: var(--sans); }
+  .sl--blanca { background: #fff; }
+  .sl--negra { background: #161412; border-color: #161412; color: #f6f1e8; }
+  .sl--serie { background: #161412; border-color: #161412; color: #f6f1e8; }
+  .sl__n { margin: 0; font-size: 0.8125rem; font-weight: 700; opacity: 0.6; }
+  .sl__c { display: grid; align-content: center; gap: 0.7rem; justify-items: start; }
+  .sl__num { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #161412; color: #f6f1e8; font-style: normal; font-weight: 700; }
+  .sl__t { margin: 0; font-family: var(--titular); font-weight: 800; font-size: 1.75rem; line-height: 1.04; letter-spacing: -0.025em; }
+  .sl__t--g { font-size: 2.3rem; }
+  .sl__s { margin: 0; font-size: 1.0625rem; line-height: 1.35; opacity: 0.85; }
+  .sl__pie { margin: 0; display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; font-weight: 700; }
+  .sl__logo { width: 4.5rem; height: auto; color: currentColor; --logo-you: #c8f53b; }
+  .sl:not(.sl--negra):not(.sl--serie) .sl__logo { --logo-you: #161412; }
+  .sl__btn { padding: 0.5rem 1rem; border-radius: 999px; background: #c8f53b; color: #161412; font-weight: 700; font-size: 0.9375rem; }
+  .sl__ic { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 50%; border: 1.5px solid rgb(246 241 232 / 0.5); color: #f6f1e8; }
+  .sl--negra .sl__s { color: #c8f53b; opacity: 1; font-weight: 700; }
+  .sl--serie .sl__s { color: #c8f53b; opacity: 1; font-weight: 700; }
+  .serie { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid rgb(22 20 18 / 0.15); }
+  .serie__tx { margin: 0; max-width: 26rem; display: grid; gap: 0.3rem; font-size: 0.9375rem; line-height: 1.4; color: #574e46; }
+  .serie__tx b { color: #161412; }
+
+  /* LinkedIn */
+  .li2 { flex: 1 1 18rem; max-width: 24rem; align-self: flex-start; background: #fff; border-radius: 0.6rem; overflow: hidden; box-shadow: 0 12px 30px -18px rgb(0 0 0 / 0.4); }
+  .li2__banner { display: flex; padding: 0.8rem 1rem 2rem; min-height: 4.5rem; background: #faf8f4; }
+  .li2__logo { width: 5.5rem; height: auto; color: #161412; --logo-you: #161412; }
+  .li2__perfil { display: grid; gap: 0.25rem; padding: 0 1rem 1rem; }
+  .li2__av { margin-top: -1.8rem; width: 3.6rem; aspect-ratio: 1; border-radius: 0.35rem; border: 3px solid #fff; overflow: hidden; background: #c8f53b; }
+  .li2__av img { width: 100%; height: 100%; display: block; }
+  .li2__nombre { margin: 0.2rem 0 0; font-weight: 700; font-size: 1.0625rem; }
+  .li2__desc { margin: 0; font-size: 0.8125rem; line-height: 1.4; }
+  .li2__meta { margin: 0; font-size: 0.75rem; color: #6b645c; }
+  .lp { flex: 1 1 24rem; max-width: 34rem; background: #fff; border-radius: 0.6rem; box-shadow: 0 12px 30px -18px rgb(0 0 0 / 0.4); overflow: hidden; font-family: var(--sans); color: #161412; }
+  .lp__cab { display: flex; align-items: center; gap: 0.6rem; padding: 0.8rem 1rem 0; }
+  .lp__cab span:last-child { display: grid; font-size: 0.875rem; }
+  .lp__cab small { color: #6b645c; font-size: 0.75rem; }
+  .lp__av { width: 2.6rem; height: 2.6rem; border-radius: 0.3rem; overflow: hidden; background: #c8f53b; }
+  .lp__av img { width: 100%; height: 100%; display: block; }
+  .lp__tx { margin: 0; padding: 0.7rem 1rem; font-size: 0.9375rem; line-height: 1.45; }
+  .lp__tx span { color: #6b645c; }
+  .lp__img { position: relative; aspect-ratio: 1.91 / 1; display: grid; align-content: space-between; padding: 1.2rem 1.4rem; background: #161412; color: #f6f1e8; }
+  .lp__dato { margin: 0; display: grid; gap: 0.5rem; font-family: var(--titular); font-weight: 800; font-size: 1.6rem; line-height: 1.05; letter-spacing: -0.02em; max-width: 24rem; color: rgb(246 241 232 / 0.8); }
+  .lp__dato b { font-size: 2.1rem; line-height: 1.03; font-weight: 800; letter-spacing: -0.03em; color: #f6f1e8; }
+  .lp__logo { width: 5.5rem; height: auto; color: #f6f1e8; --logo-you: #c8f53b; justify-self: end; }
+  .lp__reac { display: flex; justify-content: space-around; padding: 0.6rem; border-top: 1px solid #e4dfd5; font-size: 0.8125rem; font-weight: 600; color: #574e46; }
+  .lp__reac span { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+  /* Perfil */
+  .av { flex: none; display: grid; place-items: center; width: 4.6rem; aspect-ratio: 1; border-radius: 50%; padding: 3px; background: conic-gradient(from 200deg, #f9a825, #e91e8c, #9c27b0, #f9a825); }
+  .av > span { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; padding: 3px; background: #fff; }
+  .av img { width: 100%; height: 100%; border-radius: 50%; display: block; }
+  .ig2 { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; padding: 1.4rem 1.4rem 0; background: #fff; border-radius: 1rem; box-shadow: 0 12px 30px -18px rgb(0 0 0 / 0.4); font-family: var(--sans); }
+  .ig2__cab { display: flex; align-items: center; gap: 1.5rem; }
+  .ig2 .av { width: 5.8rem; }
+  .ig2__c { list-style: none; margin: 0; padding: 0; flex: 1; display: flex; justify-content: space-between; gap: 0.6rem; font-size: 0.8125rem; }
+  .ig2__c li { display: grid; text-align: center; }
+  .ig2__c b { font-size: 1.125rem; }
+  .ig2__tabs { display: flex; justify-content: space-around; margin: auto -1.4rem 0; padding: 0.7rem 0; border-top: 1px solid #e4dfd5; color: #6b645c; }
+  .ig2__tabs .on { color: #161412; }
+  .ig2__nombre { margin: 0.4rem 0 0; font-weight: 700; font-size: 0.9375rem; }
+  .ig2__cat { margin: 0; font-size: 0.8125rem; color: #6b645c; }
+  .ig2__bio { margin: 0.1rem 0 0; font-size: 0.9375rem; line-height: 1.4; }
+  .ig2__enlace { margin: 0; font-size: 0.875rem; color: #1d4ed8; }
+  .ig2__bot { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+  .ig2__bot span { padding: 0.4rem; border-radius: 0.5rem; background: #efefef; text-align: center; font-size: 0.8125rem; font-weight: 600; }
+  .ig2__bot .s { background: #161412; color: #f6f1e8; }
+  .ig2__d { list-style: none; margin: 0; padding: 1rem 0 1rem; display: flex; justify-content: space-between; gap: 0.7rem; font-size: 0.6875rem; text-align: center; }
+  .ig2__d li { display: grid; gap: 0.25rem; justify-items: center; }
+  .ig2__d span { display: grid; place-items: center; width: 3.8rem; aspect-ratio: 1; border-radius: 50%; border: 1px solid #cfcac1; }
+  .ig2__d i { display: grid; place-items: center; width: 3.1rem; aspect-ratio: 1; border-radius: 50%; background: #c8f53b; color: #161412; }
+  .fd { min-width: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; background: #fff; padding: 3px; font-family: var(--titular); }
+  .fp { position: relative; aspect-ratio: 1; overflow: hidden; padding: 0.6rem; display: grid; align-content: end; gap: 0.25rem; color: #161412; background: #faf8f4; }
+  .fp p { margin: 0; font-weight: 800; font-size: clamp(0.75rem, 0.5rem + 1vw, 1.05rem); line-height: 1.05; letter-spacing: -0.02em; }
+  .fp small { font-family: var(--sans); font-size: 0.6875rem; font-weight: 600; }
+  .fp--foto { color: #fff; }
+  .fp--foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .fp--foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 35%, rgb(0 0 0 / 0.78)); }
+  .fp--foto > * { position: relative; z-index: 1; }
+  .fp--foto > img { position: absolute; z-index: 0; }
+  .fp--foto span { justify-self: start; padding: 0.1rem 0.45rem; border-radius: 999px; background: #c8f53b; color: #161412; font-family: var(--sans); font-size: 0.625rem; font-weight: 700; }
+  .fp--car { align-content: space-between; align-items: start; }
+  .fp--car > i { justify-self: end; }
+  .fp--car p, .fp--car small { align-self: end; }
+  .fp--cre { background: #f6f1e8; }
+  .fp--frase { align-content: space-between; }
+  .fp--frase p { font-size: clamp(0.85rem, 0.5rem + 1.3vw, 1.3rem); }
+  .fp--car.fp--negra small { color: #c8f53b; font-weight: 700; }
+  .fp__logo { width: 3.4rem; height: auto; color: #161412; --logo-you: #161412; }
+  .fp--negra { background: #161412; color: #f6f1e8; }
+  .fp--negra .fp__logo { color: #f6f1e8; --logo-you: #c8f53b; }
+  .fp--enc { align-content: center; gap: 0.3rem; background: #faf8f4; }
+  .fp--enc small { text-align: center; color: #574e46; }
+  .fp--enc span { padding: 0.3rem 0.4rem; border-radius: 0.5rem; background: #fff; border: 1px solid #e4dfd5; font-family: var(--sans); font-size: 0.625rem; font-weight: 700; text-align: center; }
+  .fp--enc .a { background: #c8f53b; border-color: #c8f53b; }
+
+  @media (max-width: 47.99rem) {
+    .ig2 { padding-inline: 1rem; }
+    .ig2__cab { gap: 0.8rem; }
+    .ig2 .av { width: 4.4rem; }
+    .ig2__c { gap: 0.3rem; font-size: 0.6875rem; min-width: 0; }
+    .ig2__tabs { margin-inline: -1rem; }
+    .fp { padding: 0.4rem; }
+    .fp p { font-size: 0.6875rem; }
+    .fp--foto span { padding: 0.08rem 0.35rem; font-size: 0.5rem; white-space: nowrap; }
+    .fp small { font-size: 0.5625rem; }
+    .fp--enc span { padding: 0.2rem 0.25rem; font-size: 0.5rem; }
+  }
+
+
+
+  /* Bloque 04: publicación para familias (Instagram 4:5) junto a LinkedIn */
+  .v2f--li { display: grid; grid-template-columns: 20rem minmax(0, 1fr); gap: 1.25rem; align-items: start; overflow: visible; }
+  @media (max-width: 63.99rem) { .v2f--li { grid-template-columns: minmax(0, 24rem); justify-content: center; } }
+  .li-col { display: grid; gap: 1rem; min-width: 0; }
+  .li-col .li2, .li-col .lp { max-width: none; flex: none; }
+  .igp { background: #fff; border-radius: 0.8rem; box-shadow: 0 12px 30px -18px rgb(0 0 0 / 0.4); overflow: hidden; font-family: var(--sans); color: #161412; min-width: 0; }
+  .igp__cab { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.8rem; font-size: 0.875rem; }
+  .igp__av { width: 2rem; height: 2rem; border-radius: 50%; overflow: hidden; background: #c8f53b; padding: 2px; box-shadow: 0 0 0 1.5px #e4dfd5; }
+  .igp__av img { width: 100%; height: 100%; display: block; border-radius: 50%; }
+  .igp__mas { margin-left: auto; font-weight: 800; letter-spacing: 0.1em; }
+  .igp__img { aspect-ratio: 4 / 5; padding: 1.5rem 1.3rem 1.2rem; display: flex; flex-direction: column; justify-content: center; gap: 0.9rem; background: #faf8f4; position: relative; }
+  .igp__t { margin: 0; font-family: var(--titular); font-weight: 800; font-size: clamp(1.7rem, 1.2rem + 1vw, 2rem); line-height: 1.04; letter-spacing: -0.03em; }
+  .igp__s { margin: 0; font-size: 1rem; line-height: 1.35; color: #574e46; }
+  .igp__logo { position: absolute; left: 1.3rem; bottom: 1.2rem; width: 4.4rem; height: auto; color: #161412; --logo-you: #161412; }
+  .igp__acc { display: flex; gap: 0.9rem; padding: 0.7rem 0.8rem 0.2rem; }
+  .igp__g { margin-left: auto; }
+  .igp__pie { margin: 0; padding: 0.2rem 0.8rem 0.9rem; font-size: 0.875rem; line-height: 1.4; }
+  .igp__pie span { color: #6b645c; }
+
+  /* Una semana tipo */
+  .sem { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  @media (max-width: 47.99rem) { .sem { grid-template-columns: minmax(0, 1fr); } .esc--car { --k: 0.42; } .esc--reel, .esc--st { --k: 0.5; } }
+  .sem__c { min-width: 0; }
+  .sem__c { display: grid; gap: 0.5rem; align-content: start; padding: 1.1rem; border-radius: 0.9rem; background: #fff; border: 1px solid #e4dfd5; font-family: var(--sans); }
+  .sem__dia { margin: 0; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6b645c; }
+  .sem__mini { display: grid; place-items: center; min-height: 20rem; padding: 0.8rem; border-radius: 0.7rem; background: #f1eee7; }
+  @media (max-width: 47.99rem) { .sem__mini { min-height: 0; } }
+  .sem__t { margin: 0.3rem 0 0; font-family: var(--titular); font-weight: 800; font-size: 1.25rem; line-height: 1.1; letter-spacing: -0.02em; }
+  .sem__d { margin: 0; font-size: 0.9375rem; line-height: 1.35; color: #574e46; }
+  .sem__o { margin: 0.3rem 0 0; display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 0.9375rem; color: #161412; }
+  .sem__o i { flex: none; display: grid; place-items: center; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: #c8f53b; color: #161412; }
+  .esc { position: relative; overflow: hidden; border-radius: calc(1.6rem * var(--k)); width: calc(var(--w) * var(--k)); height: calc(var(--h) * var(--k)); max-width: 100%; }
+  .esc > * { position: absolute; top: 0; left: 0; transform: scale(var(--k)); transform-origin: 0 0; }
+  .esc--reel { --w: 17rem; --h: 34rem; --k: 0.55; }
+  .esc--st { --w: 17rem; --h: 34rem; --k: 0.55; }
+  .esc--car { --w: 32rem; --h: 19.4rem; --k: 0.54; border-radius: 0.4rem; }
+  .esc__fila { display: flex; gap: 0.75rem; }
+  .esc .tk, .esc .st { box-shadow: none; }
+
+  /* Tono */
+  .ton { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  @media (max-width: 47.99rem) { .ton { grid-template-columns: 1fr; } }
+  .ton__c { display: grid; gap: 0.8rem; align-content: start; padding: 1.25rem; border-radius: 0.9rem; background: #fff; border: 1px solid #e4dfd5; }
+  .ton__t { margin: 0; font-family: var(--titular); font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .ton__c ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.9375rem; line-height: 1.4; }
+  .ton__c blockquote { margin: 0; padding: 0.8rem 1rem; border-radius: 0.7rem; background: #f1eee7; font-family: var(--titular); font-weight: 700; font-size: 1.0625rem; line-height: 1.25; }
+</style>

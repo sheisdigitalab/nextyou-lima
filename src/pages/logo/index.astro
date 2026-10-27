@@ -1,0 +1,164 @@
+---
+// Guía del logo de NextYou: logotipo, monograma, zona de seguridad y tamaño mínimo, versiones de color, con eslogan y usos incorrectos.
+// Los tamaños mínimos y la zona de seguridad son una propuesta para validar con la clienta.
+import V5 from '../../layouts/V5.astro';
+import LogoV3 from '../../components/LogoV3.astro';
+import GuiaCabecera from '../../components/GuiaCabecera.astro';
+import { BASE } from '../../config';
+
+const monograma = `${BASE}favicon.svg`;
+const colores = [
+  { n: 'Negro cálido', h: '#161412', c: '#f6f1e8' },
+  { n: 'Crema', h: '#f6f1e8', c: '#161412' },
+  { n: 'Lima', h: '#c8f53b', c: '#161412' },
+];
+const versiones = [
+  { clase: 'v--negro', t: 'Sobre negro', d: 'La principal: «Next» en crema y «You» en lima.' },
+  { clase: 'v--crema', t: 'Sobre crema', d: 'Todo en negro cálido; «You» no usa lima porque se pierde.' },
+  { clase: 'v--lima', t: 'Sobre lima', d: 'Todo en negro cálido.' },
+  { clase: 'v--blanco', t: 'Monocromo claro', d: 'Para fotografías oscuras y una sola tinta.' },
+];
+const mal = [
+  { clase: 'mal--estirar', t: 'No deformar' },
+  { clase: 'mal--girar', t: 'No girar' },
+  { clase: 'mal--color', t: 'No cambiar los colores' },
+  { clase: 'mal--sombra', t: 'No añadir efectos' },
+];
+---
+
+<V5 titulo="Logo de NextYou" descripcion="Guía del logo de NextYou." actual="" ruta="" robots="noindex, nofollow">
+  <main id="contenido" class="rs">
+    <div class="ancho rs__caja">
+      <GuiaCabecera actual="logo" titulo="Logo" lead="El logotipo de NextYou y cómo usarlo: versiones, espacio libre y tamaño mínimo. Medidas propuestas, pendientes de validar." />
+
+      <section class="rs__fila" aria-label="Logotipo y monograma">
+        <figure class="rs__card rs__card--oscura">
+          <div class="lg__gran"><LogoV3 clase="lg__logo" /></div>
+          <figcaption>Logotipo · «Next» en Archivo extra negrita y «You» a mano, en lima</figcaption>
+        </figure>
+        <figure class="rs__card rs__card--centro">
+          <div class="lg__mono"><img src={monograma} alt="Monograma de NextYou: la Y a mano sobre lima" width="240" height="240" /></div>
+          <figcaption>Monograma · la «Y» de «You». Para avatares, favicon y sitios muy pequeños</figcaption>
+        </figure>
+      </section>
+
+      <section class="rs__fila" aria-label="Zona de seguridad y tamaño mínimo">
+        <figure class="rs__card">
+          <div class="lg__seg">
+            <div class="lg__caja"><LogoV3 clase="lg__logo lg__logo--seg" /></div>
+          </div>
+          <figcaption>Zona de seguridad · deja alrededor, como mínimo, la altura de la «N» de «Next». Nada entra en ese espacio</figcaption>
+        </figure>
+        <figure class="rs__card">
+          <div class="lg__min">
+            <div class="lg__min-item"><LogoV3 clase="lg__min-logo" /><span>Mínimo en pantalla<br /><b>96 px de ancho</b></span></div>
+            <div class="lg__min-item"><LogoV3 clase="lg__min-logo lg__min-logo--imp" /><span>Mínimo en impreso<br /><b>25 mm de ancho</b></span></div>
+            <div class="lg__min-item"><img src={monograma} alt="" width="32" height="32" class="lg__min-mono" /><span>Monograma<br /><b>16 px · 5 mm</b></span></div>
+          </div>
+          <figcaption>Tamaño mínimo · por debajo, usa el monograma</figcaption>
+        </figure>
+      </section>
+
+      <section class="rs__bloque" aria-label="Versiones de color">
+        <figure class="rs__card rs__card--ancha">
+          <div class="lg__vers">
+            {versiones.map((v) => (
+              <div class={`lg__ver ${v.clase}`}>
+                <LogoV3 clase="lg__ver-logo" />
+                <p class="lg__ver-t">{v.t}</p>
+                <p class="lg__ver-d">{v.d}</p>
+              </div>
+            ))}
+          </div>
+          <figcaption>Versiones de color · usa siempre la que mejor contraste tenga con el fondo</figcaption>
+        </figure>
+      </section>
+
+      <section class="rs__fila" aria-label="Colores y eslogan">
+        <figure class="rs__card">
+          <div class="lg__cols">
+            {colores.map((c) => (
+              <div class="lg__col" style={`background:${c.h};color:${c.c}`}><b>{c.n}</b><span>{c.h.toUpperCase()}</span></div>
+            ))}
+          </div>
+          <figcaption>Colores de la marca</figcaption>
+        </figure>
+        <figure class="rs__card rs__card--oscura">
+          <div class="lg__tag"><LogoV3 clase="lg__logo lg__logo--tag" /><p>Descubre a qué te podrías dedicar.</p></div>
+          <figcaption>Logo con eslogan · el eslogan va debajo, en Archivo, a la altura de la «N»</figcaption>
+        </figure>
+      </section>
+
+      <section class="rs__bloque" aria-label="Usos incorrectos">
+        <figure class="rs__card rs__card--ancha">
+          <div class="lg__mal">
+            {mal.map((m) => (
+              <div class="lg__mal-i">
+                <div class={`lg__mal-v ${m.clase}`}><LogoV3 clase="lg__mal-logo" /></div>
+                <p><span aria-hidden="true">✕</span> {m.t}</p>
+              </div>
+            ))}
+          </div>
+          <figcaption>Usos incorrectos</figcaption>
+        </figure>
+      </section>
+
+      <footer class="rs__pie"><p>Prototipo: medidas y eslogan de ejemplo, pendientes de validar con la clienta.</p></footer>
+    </div>
+  </main>
+</V5>
+
+<style is:global>
+  .rs__card--oscura { background: #161412; color: #f6f1e8; }
+  .rs__card--oscura figcaption { color: rgb(246 241 232 / 0.7); }
+  .lg__gran { display: grid; place-items: center; min-height: 14rem; }
+  .lg__logo { width: min(22rem, 85%); height: auto; color: #f6f1e8; --logo-you: #c8f53b; }
+  .lg__mono { width: min(11rem, 60%); aspect-ratio: 1; border-radius: 1.6rem; overflow: hidden; }
+  .lg__mono img { width: 100%; height: 100%; display: block; }
+
+  /* Zona de seguridad: el margen es la altura de la «N» (≈ 0.66 de la altura del logotipo) */
+  .lg__seg { display: grid; place-items: center; min-height: 14rem; }
+  .lg__caja { position: relative; padding: 2.1rem; background: #f6f1e8; outline: 1.5px dashed #161412; outline-offset: -1px; }
+  .lg__caja::before { content: ''; position: absolute; inset: 2.1rem; outline: 1px solid rgb(22 20 18 / 0.35); }
+  .lg__logo--seg { display: block; width: 13rem; color: #161412; --logo-you: #161412; }
+  .lg__min { display: grid; gap: 1.1rem; align-content: center; min-height: 14rem; }
+  .lg__min-item { display: flex; align-items: center; gap: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid rgb(22 20 18 / 0.15); font-size: 0.8125rem; line-height: 1.35; color: #574e46; }
+  .lg__min-item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .lg__min-item b { color: #161412; font-size: 0.9375rem; }
+  .lg__min-logo { flex: none; width: 96px; height: auto; color: #161412; --logo-you: #161412; }
+  .lg__min-logo--imp { width: 96px; }
+  .lg__min-mono { flex: none; width: 32px; height: 32px; }
+
+  /* Versiones de color */
+  .lg__vers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
+  @media (max-width: 63.99rem) { .lg__vers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .lg__ver { display: grid; gap: 0.35rem; align-content: end; min-height: 13rem; padding: 1.25rem; border-radius: 0.5rem; }
+  .lg__ver-logo { width: 100%; max-width: 11rem; height: auto; align-self: center; margin-bottom: 1.5rem; }
+  .lg__ver-t { margin: 0; font-weight: 700; font-size: 0.9375rem; }
+  .lg__ver-d { margin: 0; font-size: 0.8125rem; line-height: 1.35; opacity: 0.8; }
+  .v--negro { background: #161412; color: #f6f1e8; --logo-you: #c8f53b; }
+  .v--crema { background: #f6f1e8; color: #161412; --logo-you: #161412; outline: 1px solid rgb(22 20 18 / 0.15); outline-offset: -1px; }
+  .v--lima { background: #c8f53b; color: #161412; --logo-you: #161412; }
+  .v--blanco { background: #3a342e; color: #ffffff; --logo-you: #ffffff; }
+
+  /* Colores y eslogan */
+  .lg__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+  .lg__col { display: grid; align-content: end; gap: 0.15rem; min-height: 11rem; padding: 0.9rem; border-radius: 0.5rem; font-size: 0.8125rem; outline: 1px solid rgb(22 20 18 / 0.12); outline-offset: -1px; }
+  .lg__col b { font-size: 0.9375rem; }
+  .lg__tag { display: grid; justify-items: start; gap: 0.7rem; align-content: center; min-height: 11rem; padding-inline: 1rem; }
+  .lg__logo--tag { width: 15rem; }
+  .lg__tag p { margin: 0; font-family: var(--sans); font-size: 1.0625rem; font-weight: 500; letter-spacing: 0.01em; }
+
+  /* Usos incorrectos */
+  .lg__mal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
+  @media (max-width: 63.99rem) { .lg__mal { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .lg__mal-i { display: grid; gap: 0.5rem; }
+  .lg__mal-i p { margin: 0; font-size: 0.8125rem; font-weight: 600; }
+  .lg__mal-i p span { color: #c0392b; margin-right: 0.25rem; }
+  .lg__mal-v { display: grid; place-items: center; min-height: 8rem; padding: 1rem; border-radius: 0.5rem; background: #161412; color: #f6f1e8; --logo-you: #c8f53b; overflow: hidden; }
+  .lg__mal-logo { width: 9rem; height: auto; }
+  .mal--estirar .lg__mal-logo { transform: scale(1, 1.8); }
+  .mal--girar .lg__mal-logo { transform: rotate(-14deg); }
+  .mal--color { color: #e04b9a; --logo-you: #3b82f6; }
+  .mal--sombra .lg__mal-logo { filter: drop-shadow(5px 5px 0 #c8f53b) blur(0.6px); }
+</style>
