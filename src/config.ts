@@ -4,9 +4,9 @@ export const SITIO = {
   nombre: 'NextYou',
   // PENDIENTE: dominio definitivo. Se usa para las URL absolutas de Open Graph.
   url: 'https://nextyou.example',
-  titulo: 'Test vocacional gratis: descubre qué estudiar y a qué dedicarte · NextYou',
+  titulo: 'Test gratis: descubre qué estudiar y a qué dedicarte · NextYou',
   descripcion:
-    '¿No sabes qué estudiar? Test vocacional gratis de 8 minutos y sin crear cuenta: tres caminos para explorar y vídeos de gente que ya trabaja en ellos.',
+    '¿No sabes qué estudiar? Test gratis de 8 minutos y sin crear cuenta: tres caminos para explorar y vídeos de gente que ya trabaja en ellos.',
 };
 
 // Pide a los buscadores que no indexen la web mientras sea una vista previa.

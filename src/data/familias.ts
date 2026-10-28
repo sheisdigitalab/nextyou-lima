@@ -8,7 +8,7 @@
 export const familiasPagina = {
   titulo: 'Mi hijo no sabe qué estudiar: cómo acompañarle · NextYou',
   descripcion:
-    '¿Tu hijo o hija no sabe qué estudiar? Orientación vocacional para acompañarle sin decidir en su lugar: qué ves tú, qué no y cómo hablarlo en casa.',
+    '¿Tu hijo o hija no sabe qué estudiar? Orientación para acompañarle sin decidir en su lugar: qué ves tú, qué no y cómo hablarlo en casa.',
 
   hero: {
     etiqueta: 'Para madres, padres y tutores',

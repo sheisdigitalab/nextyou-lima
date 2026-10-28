@@ -31,7 +31,7 @@ export const hero = {
   // "Ver a …" y el botón de sonido; mientras sea null se muestra solo la foto.
   video: null as null | { src: string; duracion: string },
   // h1: lo que es NextYou, con las palabras que busca la gente («no sé qué estudiar»,
-  // «test vocacional gratis»). Comentario #3 de Sara: que se entienda qué es.
+  // «test gratis»). Comentario #3 de Sara: que se entienda qué es.
   titular: '¿No sabes qué estudiar? Haz el test gratis y descubre a qué te podrías dedicar.',
   // v5 · titular emocional de Elías (opción 2), encima del h1 con las palabras que busca la gente
   lema: { inicio: 'Tu futuro no se adivina.', fin: 'Se explora.' },

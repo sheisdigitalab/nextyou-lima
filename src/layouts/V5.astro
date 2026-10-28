@@ -69,13 +69,6 @@ const menu = soloBachillerato
           p = new URLSearchParams(location.search).get('paleta');
         }
         document.documentElement.dataset.paleta = /^[df]$/.test(p || '') ? p : 'd';
-        // El icono de la pestaña sigue la paleta (naranja en la Original)
-        if (document.documentElement.dataset.paleta === 'f') {
-          document.addEventListener('DOMContentLoaded', function () {
-            var ic = document.querySelector('link[rel="icon"]');
-            if (ic) ic.setAttribute('href', ic.getAttribute('href').replace('favicon.svg', 'favicon-naranja.svg'));
-          });
-        }
       })(SELECTOR, FIJA);
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -93,7 +86,9 @@ const menu = soloBachillerato
     <meta property="og:image" content={ogImagen} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="NextYou. Tu futuro no se adivina. Se explora." />
+    <meta property="og:image:alt" content="NextYou. Tu futuro no se adivina, se explora." />
+    <meta name="twitter:image" content={ogImagen} />
+    <meta name="twitter:image:alt" content="NextYou. Tu futuro no se adivina, se explora." />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
     <link rel="icon" href={`${BASE}marca/favicon-32.png`} type="image/png" sizes="32x32" />
@@ -250,8 +245,6 @@ const menu = soloBachillerato
       document.querySelectorAll<HTMLButtonElement>('[data-elegir]').forEach((b) =>
         b.addEventListener('click', () => {
           raiz.dataset.paleta = b.dataset.elegir;
-          const ico = document.querySelector('link[rel="icon"]');
-          if (ico) ico.setAttribute('href', ico.getAttribute('href')!.replace(/favicon(-naranja)?\.svg/, b.dataset.elegir === 'f' ? 'favicon-naranja.svg' : 'favicon.svg'));
           marcar();
           paletaEnEnlaces();
         })
@@ -409,9 +402,6 @@ const menu = soloBachillerato
       .logo { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; }
       .logo-svg { display: block; height: 32px; width: auto; }
       /* Versión naranja: «Next» con la tipografía de los títulos (como en «¿Qué es NextYou?»); «You» como está */
-      .logo-next-f { display: none; }
-      [data-paleta='f'] .logo-next-f { display: inline; }
-      [data-paleta='f'] .logo-next-d { display: none; }
       .menu .logo-svg { height: clamp(28px, 24px + 0.6vw, 34px); }
       .logo--pie { --logo-you: var(--logo-you-pie); }
       .logo--pie .logo-svg { height: 44px; }
