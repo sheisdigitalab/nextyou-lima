@@ -6,6 +6,7 @@ import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
 import LogoV3 from '../../components/LogoV3.astro';
 import GuiaCabecera from '../../components/GuiaCabecera.astro';
+import RedesStory from '../../components/RedesStory.astro';
 import { BASE } from '../../config';
 import fotoArq from '../../assets/muestra/dentro-4.jpg';
 import fotoFot from '../../assets/muestra/prof-fot.jpg';
@@ -107,33 +108,11 @@ const destacadas = [
         </header>
         <figure class="rs__card rs__card--ancha">
           <div class="v2f v2f--movil">
-            <div class="st">
-              <div class="st__top" aria-hidden="true"><span class="st__bar"><i></i></span><span class="st__cuenta"><img src={monograma} alt="" width="24" height="24" />nextyou<small>ahora</small></span></div>
-              <p class="st__q st__q--p">Un sábado libre, ¿qué te apetece más?</p>
-              <div class="enc"><p class="enc__t">Para empezar</p><div class="enc__ops"><span>Crear algo desde cero</span><span>Resolver un reto</span></div></div>
-              <span class="st__enlace"><i set:html={svg(I.enlace, 16)} />Haz el test</span>
-            </div>
-            <div class="st">
-              <div class="st__top" aria-hidden="true"><span class="st__bar"><i></i></span><span class="st__cuenta"><img src={monograma} alt="" width="24" height="24" />nextyou<small>2 h</small></span></div>
-              <p class="st__q">Y tú, ¿con qué te quedas?</p>
-              <div class="enc enc--votada"><p class="enc__t">Resultado</p>
-                <div class="enc__ops">
-                  <span class="gana" style="--p:62%"><b>Trabajar con gente</b><em>62%</em></span>
-                  <span style="--p:38%"><b>Trabajar con tus manos</b><em>38%</em></span>
-                </div>
-              </div>
-              <span class="st__enlace"><i set:html={svg(I.enlace, 16)} />Haz el test</span>
-            </div>
-            <div class="share">
-              <p class="share__t">Mis 3 caminos</p>
-              <ol class="share__l" role="list">
-                {caminos.map((c) => <li><i>{c.n}</i><span><small>{c.tipo}</small><b>{c.nombre}</b></span></li>)}
-              </ol>
-              <span class="explora share__ex">se explora</span>
-              <p class="share__pie"><b>¿Y los tuyos?</b>nextyou.example</p>
-            </div>
+            <RedesStory tipo="pregunta" />
+            <RedesStory tipo="resultado" />
+            <RedesStory tipo="caminos" />
           </div>
-          <figcaption>Stories 9:16 · dos encuestas, una ya votada. A la derecha, la tarjeta para compartir al terminar el test: la pieza pensada para crecer.</figcaption>
+          <figcaption>Stories 9:16 con las pantallas reales de la app: la pregunta del test como encuesta, el resultado de la encuesta y la pantalla de resultados para compartir.</figcaption>
         </figure>
       </section>
 
@@ -258,7 +237,7 @@ const destacadas = [
               <div class="fp fp--foto"><Image src={fotoEle} alt="" width={500} height={500} /><p>Mi primer día con las herramientas</p><span>Electricista · 29</span></div>
               <div class="fp fp--frase fp--negra"><p>No hace falta elegir ya.</p><span class="explora">se explora</span></div>
               <div class="fp fp--foto"><Image src={fotoEnf} alt="" width={500} height={500} /><p>Por qué elegí enfermería</p><span>Enfermera · 36</span></div>
-              <div class="fp fp--enc"><small>¿Esto o esto?</small><span class="a">Crear algo desde cero</span><span>Resolver un reto</span></div>
+              <div class="fp fp--enc"><small>¿Esto o esto?</small><span class="a" style="--p:41%"><b>Crear algo</b><em>41%</em></span><span style="--p:27%"><b>Resolver un reto</b><em>27%</em></span><span style="--p:20%"><b>Quedar con gente</b><em>20%</em></span><span style="--p:12%"><b>Un sitio nuevo</b><em>12%</em></span></div>
               <div class="fp fp--car fp--cre"><i set:html={svg(I.carrusel, 16)} /><p>Cómo llegar a… Animación 3D</p><small>4 caminos</small></div>
               <div class="fp fp--foto"><Image src={fotoFis} alt="" width={500} height={500} /><p>Un día en mi consulta</p><span>Fisioterapeuta · 32</span></div>
               <div class="fp fp--frase fp--negra"><p>Probar también es avanzar.</p><span class="explora">se explora</span></div>
@@ -324,12 +303,7 @@ const destacadas = [
               <p class="sem__dia">Viernes</p>
               <div class="sem__mini">
                 <div class="esc esc--st" aria-hidden="true">
-                  <div class="st">
-                    <div class="st__top"><span class="st__bar"><i></i></span><span class="st__cuenta"><img src={monograma} alt="" width="24" height="24" />nextyou<small>ahora</small></span></div>
-                    <p class="st__q st__q--p">Un sábado libre, ¿qué te apetece más?</p>
-                    <div class="enc"><p class="enc__t">Para empezar</p><div class="enc__ops"><span>Crear algo desde cero</span><span>Resolver un reto</span></div></div>
-                    <span class="st__enlace"><i set:html={svg(I.enlace, 16)} />Haz el test</span>
-                  </div>
+                  <RedesStory tipo="pregunta" />
                 </div>
               </div>
               <h3 class="sem__t">Encuesta «¿Esto o esto?»</h3>
@@ -410,31 +384,6 @@ const destacadas = [
   .tk__tag { padding: 0.25rem 0.7rem; border-radius: 999px; background: #c8f53b; color: #161412; font-weight: 700; font-size: 0.8125rem; }
 
   /* Stories */
-  .st { position: relative; width: 17rem; aspect-ratio: 9 / 18; border-radius: 1.6rem; overflow: hidden; padding: 1rem 1.1rem 1.4rem; display: grid; align-content: start; gap: 0.9rem; background: #faf8f4; color: #161412; font-family: var(--sans); box-shadow: 0 30px 40px -28px rgb(22 20 18 / 0.7); }
-  .st__top { display: grid; gap: 0.5rem; }
-  .st__bar { display: block; height: 3px; border-radius: 2px; background: #e4dfd5; }
-  .st__bar i { display: block; width: 45%; height: 100%; border-radius: 2px; background: #161412; }
-  .st__cuenta { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8125rem; font-weight: 700; }
-  .st__cuenta img { width: 1.5rem; height: 1.5rem; border-radius: 50%; }
-  .st__cuenta small { font-weight: 500; color: #6b645c; }
-  .st__q { margin: 1.4rem 0 0; font-family: var(--titular); font-weight: 800; font-size: 2rem; line-height: 1.02; letter-spacing: -0.03em; text-align: center; }
-  .st__q--g { margin-top: 0.4rem; text-align: left; font-size: 2.1rem; }
-  .st__q em { font-style: normal; background: #c8f53b; border-radius: 0.2em; padding: 0 0.2em; }
-  .enc { margin-top: 0.5rem; padding: 0.9rem; border-radius: 1.1rem; background: #fff; box-shadow: 0 8px 24px -14px rgb(0 0 0 / 0.4); display: grid; gap: 0.7rem; }
-  .enc__t { margin: 0; text-align: center; font-weight: 700; font-size: 0.875rem; color: #574e46; }
-  .enc__ops { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-  .enc__ops span { display: grid; place-items: center; min-height: 3.6rem; padding: 0.5rem; border-radius: 0.8rem; background: #f1eee7; text-align: center; font-weight: 700; font-size: 0.875rem; line-height: 1.15; }
-  .enc--votada .enc__ops { grid-template-columns: 1fr; }
-  .enc--votada .enc__ops span { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; min-height: 3rem; padding-inline: 0.8rem; text-align: left; overflow: hidden; background: #f1eee7; isolation: isolate; }
-  .enc--votada .enc__ops span::before { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--p); background: #e4dfd5; z-index: -1; }
-  .enc--votada .enc__ops span.gana::before { background: #c8f53b; }
-  .enc--votada em { font-style: normal; font-weight: 800; }
-  .st__enlace { align-self: end; justify-self: center; display: inline-flex; align-items: center; gap: 0.4rem; margin-top: auto; padding: 0.55rem 1rem; border-radius: 0.8rem; background: #fff; box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.5); font-weight: 700; font-size: 0.875rem; }
-  .st { display: flex; flex-direction: column; padding-bottom: 4.6rem; }
-  .st .st__q { margin-top: auto; }
-  .st .enc { margin-top: 1.4rem; margin-bottom: auto; }
-  .st .st__enlace { position: absolute; left: 50%; bottom: 1.3rem; translate: -50% 0; margin: 0; }
-  .st__q--p { font-size: 1.7rem; }
 
 
   /* Sello de marca: «se explora» en rotulador lima */
@@ -448,16 +397,6 @@ const destacadas = [
   .nota i { flex: none; margin-top: 0.1rem; color: #161412; }
 
   /* Tarjeta para compartir «Mis 3 caminos» (9:16, sin usuario ni foto) */
-  .share { width: 17rem; aspect-ratio: 9 / 18; border-radius: 1.6rem; padding: 1.8rem 1.4rem 1.4rem; background: #161412; color: #f6f1e8; display: flex; flex-direction: column; gap: 1.3rem; box-shadow: 0 30px 40px -28px rgb(22 20 18 / 0.7); font-family: var(--titular); position: relative; overflow: hidden; }
-  .share__t { margin: 0; font-weight: 800; font-size: 2.6rem; line-height: 0.98; letter-spacing: -0.035em; }
-  .share__l { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
-  .share__l li { display: flex; align-items: flex-start; gap: 0.8rem; }
-  .share__l i { flex: none; font-style: normal; font-weight: 800; font-size: 2rem; line-height: 0.9; color: rgb(246 241 232 / 0.4); min-width: 1.2rem; }
-  .share__l small { display: block; margin-bottom: 0.15rem; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c8f53b; }
-  .share__l b { font-weight: 800; font-size: 1.5rem; line-height: 1.02; letter-spacing: -0.025em; }
-  .share__ex { align-self: flex-end; margin-top: auto; font-size: 2.1rem; }
-  .share__pie { margin: 0; display: grid; gap: 0.1rem; font-family: var(--sans); font-size: 0.8125rem; color: rgb(246 241 232 / 0.8); }
-  .share__pie b { font-size: 1.05rem; color: #f6f1e8; }
 
   /* Carrusel (4:5 en fila deslizable) */
   .car { display: flex; gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.75rem; }
@@ -551,10 +490,12 @@ const destacadas = [
   .fp__logo { width: 3.4rem; height: auto; color: #161412; --logo-you: #161412; }
   .fp--negra { background: #161412; color: #f6f1e8; }
   .fp--negra .fp__logo { color: #f6f1e8; --logo-you: #c8f53b; }
-  .fp--enc { align-content: center; gap: 0.3rem; background: #faf8f4; }
-  .fp--enc small { text-align: center; color: #574e46; }
-  .fp--enc span { padding: 0.3rem 0.4rem; border-radius: 0.5rem; background: #fff; border: 1px solid #e4dfd5; font-family: var(--sans); font-size: 0.625rem; font-weight: 700; text-align: center; }
-  .fp--enc .a { background: #c8f53b; border-color: #c8f53b; }
+  .fp--enc { align-content: center; gap: 0.2rem; background: #faf8f4; padding: 0.45rem; }
+  .fp--enc small { text-align: center; color: #574e46; font-weight: 700; margin-bottom: 0.1rem; }
+  .fp--enc span { position: relative; display: flex; justify-content: space-between; gap: 0.2rem; padding: 0.18rem 0.35rem; border-radius: 0.35rem; background: #f1eee7; font-family: var(--sans); font-size: 0.5625rem; line-height: 1.1; overflow: hidden; isolation: isolate; }
+  .fp--enc span::before { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--p); background: #e4dfd5; z-index: -1; }
+  .fp--enc .a::before { background: #c8f53b; }
+  .fp--enc em { font-style: normal; font-weight: 800; }
 
   @media (max-width: 47.99rem) {
     .ig2 { padding-inline: 1rem; }
@@ -608,7 +549,7 @@ const destacadas = [
   .esc--st { --w: 17rem; --h: 34rem; --k: 0.55; }
   .esc--car { --w: 32rem; --h: 19.4rem; --k: 0.54; border-radius: 0.4rem; }
   .esc__fila { display: flex; gap: 0.75rem; }
-  .esc .tk, .esc .st { box-shadow: none; }
+  .esc .tk, .esc .rst { box-shadow: none; }
 
   /* Tono */
   .ton { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }

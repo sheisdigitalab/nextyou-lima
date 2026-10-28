@@ -1,0 +1,158 @@
+---
+// Pantallas de la app de NextYou, las mismas de «Cómo funciona» en la home (src/pages/index.astro, clases cfa-*):
+//  · 'test': pregunta «Brújula interior» con 4 tarjetas, barra de progreso y perfil que se forma.
+//  · 'caminos': «Tus 3 caminos» con la línea que sale de «Tú» y las 3 tarjetas con número, tipo, nombre y foto.
+// Aquí van estáticas (sin las animaciones de la home) y sin marco de móvil, para poder usarlas dentro de otras piezas
+// (stories, capturas). El tamaño lo pone quien la usa: por defecto, el de la pantalla de la home (272 × 582 px).
+import { Image } from 'astro:assets';
+import fotoNoa from '../assets/muestra/noa.jpg';
+import fotoLaia from '../assets/muestra/laia.jpg';
+import fotoAitana from '../assets/muestra/aitana.jpg';
+
+interface Props {
+  pantalla: 'test' | 'caminos';
+  /** Nombre de quien ve «Tus 3 caminos» (en «¡Listo, Lucía!») */
+  nombre?: string;
+  /** Sin la barra de pestañas de abajo ni el «Toca un camino…» (para pantallas recortadas) */
+  sinPie?: boolean;
+  clase?: string;
+}
+const { pantalla, nombre = 'Lucía', sinPie = false, clase } = Astro.props;
+
+const opciones = [
+  { t: 'Crear algo desde cero', i: '<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/>' },
+  { t: 'Resolver un reto', i: '<path d="M9 3h6v4a2 2 0 1 0 0 4v4h-4a2 2 0 1 0-4 0H3V9h4a2 2 0 1 0 0-4V3z"/>' },
+  { t: 'Quedar con gente', i: '<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c1-3 3-4 5-4s4 1 5 4M11 19c1-3 3-4 5-4s4 1 5 4"/>' },
+  { t: 'Descubrir un sitio nuevo', i: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>' },
+];
+const caminos = [
+  { tipo: 'Lo que más te pega', nombre: 'Creación de contenido', foto: fotoNoa },
+  { tipo: 'El puente', nombre: 'Animación 3D', foto: fotoLaia },
+  { tipo: 'El salto', nombre: 'Ciberseguridad', foto: fotoAitana },
+];
+---
+
+{
+  pantalla === 'test' ? (
+    <div class:list={['cfa-pan', 'cfa-pan--test', clase]} aria-hidden="true">
+      <div class="cfa-est"><span>9:41</span><b></b></div>
+      <div class="cfa-t-top">
+        <span class="cfa-x">✕</span>
+        <span class="cfa-seg">{Array.from({ length: 12 }, (_, i) => <i class={i < 4 ? 'cfa-on' : undefined} />)}</span>
+        <small>4/12</small>
+      </div>
+      <p class="cfa-pill">Brújula interior</p>
+      <h4>Un sábado libre, ¿qué te apetece más?</h4>
+      <div class="cfa-ops">
+        {opciones.map((o, i) => (
+          <span class:list={['cfa-op', i === 0 && 'cfa-sel']}><i><svg viewBox="0 0 24 24" set:html={o.i} /></i><b>{o.t}</b></span>
+        ))}
+      </div>
+      <div class="cfa-perfil">
+        <p>Tu perfil se está formando</p>
+        <span style="--v:62%"><small>Creatividad</small><i><b></b></i></span>
+        <span style="--v:40%"><small>Autonomía</small><i><b></b></i></span>
+        <span style="--v:28%"><small>Ayudar a otros</small><i><b></b></i></span>
+      </div>
+      <span class="cfa-cta">Continuar</span>
+    </div>
+  ) : (
+    <div class:list={['cfa-pan', 'cfa-pan--cam', clase]} aria-hidden="true">
+      <div class="cfa-est"><span>9:41</span><b></b></div>
+      <div class="cfa-c-top"><small>¡Listo, {nombre}!</small><h4>Tus <em>3</em> caminos</h4><p>Elegidos con tus respuestas</p></div>
+      <div class="cfa-c-lista" data-cfa-lista>
+        <span class="cfa-tu"><i></i>Tú</span>
+        <svg class="cfa-ramas"></svg>
+        {caminos.map((c, n) => (
+          <div class="cfa-cam"><span class="cfa-cam__n">{n + 1}</span><span class="cfa-cam__tx"><small>{c.tipo}</small><b>{c.nombre}</b></span><Image src={c.foto} alt="" width={120} height={120} class="cfa-cam__f" /></div>
+        ))}
+      </div>
+      {!sinPie && <p class="cfa-c-pie">Toca un camino para ver cómo llegar</p>}
+      {!sinPie && (
+        <nav class="cfa-nav"><span><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg>Inicio</span><span class="cfa-on"><svg viewBox="0 0 24 24"><path d="M5 20c0-6 3-9 7-11M12 9c3 1 6 4 7 11M12 9V3"/></svg>Caminos</span><span><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>Vídeos</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Perfil</span></nav>
+      )}
+    </div>
+  )
+}
+
+<script>
+  // Las ramas que salen de «Tú» y llegan a cada camino (el salto, punteado): mismo trazado que en la home
+  const dibujar = () => {
+    document.querySelectorAll<HTMLElement>('[data-cfa-lista]').forEach((lista) => {
+      const ramas = lista.querySelector<SVGSVGElement>('.cfa-ramas');
+      if (!ramas) return;
+      ramas.innerHTML = '';
+      lista.querySelectorAll<HTMLElement>('.cfa-cam').forEach((c, i) => {
+        const y = c.offsetTop + c.offsetHeight / 2;
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', `M6.5 -22 V${y - 10} Q6.5 ${y} 16.5 ${y} H21`);
+        if (i === 2) p.setAttribute('class', 'cfa-salto');
+        ramas.appendChild(p);
+      });
+    });
+  };
+  dibujar();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(dibujar);
+  window.addEventListener('load', dibujar);
+</script>
+
+<style is:global>
+  .cfa-pan { --cfa-tinta: #141414; --cfa-gris: #5f5e58; --cfa-gris2: #8e8c85; --cfa-linea: #e6e4dc; --cfa-suave: #f1f0eb;
+    position: relative; width: 272px; height: 582px; border-radius: 37px; overflow: hidden; background: #fbfaf6; display: flex; flex-direction: column; padding: 0 15px 15px; font-family: var(--sans); color: var(--cfa-tinta); text-align: left; }
+  .cfa-pan::before { content: ''; position: absolute; top: 9px; left: 50%; translate: -50% 0; width: 82px; height: 23px; border-radius: 20px; background: #0c0c0c; z-index: 5; }
+  .cfa-pan h4, .cfa-pan p { margin: 0; }
+  .cfa-est { display: flex; justify-content: space-between; align-items: center; padding: 12px 8px 4px; font-size: 12px; font-weight: 800; position: relative; z-index: 2; }
+  .cfa-est b { width: 20px; height: 10px; border-radius: 3px; border: 1.5px solid currentColor; position: relative; }
+  .cfa-est b::after { content: ''; position: absolute; inset: 1.5px 4px 1.5px 1.5px; background: currentColor; border-radius: 1px; }
+  .cfa-pan svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .cfa-cta { margin-top: auto; background: var(--cfa-tinta); color: #fff; font-weight: 800; font-size: 15px; text-align: center; padding: 13px; border-radius: 14px; }
+
+  /* pantalla · test */
+  .cfa-t-top { display: flex; align-items: center; gap: 9px; margin-top: 8px; }
+  .cfa-x { font-size: 15px; color: var(--cfa-gris2); }
+  .cfa-seg { flex: 1; display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; }
+  .cfa-seg i { height: 5px; border-radius: 3px; background: var(--cfa-linea); }
+  .cfa-seg i.cfa-on { background: var(--cfa-tinta); }
+  .cfa-t-top small { font-size: 12px; font-weight: 800; color: var(--cfa-gris); }
+  .cfa-pill { margin-top: 18px !important; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cfa-gris2); }
+  .cfa-pan--test h4 { font-family: var(--titular); font-weight: 900; font-size: 21px; line-height: 1.15; letter-spacing: -0.01em; margin: 6px 0 14px; min-height: 2.3em; }
+  .cfa-ops { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cfa-op { position: relative; background: #fff; border: 1.5px solid var(--cfa-linea); border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 90px; }
+  .cfa-op i { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--cfa-suave); color: var(--cfa-tinta); }
+  .cfa-op i svg { width: 18px; height: 18px; }
+  .cfa-op b { font-size: 13.5px; font-weight: 700; line-height: 1.15; }
+  .cfa-op.cfa-sel { border-color: var(--cfa-tinta); box-shadow: inset 0 0 0 1px var(--cfa-tinta); }
+  .cfa-op.cfa-sel i { background: var(--acento); }
+  .cfa-op.cfa-sel::after { content: '✓'; position: absolute; top: 9px; right: 9px; width: 20px; height: 20px; border-radius: 50%; background: var(--cfa-tinta); color: #fff; font-size: 11px; font-weight: 900; display: grid; place-items: center; }
+  .cfa-perfil { margin-top: 12px; border: 1.5px solid var(--cfa-linea); border-radius: 16px; padding: 11px 12px; display: grid; gap: 7px; background: #fff; }
+  .cfa-perfil p { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cfa-gris2); }
+  .cfa-perfil span { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 8px; }
+  .cfa-perfil small { font-size: 12.5px; font-weight: 700; }
+  .cfa-perfil i { height: 6px; border-radius: 3px; background: var(--cfa-suave); overflow: hidden; }
+  .cfa-perfil i b { display: block; height: 100%; width: var(--v); background: var(--cfa-tinta); border-radius: 3px; }
+  .cfa-perfil span:first-of-type i b { background: var(--acento); }
+
+  /* pantalla · tus 3 caminos */
+  .cfa-c-top { margin-top: 10px; }
+  .cfa-c-top small { font-size: 13px; font-weight: 700; color: var(--cfa-gris); }
+  .cfa-c-top h4 { font-family: var(--titular); font-weight: 900; font-size: 29px; line-height: 1.05; letter-spacing: -0.02em; margin-top: 6px; }
+  .cfa-c-top em { font-style: normal; display: inline-block; background: var(--acento); border-radius: 8px; padding: 0 7px; }
+  .cfa-c-top p { font-size: 13px; color: var(--cfa-gris); margin-top: 8px; }
+  .cfa-c-lista { position: relative; display: grid; gap: 10px; margin-top: 52px; padding-left: 21px; }
+  .cfa-tu { position: absolute; left: 0; top: -30px; display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cfa-gris); }
+  .cfa-tu i { width: 13px; height: 13px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 0 2.5px var(--cfa-tinta); }
+  .cfa-ramas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .cfa-ramas path { fill: none; stroke: var(--cfa-tinta); stroke-width: 1.8; stroke-linecap: round; }
+  .cfa-ramas path.cfa-salto { stroke-dasharray: 0.5 6; stroke-width: 2.4; }
+  .cfa-cam { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; padding: 11px 9px; border-radius: 18px; background: #fff; border: 1.5px solid var(--cfa-linea); }
+  .cfa-cam__n { width: 28px; height: 28px; border-radius: 50%; background: var(--cfa-tinta); color: #fff; font-family: var(--titular); font-weight: 900; font-size: 13px; display: grid; place-items: center; }
+  .cfa-cam__tx { display: grid; gap: 2px; min-width: 0; }
+  .cfa-cam__tx small { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cfa-gris2); }
+  .cfa-cam__tx b { font-family: var(--titular); font-weight: 900; font-size: 14.5px; line-height: 1.12; }
+  .cfa-cam__f { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+  .cfa-c-pie { text-align: center; font-size: 12.5px; font-weight: 700; color: var(--cfa-gris2); margin-top: 16px !important; }
+  .cfa-nav { margin-top: auto; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--cfa-linea); padding-top: 9px; }
+  .cfa-nav span { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; color: var(--cfa-gris2); }
+  .cfa-nav svg { width: 20px; height: 20px; }
+  .cfa-nav .cfa-on { color: var(--cfa-tinta); }
+</style>

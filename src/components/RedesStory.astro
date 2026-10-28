@@ -1,0 +1,112 @@
+---
+// Stories 9:16 de NextYou con las pantallas reales de la app (componente AppPantalla, las mismas de «Cómo funciona»).
+//  · 'pregunta': story con la pantalla del test como captura inclinada, sticker de encuesta de 4 opciones (sin votar) y sticker de enlace.
+//  · 'resultado': la misma pregunta con las 4 opciones ya votadas (la más votada, en lima).
+//  · 'caminos': la pantalla «Tus 3 caminos» para compartir, con una banda negra abajo.
+import AppPantalla from './AppPantalla.astro';
+import { BASE } from '../config';
+
+interface Props {
+  tipo: 'pregunta' | 'resultado' | 'caminos';
+}
+const { tipo } = Astro.props;
+const avatar = `${BASE}marca/avatar.svg`;
+const opciones = [
+  { t: 'Crear algo desde cero', p: 41 },
+  { t: 'Resolver un reto', p: 27 },
+  { t: 'Quedar con gente', p: 20 },
+  { t: 'Descubrir un sitio nuevo', p: 12 },
+];
+const enlace = '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>';
+---
+
+<div class:list={['rst', `rst--${tipo}`]}>
+  {
+    tipo !== 'caminos' && (
+      <div class="rst__top" aria-hidden="true">
+        <span class="rst__bar"><i></i></span>
+        <span class="rst__cuenta"><img src={avatar} alt="" width="24" height="24" />nextyou<small>ahora</small></span>
+      </div>
+    )
+  }
+
+  {
+    tipo === 'pregunta' && (
+      <>
+        <div class="rst__captura" aria-hidden="true"><AppPantalla pantalla="test" /></div>
+        <div class="rst__poll">
+          <p class="rst__pq">Un sábado libre, ¿qué te apetece más?</p>
+          <ul role="list">{opciones.map((o) => <li>{o.t}</li>)}</ul>
+        </div>
+        <span class="rst__enlace"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={enlace} />Haz el test</span>
+      </>
+    )
+  }
+
+  {
+    tipo === 'resultado' && (
+      <>
+        <div class="rst__res">
+          <p class="rst__eti">Vuestras respuestas</p>
+          <p class="rst__q">Un sábado libre, ¿qué te apetece más?</p>
+          <ul role="list">
+            {opciones.map((o, i) => (
+              <li class:list={[i === 0 && 'gana']} style={`--p:${o.p}%`}><b>{o.t}</b><em>{o.p}%</em></li>
+            ))}
+          </ul>
+        </div>
+        <span class="rst__enlace"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={enlace} />Haz el test</span>
+      </>
+    )
+  }
+
+  {
+    tipo === 'caminos' && (
+      <>
+        <AppPantalla pantalla="caminos" sinPie />
+        <div class="rst__banda">
+          <span class="rst__sello">se explora</span>
+          <p><b>¿Y los tuyos?</b>nextyou.example</p>
+        </div>
+      </>
+    )
+  }
+</div>
+
+<style is:global>
+  .rst { position: relative; width: 17rem; aspect-ratio: 9 / 18; border-radius: 1.6rem; overflow: hidden; background: #faf8f4; color: #161412; font-family: var(--sans); box-shadow: 0 30px 40px -28px rgb(22 20 18 / 0.7); }
+  .rst__top { position: absolute; z-index: 6; top: 0.9rem; left: 1rem; right: 1rem; display: grid; gap: 0.5rem; }
+  .rst__bar { display: block; height: 3px; border-radius: 2px; background: #e4dfd5; }
+  .rst__bar i { display: block; width: 45%; height: 100%; border-radius: 2px; background: #161412; }
+  .rst__cuenta { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8125rem; font-weight: 700; }
+  .rst__cuenta img { width: 1.5rem; height: 1.5rem; border-radius: 50%; }
+  .rst__cuenta small { font-weight: 500; color: #6b645c; }
+  .rst__enlace { position: absolute; z-index: 6; left: 50%; bottom: 1rem; translate: -50% 0; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.95rem; border-radius: 0.8rem; background: #fff; box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.5); font-weight: 700; font-size: 0.875rem; white-space: nowrap; }
+
+  /* story 1: la pantalla del test como captura inclinada + sticker de encuesta */
+  .rst__captura { position: absolute; z-index: 1; top: 3.4rem; left: 50%; width: 272px; height: 582px; transform: translateX(-50%) scale(0.62) rotate(-5deg); transform-origin: top center; border-radius: 37px; box-shadow: 0 24px 44px -20px rgb(20 20 20 / 0.55); }
+  .rst__poll { position: absolute; z-index: 4; left: 50%; bottom: 3.7rem; translate: -50% 0; width: 14.6rem; padding: 0.75rem 0.7rem 0.7rem; border-radius: 1rem; background: #fff; box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.55); }
+  .rst__pq { margin: 0 0 0.55rem; text-align: center; font-family: var(--titular); font-weight: 800; font-size: 0.9375rem; line-height: 1.1; letter-spacing: -0.01em; }
+  .rst__poll ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .rst__poll li { padding: 0.38rem 0.6rem; border-radius: 0.55rem; background: #f1eee7; font-size: 0.75rem; font-weight: 700; line-height: 1.15; }
+
+  /* story 2: resultado de la encuesta */
+  .rst--resultado { padding: 4.4rem 1.1rem 4.2rem; display: flex; flex-direction: column; justify-content: center; }
+  .rst__res { display: grid; gap: 0.9rem; }
+  .rst__eti { margin: 0; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6b645c; }
+  .rst__q { margin: 0; font-family: var(--titular); font-weight: 800; font-size: 1.65rem; line-height: 1.04; letter-spacing: -0.03em; }
+  .rst__res ul { list-style: none; margin: 0.3rem 0 0; padding: 0; display: grid; gap: 0.45rem; }
+  .rst__res li { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; min-height: 2.6rem; padding: 0.4rem 0.8rem; border-radius: 0.7rem; background: #f1eee7; font-size: 0.8125rem; line-height: 1.15; overflow: hidden; isolation: isolate; }
+  .rst__res li::before { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--p); background: #e4dfd5; z-index: -1; }
+  .rst__res li.gana::before { background: #c8f53b; }
+  .rst__res li b { font-weight: 700; }
+  .rst__res li em { font-style: normal; font-weight: 800; }
+
+  /* story 3: pantalla de resultados para compartir + banda negra */
+  .rst--caminos { background: #fbfaf6; }
+  .rst--caminos .cfa-pan { width: 100%; height: calc(100% - 5.6rem); border-radius: 0; }
+  .rst__banda { position: absolute; left: 0; right: 0; bottom: 0; height: 5.6rem; padding: 0.7rem 1.1rem; background: #161412; color: #f6f1e8; display: flex; flex-direction: column; justify-content: center; gap: 0.35rem; }
+  .rst__sello { font-family: var(--mano); font-size: 1.9rem; line-height: 1; color: #c8f53b; rotate: -3deg; transform-origin: left center; }
+  .rst__banda p { margin: 0; display: flex; align-items: baseline; gap: 0.5rem; font-size: 0.8125rem; color: rgb(246 241 232 / 0.85); }
+  .rst__banda p b { font-size: 0.9375rem; color: #f6f1e8; }
+</style>
