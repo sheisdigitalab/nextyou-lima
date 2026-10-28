@@ -1,22 +1,21 @@
 ---
-// Guía del logo de NextYou: logotipo, monograma, zona de seguridad y tamaño mínimo, versiones de color, con eslogan y usos incorrectos.
-// Los tamaños mínimos y la zona de seguridad son una propuesta para validar con la clienta.
+// Logo y marca de NextYou: logotipo (SVG trazado, sin fuentes), monograma, zona de seguridad, tamaño mínimo, versiones de color,
+// eslogan, usos incorrectos, tipografía, la firma «se explora» y descargas. Medidas y eslogan: propuesta a validar con la clienta.
 import V5 from '../../layouts/V5.astro';
-import LogoV3 from '../../components/LogoV3.astro';
 import GuiaCabecera from '../../components/GuiaCabecera.astro';
 import { BASE } from '../../config';
 
-const monograma = `${BASE}favicon.svg`;
+const M = `${BASE}marca/`;
 const colores = [
   { n: 'Negro cálido', h: '#161412', c: '#f6f1e8' },
   { n: 'Crema', h: '#f6f1e8', c: '#161412' },
   { n: 'Lima', h: '#c8f53b', c: '#161412' },
 ];
 const versiones = [
-  { clase: 'v--negro', t: 'Sobre negro', d: 'La principal: «Next» en crema y «You» en lima.' },
-  { clase: 'v--crema', t: 'Sobre crema', d: 'Todo en negro cálido; «You» no usa lima porque se pierde.' },
-  { clase: 'v--lima', t: 'Sobre lima', d: 'Todo en negro cálido.' },
-  { clase: 'v--blanco', t: 'Monocromo claro', d: 'Para fotografías oscuras y una sola tinta.' },
+  { clase: 'v--negro', img: 'logo-negro', t: 'Sobre negro', d: 'La principal: «Next» en crema y «You» en lima.' },
+  { clase: 'v--crema', img: 'logo-crema', t: 'Sobre crema', d: 'Todo en negro cálido; «You» no usa lima porque se pierde.' },
+  { clase: 'v--lima', img: 'logo-lima', t: 'Sobre lima', d: 'Todo en negro cálido.' },
+  { clase: 'v--blanco', img: 'logo-blanco', t: 'Monocromo claro', d: 'Para fotografías oscuras y una sola tinta.' },
 ];
 const mal = [
   { clase: 'mal--estirar', t: 'No deformar' },
@@ -24,38 +23,53 @@ const mal = [
   { clase: 'mal--color', t: 'No cambiar los colores' },
   { clase: 'mal--sombra', t: 'No añadir efectos' },
 ];
+const descargas = [
+  { t: 'Logo para fondo oscuro', d: 'Next crema + You lima', fondo: '#161412', img: 'logo-negro.svg', ar: [120, 28], archivos: [['SVG', 'logo-negro.svg'], ['PNG 2000 px', 'logo-negro.png']] },
+  { t: 'Logo para fondo crema', d: 'Todo en negro cálido', fondo: '#f6f1e8', img: 'logo-crema.svg', ar: [120, 28], archivos: [['SVG', 'logo-crema.svg'], ['PNG 2000 px', 'logo-crema.png']] },
+  { t: 'Logo para fondo lima', d: 'Todo en negro cálido', fondo: '#c8f53b', img: 'logo-lima.svg', ar: [120, 28], archivos: [['SVG', 'logo-lima.svg'], ['PNG 2000 px', 'logo-lima.png']] },
+  { t: 'Logo monocromo claro', d: 'Todo en blanco', fondo: '#3a342e', img: 'logo-blanco.svg', ar: [120, 28], archivos: [['SVG', 'logo-blanco.svg'], ['PNG 2000 px', 'logo-blanco.png']] },
+  { t: 'Avatar', d: 'El nombre apilado, para redes sociales', fondo: '#e9e6df', img: 'avatar.svg', ar: [56, 56], archivos: [['SVG', 'avatar.svg'], ['PNG 2000 px', 'avatar.png']] },
+  { t: 'Favicon', d: 'La «Y» sobre lima, para pestañas e iconos', fondo: '#e9e6df', img: 'favicon.svg', ar: [56, 56], archivos: [['SVG', 'favicon.svg'], ['PNG 32 px', 'favicon-32.png'], ['PNG 180 px', 'apple-touch-icon.png'], ['PNG 512 px', 'favicon-512.png']] },
+];
+const si = ['En el lema de la web y de las redes.', 'En la tarjeta para compartir «Mis 3 caminos».', 'Como remate de las frases de marca.'];
+const no = ['En portadas con personas.', 'En contenido para familias.', 'Repetido en la misma pieza.'];
 ---
 
-<V5 titulo="Logo de NextYou" descripcion="Guía del logo de NextYou." actual="" ruta="" robots="noindex, nofollow">
+<V5 titulo="Logo y marca de NextYou" descripcion="Guía del logo y la marca de NextYou." actual="" ruta="" robots="noindex, nofollow">
   <main id="contenido" class="rs">
     <div class="ancho rs__caja">
-      <GuiaCabecera actual="logo" titulo="Logo" lead="El logotipo de NextYou y cómo usarlo: versiones, espacio libre y tamaño mínimo. Medidas propuestas, pendientes de validar." />
+      <GuiaCabecera actual="logo" titulo="Logo y marca" lead="El logotipo de NextYou, su tipografía y su firma, y cómo usarlos: versiones, espacio libre y tamaño mínimo. Medidas propuestas, pendientes de validar." />
 
       <section class="rs__fila" aria-label="Logotipo y monograma">
         <figure class="rs__card rs__card--oscura">
-          <div class="lg__gran"><LogoV3 clase="lg__logo" /></div>
-          <figcaption>Logotipo · «Next» en Archivo extra negrita y «You» a mano, en lima</figcaption>
+          <div class="lg__gran"><img class="lg__logo" src={`${M}logo-negro.svg`} alt="Logotipo de NextYou" width="402" height="95" /></div>
+          <figcaption>Logotipo · «Next» en Archivo y «You» a mano, en lima</figcaption>
         </figure>
         <figure class="rs__card rs__card--centro">
-          <div class="lg__mono"><img src={monograma} alt="Monograma de NextYou: la Y a mano sobre lima" width="240" height="240" /></div>
-          <figcaption>Monograma · la «Y» de «You». Para avatares, favicon y sitios muy pequeños</figcaption>
+          <div class="lg__avatar"><img src={`${M}avatar.svg`} alt="Avatar de NextYou: el nombre apilado, «Next» sobre «You»" width="240" height="240" /></div>
+          <figcaption>Avatar · para redes sociales. El nombre completo, apilado.</figcaption>
+          <div class="lg__fav">
+            <img src={`${M}favicon.svg`} alt="Favicon de NextYou: la Y sobre lima" width="44" height="44" />
+            <p><b>Favicon</b> · solo para pestañas e iconos de 16-32 px: la «Y» de «You»</p>
+          </div>
         </figure>
       </section>
 
       <section class="rs__fila" aria-label="Zona de seguridad y tamaño mínimo">
         <figure class="rs__card">
           <div class="lg__seg">
-            <div class="lg__caja"><LogoV3 clase="lg__logo lg__logo--seg" /></div>
+            <div class="lg__caja"><img class="lg__logo--seg" src={`${M}logo-crema.svg`} alt="Logotipo de NextYou" width="208" height="49" /></div>
           </div>
           <figcaption>Zona de seguridad · deja alrededor, como mínimo, la altura de la «N» de «Next». Nada entra en ese espacio</figcaption>
         </figure>
         <figure class="rs__card">
           <div class="lg__min">
-            <div class="lg__min-item"><LogoV3 clase="lg__min-logo" /><span>Mínimo en pantalla<br /><b>96 px de ancho</b></span></div>
-            <div class="lg__min-item"><LogoV3 clase="lg__min-logo lg__min-logo--imp" /><span>Mínimo en impreso<br /><b>25 mm de ancho</b></span></div>
-            <div class="lg__min-item"><img src={monograma} alt="" width="32" height="32" class="lg__min-mono" /><span>Monograma<br /><b>16 px · 5 mm</b></span></div>
+            <div class="lg__min-item"><img class="lg__min-logo" src={`${M}logo-crema.svg`} alt="" width="96" height="23" /><span>Logo en pantalla<br /><b>96 px de ancho</b></span></div>
+            <div class="lg__min-item"><img class="lg__min-logo" src={`${M}logo-crema.svg`} alt="" width="96" height="23" /><span>Logo en impreso<br /><b>25 mm de ancho</b></span></div>
+            <div class="lg__min-item"><img class="lg__min-av" src={`${M}avatar.svg`} alt="" width="64" height="64" /><span>Avatar<br /><b>64 px · 12 mm</b></span></div>
+            <div class="lg__min-item"><img class="lg__min-mono" src={`${M}favicon.svg`} alt="" width="16" height="16" /><span>Favicon<br /><b>16 px · 5 mm</b></span></div>
           </div>
-          <figcaption>Tamaño mínimo · por debajo, usa el monograma</figcaption>
+          <figcaption>Tamaño mínimo · por debajo del logo, usa el avatar; por debajo del avatar, el favicon</figcaption>
         </figure>
       </section>
 
@@ -64,7 +78,7 @@ const mal = [
           <div class="lg__vers">
             {versiones.map((v) => (
               <div class={`lg__ver ${v.clase}`}>
-                <LogoV3 clase="lg__ver-logo" />
+                <img class="lg__ver-logo" src={`${M}${v.img}.svg`} alt="" width="176" height="41" />
                 <p class="lg__ver-t">{v.t}</p>
                 <p class="lg__ver-d">{v.d}</p>
               </div>
@@ -84,8 +98,8 @@ const mal = [
           <figcaption>Colores de la marca</figcaption>
         </figure>
         <figure class="rs__card rs__card--oscura">
-          <div class="lg__tag"><LogoV3 clase="lg__logo lg__logo--tag" /><p>Descubre a qué te podrías dedicar.</p></div>
-          <figcaption>Logo con eslogan · el eslogan va debajo, en Archivo, a la altura de la «N»</figcaption>
+          <div class="lg__tag"><img class="lg__logo lg__logo--tag" src={`${M}logo-negro.svg`} alt="Logotipo de NextYou" width="240" height="57" /><p>Tu futuro no se adivina, <span class="mano">se explora.</span></p></div>
+          <figcaption>Logo con eslogan · el eslogan va debajo, en Archivo, y «se explora» en rotulador lima</figcaption>
         </figure>
       </section>
 
@@ -94,12 +108,76 @@ const mal = [
           <div class="lg__mal">
             {mal.map((m) => (
               <div class="lg__mal-i">
-                <div class={`lg__mal-v ${m.clase}`}><LogoV3 clase="lg__mal-logo" /></div>
+                <div class={`lg__mal-v ${m.clase}`}><img class="lg__mal-logo" src={`${M}logo-negro.svg`} alt="" width="144" height="34" /></div>
                 <p><span aria-hidden="true">✕</span> {m.t}</p>
               </div>
             ))}
           </div>
           <figcaption>Usos incorrectos</figcaption>
+        </figure>
+      </section>
+
+      <section class="lg__sec" aria-labelledby="tipo">
+        <h2 id="tipo" class="lg__h2">Tipografía</h2>
+        <div class="rs__fila">
+          <figure class="rs__card">
+            <div class="ar">
+              <p class="ar__eti">Archivo · titulares y textos</p>
+              <p class="ar__t">Tu futuro no se adivina</p>
+              <p class="ar__s">Explora tus 3 caminos con gente que ya trabaja en ello.</p>
+              <p class="ar__p">Un párrafo en Archivo Regular: frases cortas, tono cercano y mucho aire. Lo importante va en <b>negrita</b>, nunca en mayúsculas gritando.</p>
+              <ul class="ar__pesos" role="list"><li style="font-weight:400">Regular 400</li><li style="font-weight:600">SemiBold 600</li><li style="font-weight:800">ExtraBold 800</li></ul>
+            </div>
+            <figcaption>Archivo · titulares en ExtraBold, subtítulos en SemiBold y párrafos en Regular</figcaption>
+          </figure>
+          <figure class="rs__card rs__card--oscura">
+            <div class="ro">
+              <p class="ro__eti">Rotulador (Permanent Marker) · solo acentos de marca</p>
+              <p class="ro__m"><span class="mano">se explora</span></p>
+              <p class="ro__n">Nunca en frases enteras ni en textos largos: una o dos palabras, como firma o remate.</p>
+            </div>
+            <figcaption>Rotulador · en lima sobre fondo oscuro</figcaption>
+          </figure>
+        </div>
+        <p class="lg__lic">Archivo: SIL Open Font License 1.1 (The Archivo Project Authors, Omnibus-Type). Rotulador: Permanent Marker, Apache License 2.0 (Font Diner, Inc.).</p>
+      </section>
+
+      <section class="lg__sec" aria-labelledby="firma">
+        <h2 id="firma" class="lg__h2">La firma «se explora»</h2>
+        <div class="rs__fila">
+          <figure class="rs__card rs__card--oscura rs__card--centro">
+            <div class="fi__sello"><span class="mano">se explora</span></div>
+            <figcaption>El sello, en lima sobre negro</figcaption>
+          </figure>
+          <figure class="rs__card">
+            <div class="fi">
+              <div class="fi__col fi__col--si">
+                <p class="fi__t">Sí</p>
+                <ul role="list">{si.map((t) => <li>{t}</li>)}</ul>
+              </div>
+              <div class="fi__col fi__col--no">
+                <p class="fi__t">No</p>
+                <ul role="list">{no.map((t) => <li>{t}</li>)}</ul>
+              </div>
+            </div>
+            <p class="fi__lema">Es una firma: poco y siempre en el mismo sitio.</p>
+          </figure>
+        </div>
+      </section>
+
+      <section class="lg__sec" aria-labelledby="desc">
+        <h2 id="desc" class="lg__h2">Descargas</h2>
+        <figure class="rs__card rs__card--ancha">
+          <ul class="dl" role="list">
+            {descargas.map((d) => (
+              <li class="dl__i">
+                <span class="dl__v" style={`background:${d.fondo}`}><img src={`${M}${d.img}`} alt="" width={d.ar[0]} height={d.ar[1]} /></span>
+                <span class="dl__tx"><b>{d.t}</b><small>{d.d}</small></span>
+                <span class="dl__a">{d.archivos.map(([l, f]) => <a href={`${M}${f}`} download>{l}</a>)}</span>
+              </li>
+            ))}
+          </ul>
+          <figcaption>Archivos en public/marca: los contornos son curvas reales (sin fuentes), los PNG de los logos tienen fondo transparente y el avatar y el favicon llevan su propio fondo</figcaption>
         </figure>
       </section>
 
@@ -111,23 +189,32 @@ const mal = [
 <style is:global>
   .rs__card--oscura { background: #161412; color: #f6f1e8; }
   .rs__card--oscura figcaption { color: rgb(246 241 232 / 0.7); }
+  .mano { font-family: var(--mano); font-weight: 400; font-style: normal; letter-spacing: 0; color: #c8f53b; }
+  .lg__sec { display: grid; gap: 1rem; margin-top: clamp(1rem, 0.5rem + 2vw, 2.5rem); }
+  .lg__h2 { margin: 0; font-family: var(--titular); font-weight: 400; font-size: clamp(2rem, 1.2rem + 3.5vw, 3.6rem); line-height: 1; letter-spacing: -0.03em; }
+
   .lg__gran { display: grid; place-items: center; min-height: 14rem; }
-  .lg__logo { width: min(22rem, 85%); height: auto; color: #f6f1e8; --logo-you: #c8f53b; }
-  .lg__mono { width: min(11rem, 60%); aspect-ratio: 1; border-radius: 1.6rem; overflow: hidden; }
-  .lg__mono img { width: 100%; height: 100%; display: block; }
+  .lg__logo { width: min(22rem, 85%); height: auto; }
+  .lg__avatar { width: min(11rem, 60%); aspect-ratio: 1; border-radius: 50%; overflow: hidden; }
+  .lg__avatar img { width: 100%; height: 100%; display: block; }
+  .lg__fav { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.4rem; padding: 0.6rem 0.9rem; border-radius: 0.8rem; background: #fff; border: 1px solid #e4dfd5; font-size: 0.8125rem; line-height: 1.35; color: #574e46; text-align: left; }
+  .lg__fav img { flex: none; width: 2.75rem; height: 2.75rem; border-radius: 0.6rem; }
+  .lg__fav b { color: #161412; }
+  .lg__fav p { margin: 0; }
+  .lg__lic { margin: 0; max-width: 46rem; font-size: 0.75rem; line-height: 1.45; color: rgb(255 255 255 / 0.6); }
 
   /* Zona de seguridad: el margen es la altura de la «N» (≈ 0.66 de la altura del logotipo) */
   .lg__seg { display: grid; place-items: center; min-height: 14rem; }
   .lg__caja { position: relative; padding: 2.1rem; background: #f6f1e8; outline: 1.5px dashed #161412; outline-offset: -1px; }
   .lg__caja::before { content: ''; position: absolute; inset: 2.1rem; outline: 1px solid rgb(22 20 18 / 0.35); }
-  .lg__logo--seg { display: block; width: 13rem; color: #161412; --logo-you: #161412; }
+  .lg__logo--seg { display: block; width: 13rem; max-width: 100%; height: auto; }
   .lg__min { display: grid; gap: 1.1rem; align-content: center; min-height: 14rem; }
   .lg__min-item { display: flex; align-items: center; gap: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid rgb(22 20 18 / 0.15); font-size: 0.8125rem; line-height: 1.35; color: #574e46; }
   .lg__min-item:last-child { border-bottom: 0; padding-bottom: 0; }
   .lg__min-item b { color: #161412; font-size: 0.9375rem; }
-  .lg__min-logo { flex: none; width: 96px; height: auto; color: #161412; --logo-you: #161412; }
-  .lg__min-logo--imp { width: 96px; }
-  .lg__min-mono { flex: none; width: 32px; height: 32px; }
+  .lg__min-logo { flex: none; width: 96px; height: auto; }
+  .lg__min-mono { flex: none; width: 16px; height: 16px; }
+  .lg__min-av { flex: none; width: 64px; height: 64px; border-radius: 50%; }
 
   /* Versiones de color */
   .lg__vers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
@@ -136,18 +223,19 @@ const mal = [
   .lg__ver-logo { width: 100%; max-width: 11rem; height: auto; align-self: center; margin-bottom: 1.5rem; }
   .lg__ver-t { margin: 0; font-weight: 700; font-size: 0.9375rem; }
   .lg__ver-d { margin: 0; font-size: 0.8125rem; line-height: 1.35; opacity: 0.8; }
-  .v--negro { background: #161412; color: #f6f1e8; --logo-you: #c8f53b; }
-  .v--crema { background: #f6f1e8; color: #161412; --logo-you: #161412; outline: 1px solid rgb(22 20 18 / 0.15); outline-offset: -1px; }
-  .v--lima { background: #c8f53b; color: #161412; --logo-you: #161412; }
-  .v--blanco { background: #3a342e; color: #ffffff; --logo-you: #ffffff; }
+  .v--negro { background: #161412; color: #f6f1e8; }
+  .v--crema { background: #f6f1e8; color: #161412; outline: 1px solid rgb(22 20 18 / 0.15); outline-offset: -1px; }
+  .v--lima { background: #c8f53b; color: #161412; }
+  .v--blanco { background: #3a342e; color: #ffffff; }
 
   /* Colores y eslogan */
   .lg__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
   .lg__col { display: grid; align-content: end; gap: 0.15rem; min-height: 11rem; padding: 0.9rem; border-radius: 0.5rem; font-size: 0.8125rem; outline: 1px solid rgb(22 20 18 / 0.12); outline-offset: -1px; }
   .lg__col b { font-size: 0.9375rem; }
-  .lg__tag { display: grid; justify-items: start; gap: 0.7rem; align-content: center; min-height: 11rem; padding-inline: 1rem; }
-  .lg__logo--tag { width: 15rem; }
-  .lg__tag p { margin: 0; font-family: var(--sans); font-size: 1.0625rem; font-weight: 500; letter-spacing: 0.01em; }
+  .lg__tag { display: grid; justify-items: start; gap: 0.8rem; align-content: center; min-height: 11rem; padding-inline: 1rem; }
+  .lg__logo--tag { width: min(15rem, 100%); }
+  .lg__tag p { margin: 0; font-family: var(--sans); font-size: 1.125rem; font-weight: 500; letter-spacing: 0.01em; }
+  .lg__tag .mano { font-size: 1.3em; }
 
   /* Usos incorrectos */
   .lg__mal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
@@ -155,10 +243,51 @@ const mal = [
   .lg__mal-i { display: grid; gap: 0.5rem; }
   .lg__mal-i p { margin: 0; font-size: 0.8125rem; font-weight: 600; }
   .lg__mal-i p span { color: #c0392b; margin-right: 0.25rem; }
-  .lg__mal-v { display: grid; place-items: center; min-height: 8rem; padding: 1rem; border-radius: 0.5rem; background: #161412; color: #f6f1e8; --logo-you: #c8f53b; overflow: hidden; }
-  .lg__mal-logo { width: 9rem; height: auto; }
+  .lg__mal-v { display: grid; place-items: center; min-height: 8rem; padding: 1rem; border-radius: 0.5rem; background: #161412; overflow: hidden; }
+  .lg__mal-logo { width: 9rem; max-width: 100%; height: auto; }
   .mal--estirar .lg__mal-logo { transform: scale(1, 1.8); }
   .mal--girar .lg__mal-logo { transform: rotate(-14deg); }
-  .mal--color { color: #e04b9a; --logo-you: #3b82f6; }
+  .mal--color .lg__mal-logo { filter: hue-rotate(150deg) saturate(3); }
   .mal--sombra .lg__mal-logo { filter: drop-shadow(5px 5px 0 #c8f53b) blur(0.6px); }
+
+  /* Tipografía */
+  .ar { display: grid; gap: 0.9rem; font-family: var(--sans); color: #161412; }
+  .ar__eti, .ro__eti { margin: 0; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b645c; }
+  .ar__t { margin: 0; font-family: var(--titular); font-weight: 800; font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); line-height: 1.02; letter-spacing: -0.03em; }
+  .ar__s { margin: 0; font-weight: 600; font-size: 1.25rem; line-height: 1.3; }
+  .ar__p { margin: 0; max-width: 32rem; font-size: 1rem; line-height: 1.55; color: #574e46; }
+  .ar__p b { color: #161412; }
+  .ar__pesos { list-style: none; margin: 0.3rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .ar__pesos li { padding: 0.3rem 0.8rem; border-radius: 999px; background: #fff; border: 1px solid #e4dfd5; font-size: 0.875rem; }
+  .ro { display: grid; gap: 1rem; align-content: center; min-height: 14rem; }
+  .ro__eti { color: rgb(246 241 232 / 0.7); }
+  .ro__m { margin: 0; font-size: clamp(2.6rem, 1.4rem + 4.4vw, 4.6rem); white-space: nowrap; line-height: 1; rotate: -3deg; transform-origin: left center; }
+  .ro__n { margin: 0; max-width: 28rem; font-family: var(--sans); font-size: 0.9375rem; line-height: 1.45; color: rgb(246 241 232 / 0.85); }
+
+  /* La firma «se explora» */
+  .fi__sello { display: grid; place-items: center; min-height: 14rem; font-size: clamp(2.6rem, 1.4rem + 4.4vw, 4.6rem); white-space: nowrap; line-height: 1; rotate: -4deg; }
+  .fi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; font-family: var(--sans); color: #161412; }
+  @media (max-width: 47.99rem) { .fi { grid-template-columns: 1fr; } }
+  .fi__col { display: grid; gap: 0.6rem; align-content: start; padding: 1rem; border-radius: 0.8rem; background: #fff; border: 1px solid #e4dfd5; }
+  .fi__t { margin: 0; font-family: var(--titular); font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; }
+  .fi__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.9375rem; line-height: 1.4; }
+  .fi__col li { padding-left: 1.4rem; position: relative; }
+  .fi__col li::before { position: absolute; left: 0; font-weight: 800; }
+  .fi__col--si li::before { content: '✓'; color: #161412; }
+  .fi__col--no li::before { content: '✕'; color: #c0392b; }
+  .fi__lema { margin: 0.3rem 0 0; font-family: var(--titular); font-weight: 800; font-size: 1.25rem; line-height: 1.2; letter-spacing: -0.02em; color: #161412; }
+
+  /* Descargas */
+  .dl { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+  .dl__i { display: grid; grid-template-columns: 9rem minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: 0.7rem; border-radius: 0.8rem; background: #fff; border: 1px solid #e4dfd5; font-family: var(--sans); color: #161412; }
+  @media (max-width: 47.99rem) { .dl__i { grid-template-columns: 6.5rem minmax(0, 1fr); } .dl__a { grid-column: 1 / -1; } }
+  .dl__v { display: grid; place-items: center; height: 4.2rem; border-radius: 0.5rem; }
+  .dl__v img { max-width: 80%; max-height: 70%; width: auto; height: auto; }
+  .dl__v img[src$="avatar.svg"], .dl__v img[src$="favicon.svg"] { height: 3.2rem; max-height: none; width: 3.2rem; border-radius: 0.5rem; }
+  .dl__tx { display: grid; gap: 0.1rem; min-width: 0; }
+  .dl__tx small { font-size: 0.8125rem; color: #6b645c; }
+  .dl__a { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .dl__a a { padding: 0.45rem 0.9rem; border-radius: 999px; border: 1px solid #161412; color: #161412; font-size: 0.875rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .dl__a a:first-child { background: #161412; color: #f6f1e8; }
+  .dl__a a:hover { background: #c8f53b; color: #161412; border-color: #c8f53b; }
 </style>
