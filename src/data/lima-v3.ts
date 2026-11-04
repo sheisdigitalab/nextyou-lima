@@ -77,16 +77,15 @@ export const queEsLima = {
     'Descubre profesiones que no sabías que existían y conoce a quien ya trabaja en ellas, antes de decidir qué estudiar.',
 };
 
-// «Cómo llegar · La uni no es el único camino» (v3): cuatro caminos hacia una misma profesión, la Animación 3D de la ficha del paso 2.
+// «Cómo llegar · La uni no es el único camino» (v3): tres caminos (los de Elías) hacia una misma profesión, la Animación 3D de la ficha del paso 2.
 // Los datos coinciden con esa ficha. PENDIENTE CLIENTA: contenido de ejemplo.
 export const uniNoUnicoLima = {
   ...uniNoUnico,
   texto:
-    'Hay muchas formas de llegar a una profesión, y no todas duran lo mismo. Por ejemplo, a la animación 3D se puede llegar por la universidad, por una FP, con cursos o por tu cuenta. Lo importante es encontrar el camino que encaja contigo.',
+    'Hay muchas formas de llegar a una profesión. Por ejemplo, a la animación 3D se puede llegar por la universidad, por una FP o combinando cursos y trabajo. Lo importante es encontrar el camino que encaja contigo.',
   rutas: [
     { t: 'Universidad', d: '4 años', x: 'Grado en Animación' },
-    { t: 'FP de grado superior', d: '2 años', x: 'Animación 3D, Juegos y Entornos Interactivos' },
-    { t: 'Cursos online y bootcamps', d: 'Unos meses' },
-    { t: 'Por tu cuenta', d: 'A tu ritmo', x: 'Practicas, enseñas lo que haces y te formas a la vez', tag: 'El camino de Laia' },
-  ] as { t: string; d: string; x?: string; tag?: string }[],
+    { t: 'FP', d: '2 + 2 años', x: 'Grado medio y después superior' },
+    { t: 'Cursos y trabajo', d: '1 + 2 + 1 años', x: 'Te formas mientras trabajas' },
+  ] as { t: string; d: string; x?: string }[],
 };

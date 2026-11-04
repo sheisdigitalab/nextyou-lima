@@ -489,13 +489,13 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
              PENDIENTE CLIENTA: las profesiones son de ejemplo (las mismas que en «Cómo funciona») -->
         <div class="ancho camino8" data-aparece>
           <div class="camino8__tu"><span>Tú</span></div>
-          <p class="camino8__rotulo camino8__rotulo--1">Cuatro caminos para llegar a la misma profesión</p>
-          <div class="camino8__izq" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 50 50, 50 12.5, 100 12.5" class="camino8__l" /><path d="M0 50 C 50 50, 50 37.5, 100 37.5" class="camino8__l" /><path d="M0 50 C 50 50, 50 62.5, 100 62.5" class="camino8__l" /><path d="M0 50 C 50 50, 50 87.5, 100 87.5" class="camino8__l" /></svg></div>
-          <ol class="camino8__lista" role="list" aria-label="Cuatro caminos para llegar a la animación 3D">
-            {uniNoUnicoLima.rutas.map((r, k) => <li style={`--k: ${k}`}><span><b>{r.t}</b><small>{r.d}</small>{r.x && <em>{r.x}</em>}{r.tag && <i class="camino8__tag">{r.tag}</i>}</span></li>)}
+          <p class="camino8__rotulo camino8__rotulo--1">Tres caminos, una misma profesión</p>
+          <div class="camino8__izq" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 50 50, 50 16.67, 100 16.67" class="camino8__l" /><path d="M0 50 C 50 50, 50 50, 100 50" class="camino8__l" /><path d="M0 50 C 50 50, 50 83.33, 100 83.33" class="camino8__l" /></svg></div>
+          <ol class="camino8__lista" role="list" aria-label="Tres caminos para llegar a la animación 3D">
+            {uniNoUnicoLima.rutas.map((r, k) => <li style={`--k: ${k}`}><span><b>{r.t}</b><small>{r.d}</small>{r.x && <em>{r.x}</em>}</span></li>)}
           </ol>
-          <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 12.5 C 50 12.5, 50 50, 100 50" class="camino8__l" /><path d="M0 37.5 C 50 37.5, 50 50, 100 50" class="camino8__l" /><path d="M0 62.5 C 50 62.5, 50 50, 100 50" class="camino8__l" /><path d="M0 87.5 C 50 87.5, 50 50, 100 50" class="camino8__l" /></svg></div>
-          <p class="camino8__rotulo camino8__rotulo--2"><span class="camino8__r-d">para llegar a:</span><span class="camino8__r-m">para llegar a la misma profesión</span></p>
+          <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 16.67 C 50 16.67, 50 50, 100 50" class="camino8__l" /><path d="M0 50 C 50 50, 50 50, 100 50" class="camino8__l" /><path d="M0 83.33 C 50 83.33, 50 50, 100 50" class="camino8__l" /></svg></div>
+          <p class="camino8__rotulo camino8__rotulo--2">para llegar a:</p>
           <ul class="camino8__profs" role="list" aria-label="Profesión a la que llegas">
             <li><span class="camino8__ic" aria-hidden="true" set:html={iconosCromo.animacion} /><b>Animación 3D</b></li>
           </ul>
@@ -1310,7 +1310,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       const ella = sec.querySelector<HTMLElement>('[data-cfa-ella]')!;
       const FRASES = [
         '«Empecé subiendo mis animaciones a redes. Así me escribió una productora.»',
-        '«Dibujaba cómics y luego hice una FP de Animación 3D.»',
+        '«Aprendí por mi cuenta, con Blender y muchos tutoriales.»',
         '«Por la mañana animo personajes y por la tarde los revisamos en equipo.»',
       ];
       let c = 1;
@@ -2878,17 +2878,27 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .camino8__lista li:last-child::before { background: var(--linea-c) !important; border-top: 0 !important; height: 1px !important; }
   /* v3: cuatro caminos hacia una profesión */
   .camino8 { --alto-fila: 8.25rem; }
-  .camino8__lista li span { border-radius: 1.75rem; min-height: 5rem; padding: 0.8rem 1.5rem; }
+  .camino8 .camino8__lista li { align-items: stretch; padding-block: 0.75rem; }
+  .camino8__lista li span { border-radius: 1.75rem; min-height: 5rem; padding: 0.8rem 1.5rem; flex: 1; justify-content: center; }
   .camino8__lista li span em { font-style: normal; font-size: var(--t1, 0.875rem); font-weight: 500; line-height: 1.3; opacity: 0.75; text-wrap: balance; }
-  .camino8__tag { font-style: normal; margin-top: 0.3rem; padding: 0.15rem 0.7rem; border: 1px solid var(--acento); border-radius: 999px; font-size: 0.8125rem; font-weight: 700; color: var(--acento-texto); }
   .camino8__profs { grid-template-rows: auto !important; align-self: center; }
-  .camino8__r-m { display: none; }
   .cfa__nota-coach { margin-top: 1rem; }
   @media (max-width: 47.99rem) {
-    .camino8__r-d { display: none; }
-    .camino8__r-m { display: inline; }
     .camino8__lista li { min-height: 7rem !important; }
   }
+  /* v3 · escritorio: el rótulo de arriba se ve centrado sobre el esquema, a unos 40 px de la primera caja; el de abajo solo se ve en móvil */
+  @media (min-width: 48rem) {
+    .camino8 { position: relative; }
+    .camino8 .camino8__rotulo { display: block; position: absolute; margin: 0; line-height: 1.35; color: var(--acento-texto); }
+    .camino8 .camino8__rotulo--1 { bottom: calc(100% + 0.75rem); left: 50%; translate: -50% 0; text-align: center; white-space: nowrap; }
+    /* columnas de «Tú» y de «Animación 3D» del mismo ancho: así las cajas quedan en el centro y el rótulo, sobre ellas */
+    .camino8 { grid-template-columns: 12rem minmax(2.5rem, 1fr) minmax(0, 20rem) minmax(2.5rem, 1fr) 12rem; }
+    .camino8__izq { margin-left: -6rem; }
+    .camino8 .camino8__rotulo--2 { display: none; }
+    .camino8 { margin-top: 6.03rem; }
+    .camino8__lista li span small, .camino8__lista li span em { font-size: 0.875rem; }
+  }
+  .camino8 .camino8__rotulo--1 { font-size: 1.125rem; font-weight: 600; }
   .camino8__l--salto { stroke-dasharray: 2 6; }
   .camino8__nudo { fill: var(--crema); }
   .camino8__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; }
