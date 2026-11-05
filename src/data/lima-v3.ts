@@ -22,13 +22,30 @@ export const unicoLima = {
   resaltado: 'qué estudiar y a qué dedicarse',
   // Comentario #18 de Elías: las preguntas que de verdad se hacen
   preguntas: '¿Qué estudio? ¿En qué trabajaré? ¿Me gustará? ¿Podrá ser mi forma de vida?',
-  personas: unicoV4.personas.map((p) => ({ ...p, ...(fotos[p.nombre] ?? {}) })),
+  // La cita de «Mis amigos lo tienen claro y yo no.» pasa a Alba: ya hay otra Irene en el carrusel y cada persona sale una sola vez
+  personas: unicoV4.personas.map((p) => {
+    const q = { ...p, ...(fotos[p.nombre] ?? {}) };
+    return p.nombre === 'Irene'
+      ? { ...q, nombre: 'Alba', edad: 18, cita: 'Mis amigos lo tienen claro y yo no.', alt: 'Alba, con gafas y rebeca gris, delante de un mural de colores.' }
+      : q;
+  }),
 };
 
 // «Cómo funciona»: el paso 2 explica qué pasa al tocar un camino (en qué consiste, cómo llegar y contratar un coach) y el paso 3
 // no promete un vídeo por camino, sino consejos y vídeos de personas que pasaron por algo parecido
 export const comoAppLima = {
   ...comoAppV7,
+  // Comentario #28 de Elías: el acompañamiento es opcional y de pago. PENDIENTE CLIENTA: botón con los precios (los pasa Sara)
+  coach: {
+    eti: 'Acompañamiento opcional de pago',
+    titulo: 'Un profesional te ayuda a ordenar tus opciones',
+    texto: 'Si después del test todavía tienes dudas, puedes reservar sesiones individuales online con un coach profesional. Revisaréis tus tres caminos, trabajaréis tus preguntas y pensaréis qué paso te gustaría dar después.',
+    puntos: [
+      'Sesiones individuales por videollamada',
+      'Orientación personalizada sobre tus tres caminos',
+      'Ayuda para comparar opciones y definir próximos pasos',
+    ],
+  },
   pasos: comoAppV7.pasos.map((p, i) =>
     i === 0
       ? {
@@ -57,7 +74,7 @@ export const comoAppLima = {
               ...p,
               eti: 'Gente real',
               titulo: 'Historias de profesionales para inspirarte',
-              texto: 'Gratis. Personas que trabajan en distintos ámbitos te cuentan qué estudiaron, cómo empezaron y qué cambios hicieron hasta llegar a su profesión. Sus trayectorias pueden darte ideas para explorar tus opciones.',
+              texto: 'Gratis. Personas que trabajan en distintos ámbitos te cuentan qué estudiaron, cómo empezaron y qué cambios hicieron hasta llegar a su profesión. Sus trayectorias pueden darte ideas para explorar tus opciones. Las entrevistas disponibles varían según la profesión.',
               puntos: [
                 '<b>Entrevistas en vídeo</b> con profesionales de distintos sectores',
                 '<b>Historias de personas</b> que llegaron a su trabajo por caminos diferentes',
