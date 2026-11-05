@@ -97,7 +97,7 @@ const masDentro = [
   },
 ];
 const reels = await Promise.all(
-  [...losDeDentro.personas, ...masDentro].map(async (p) => ({ ...p, martes: typeof p.martes === 'string' ? p.martes.replace('el recorrido de un servicio', 'el camino de un servicio') : p.martes, grande: (await getImage({ src: p.foto, width: 900, format: 'webp' })).src }))
+  [...losDeDentro.personas, ...masDentro].map(async (p) => ({ ...p, camino: Array.isArray(p.camino) ? p.camino.map((c: string) => c.replace('Estudió Turismo', 'Empezó Turismo')) : p.camino, martes: typeof p.martes === 'string' ? p.martes.replace('el recorrido de un servicio', 'el camino de un servicio') : p.martes, grande: (await getImage({ src: p.foto, width: 900, format: 'webp' })).src }))
 );
 const insider = reels[0];
 const heroGrande = (await getImage({ src: hero.foto, width: 900, format: 'webp' })).src;
@@ -366,7 +366,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                         </div>
                       </div></div>
                       <div class="cfa-flota cfa-flota--frase" data-cfa-frase><p data-cfa-ella>«Empecé subiendo mis animaciones a redes. Así me escribió una productora.»</p><small>Laia, animadora 3D</small></div>
-                      <div class="cfa-flota cfa-flota--gente"><span class="cfa-avs"><Image src={fotoLeo} alt="" width={64} height={64} loading="lazy" /><i>M</i><i>J</i></span><span><small>Gente como tú</small><b>Te orientan</b></span></div>
+                      <div class="cfa-flota cfa-flota--gente"><span class="cfa-avs"><Image src={fotoLeo} alt="" width={64} height={64} loading="lazy" /><i>M</i><i>J</i></span><span><small>Gente como tú</small><b>Te cuentan su camino</b></span></div>
                     </div>
                   )}
                 </div>
@@ -415,7 +415,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         <div class="ancho">
           <header class="cabecera" data-aparece>
             <p class="antetitulo">Su camino, contado por ellos</p>
-            <h2 id="dentro-titulo" class="titular titular--dentro rotulador">Profesionales que te explican cómo llegaron a dedicarse a ello y cómo es <em>su día a día</em> en sus profesiones</h2>
+            <h2 id="dentro-titulo" class="titular titular--dentro rotulador">Profesionales que te cuentan cómo llegaron a <em>su trabajo</em></h2>
             <p class="cabecera__sub">Sin discursos. Te cuentan cómo entraron, en qué se equivocaron y cómo es su día a día.</p>
           </header>
           <div class="dentro__nav" data-solo-carrusel>
@@ -2916,6 +2916,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .camino8__lista li span small, .camino8__lista li span em { font-size: 0.875rem; }
   }
   .camino8 .camino8__rotulo--1 { font-size: 1.125rem; font-weight: 600; }
+  /* v3 · móvil: el hueco entre el esquema de «La uni no es el único camino» y «Por qué existe esto» pasa de 240 a 120 px */
+  @media (max-width: 47.99rem) {
+    .v7uni { padding-bottom: 60px !important; }
+    .sara { padding-top: 60px !important; }
+  }
   .camino8__l--salto { stroke-dasharray: 2 6; }
   .camino8__nudo { fill: var(--crema); }
   .camino8__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; }
