@@ -115,7 +115,9 @@ import fotoNoa from '../../assets/muestra/noa.jpg';
 import fotoLeo from '../../assets/muestra/laia.jpg'; // foto de muestra pasada por Jenifer (Laia, paso 3)
 import fotoAitana from '../../assets/muestra/aitana.jpg';
 import fotoCoach from '../../assets/muestra/coach-4.jpg'; // foto de muestra pasada por Jenifer (coach)
-import fotoLeoV from '../../assets/muestra/laia.jpg';
+// Foto nueva de Laia (v3): recortes propios para no tocar laia.jpg, que comparten la home y la v2
+import fotoLaiaVideo from '../../assets/muestra/laia-v3-video.jpg';
+import fotoLaiaAv from '../../assets/muestra/laia-v3-av.jpg';
 import fotoCoachV from '../../assets/muestra/coach-v.jpg';
 const caraCromo: Record<string, ImageMetadata> = { Noa: fotoNoa, Leo: fotoLeo, Aitana: fotoAitana };
 const grandesCromo: Record<string, string> = Object.fromEntries(
@@ -349,10 +351,10 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                   {i === 2 && (
                     <div class="cfa-app cfa-app--3" aria-hidden="true" data-cfa-app="2">
                       <div class="cfa-tel"><div class="cfa-pan cfa-pan--video" data-cfa-gente data-placeholder="true">
-                        <Image src={fotoLeoV} alt="" width={640} height={800} class="cfa-vi__img" loading="lazy" />
+                        <Image src={fotoLaiaVideo} alt="Laia, animadora 3D, contando cómo empezó" width={640} height={800} class="cfa-vi__img" loading="lazy" />
                         <div class="cfa-est"><span>9:41</span><b></b></div>
                         <div class="cfa-vi__top">
-                          <span class="cfa-vi__quien"><Image src={fotoLeo} alt="" width={64} height={64} loading="lazy" /><span><b>Laia, 29</b><small>Animadora 3D</small></span><span class="cfa-onda"><i></i><i></i><i></i><i></i></span></span>
+                          <span class="cfa-vi__quien"><Image src={fotoLaiaAv} alt="Laia, animadora 3D, contando cómo empezó" width={64} height={64} loading="lazy" /><span><b>Laia, 29</b><small>Animadora 3D</small></span><span class="cfa-onda"><i></i><i></i><i></i><i></i></span></span>
                         </div>
                         <div class="cfa-vi__bot">
                           <p class="cfa-vi__tit"><small>Animación 3D · Entrevista</small><b>Cómo empecé a animar personajes</b></p>
@@ -365,7 +367,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                         </div>
                       </div></div>
                       <div class="cfa-flota cfa-flota--frase" data-cfa-frase><p data-cfa-ella>«Empecé subiendo mis animaciones a redes. Así me escribió una productora.»</p><small>Laia, animadora 3D</small></div>
-                      <div class="cfa-flota cfa-flota--gente"><span class="cfa-avs"><Image src={fotoLeo} alt="" width={64} height={64} loading="lazy" /><i>M</i><i>J</i></span><span><small>Gente como tú</small><b>Te cuentan su camino</b></span></div>
+                      <div class="cfa-flota cfa-flota--gente"><span class="cfa-avs"><Image src={fotoLaiaAv} alt="Laia, animadora 3D, contando cómo empezó" width={64} height={64} loading="lazy" /><i>M</i><i>J</i></span><span><small>Gente como tú</small><b>Te cuentan su camino</b></span></div>
                     </div>
                   )}
                 </div>
@@ -377,6 +379,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <div class="cfa__marcas"><i class="cfa-on"></i><i></i><i></i></div>
           </div>
         </div>
+
+        <!-- Separa los 3 pasos gratuitos (fondo claro) del bloque 04 de pago -->
+        <p class="cfa__cierre cfa__final">NextYou no es solo un test: es conocer las profesiones que existen y los caminos para llegar a ellas, pensando también en la vida que quieres construir.</p>
 
         <Fragment set:html="<!-- PENDIENTE CLIENTA: precio y condiciones del coach (número de sesiones, duración) -->" />
         <div class="cfa__prem" data-cfa-prem>
@@ -395,8 +400,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <span class="cfa__call-bar"><i><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></i><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></i><i class="cfa-colgar"><svg viewBox="0 0 24 24"><path d="M3 14c5-4 13-4 18 0l-2 3-4-1v-2a10 10 0 0 0-6 0v2l-4 1z"/></svg></i></span>
           </div>
         </div>
-
-        <p class="cfa__cierre cfa__final">NextYou no es solo un test: es conocer las profesiones que existen y los caminos para llegar a ellas, pensando también en la vida que quieres construir.</p>
 
         <div class="cfa__pie">
           <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
@@ -1328,7 +1331,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       const ella = sec.querySelector<HTMLElement>('[data-cfa-ella]')!;
       const FRASES = [
         '«Empecé subiendo mis animaciones a redes. Así me escribió una productora.»',
-        '«Aprendí por mi cuenta, con Blender y muchos tutoriales.»',
+        '«Hice un curso de animación 3D y empecé en un estudio pequeño.»',
         '«Por la mañana animo personajes y por la tarde los revisamos en equipo.»',
       ];
       let c = 1;
@@ -1339,7 +1342,21 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 
       // Paso 4 (premium): al llegar, toda la pantalla se vuelve negra y aparece el bloque del coach
       const prem = sec.querySelector<HTMLElement>('[data-cfa-prem]')!;
-      new IntersectionObserver((es) => { sec.classList.toggle('cfa--negro', es[0].isIntersecting); }, { rootMargin: '0px 0px -45% 0px' }).observe(prem);
+      // El negro entra cuando el recuadro de entre el 03 y el 04 sube a unos 280 px del borde superior (unos 120 px de scroll tras leerlo):
+      // así el tramo crema vacío es corto y el recuadro ya se ha apagado antes de que el fondo se oscurezca (retardo en el CSS)
+      const caja = sec.querySelector<HTMLElement>('.cfa__final');
+      let obsNegro: IntersectionObserver | undefined;
+      const armarNegro = () => {
+        obsNegro?.disconnect();
+        const dist = caja ? prem.getBoundingClientRect().top - caja.getBoundingClientRect().top : 0;
+        const linea = Math.min(innerHeight * 0.9, Math.max(0, 280 + dist));
+        obsNegro = new IntersectionObserver((es) => { sec.classList.toggle('cfa--negro', es[0].isIntersecting); }, { rootMargin: `0px 0px ${-(innerHeight - linea)}px 0px` });
+        obsNegro.observe(prem);
+      };
+      armarNegro();
+      addEventListener('resize', armarNegro);
+      addEventListener('load', armarNegro);
+      if (caja && 'ResizeObserver' in window) new ResizeObserver(armarNegro).observe(caja);
 
       if (reduce) {
         segs.forEach((s, k) => s.classList.toggle('cfa-on', k < 3)); ops[0].classList.add('cfa-sel'); cta.classList.remove('cfa-off');
@@ -2988,8 +3005,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa__lista li::before{content:"";position:absolute;left:0;top:.05em;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--cfa-tinta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/62% no-repeat}
   .cfa__lista b{font-weight:800}
   /* Recuadro único tras el coach (fondo oscuro): verde claro con texto oscuro; mismo ancho que el contenido de los bloques */
-  .cfa__cierre.cfa__final{display:block;box-sizing:border-box;width:calc(100% - 2 * var(--margen));max-width:1100px;margin:clamp(2.5rem,2rem + 2vw,3.5rem) auto 0;padding:1rem 1.25rem;color:var(--cfa-tinta);font-size:1.0625rem;line-height:1.5;text-align:center;opacity:0;translate:0 24px;transition:opacity .8s .35s,translate .9s .35s cubic-bezier(.2,.8,.2,1)}
-  .cfa--negro .cfa__cierre.cfa__final{opacity:1;translate:0 0}
+  /* Recuadro entre el bloque 03 y el 04: sobre fondo claro, con aire por arriba y por abajo; se apaga cuando la sección pasa a negro */
+  .cfa__cierre.cfa__final{display:block;box-sizing:border-box;width:calc(100% - 2 * var(--margen));max-width:1100px;margin:clamp(4rem,3rem + 4vw,6.5rem) auto clamp(3rem,2rem + 3vw,4.5rem);padding:1rem 1.25rem;color:var(--cfa-tinta);font-size:1.0625rem;line-height:1.5;text-align:center;transition:opacity .3s .5s}
+  .cfa--negro .cfa__cierre.cfa__final{opacity:0;transition-delay:0s}
+  /* el fondo espera a que el recuadro se haya apagado */
+  .cfa.cfa--negro{transition-delay:.35s}
   .cfa__cierre{display:inline-block;margin-top:1.25rem;font-weight:800;font-size:1rem;background:var(--cfa-lima2);border-radius:12px;padding:.6rem .9rem}
 
   /* móvil: cada paso con su teléfono debajo */
