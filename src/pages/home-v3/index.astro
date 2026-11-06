@@ -273,6 +273,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                   <ul class="cfa__lista" role="list">
                     {p.puntos.map((t) => <li set:html={t} />)}
                   </ul>
+                  {(p as { nota?: string }).nota && <p class="cfa__p">{(p as { nota?: string }).nota}</p>}
                   {p.cierre && <p class="cfa__cierre">{p.cierre}</p>}
                 </div>
                 <div class="cfa__hueco" data-cfa-hueco={i}>
@@ -375,11 +376,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <div class="cfa__halo"></div>
             <div class="cfa__marcas"><i class="cfa-on"></i><i></i><i></i></div>
           </div>
-          <!-- Cierre de los 3 pasos (dentro del flujo crema, para que se desvanezca con él): aviso y enlace al ejemplo de resultados -->
-          <div class="cfa__final">
-            <p class="cfa__cierre">No tienes que elegir ya: toca un camino para ver en qué consiste y cómo llegar a él. Si quieres ayuda para decidir, puedes contratar a un coach desde ahí mismo.</p>
-            <a class="cfa__ejemplo" href={`${BASE}resultados/`}>Ver un ejemplo de resultados <span aria-hidden="true">→</span></a>
-          </div>
         </div>
 
         <Fragment set:html="<!-- PENDIENTE CLIENTA: precio y condiciones del coach (número de sesiones, duración) -->" />
@@ -399,6 +395,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <span class="cfa__call-bar"><i><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></i><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></i><i class="cfa-colgar"><svg viewBox="0 0 24 24"><path d="M3 14c5-4 13-4 18 0l-2 3-4-1v-2a10 10 0 0 0-6 0v2l-4 1z"/></svg></i></span>
           </div>
         </div>
+
+        <p class="cfa__cierre cfa__final">NextYou no es solo un test: es conocer las profesiones que existen y los caminos para llegar a ellas, pensando también en la vida que quieres construir.</p>
 
         <div class="cfa__pie">
           <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
@@ -2989,8 +2987,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa__lista li{position:relative;padding-left:2.1rem;font-size:1rem;line-height:1.45}
   .cfa__lista li::before{content:"";position:absolute;left:0;top:.05em;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--cfa-tinta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/62% no-repeat}
   .cfa__lista b{font-weight:800}
-  .cfa__final{grid-column:1;grid-row:2;margin-top:clamp(1.5rem,1rem + 2vw,2.5rem);display:flex;flex-direction:column;align-items:flex-start;gap:.25rem}
-  .cfa__final .cfa__cierre{margin-top:0;max-width:44rem}
+  /* Recuadro único tras el coach (fondo oscuro): verde claro con texto oscuro; mismo ancho que el contenido de los bloques */
+  .cfa__cierre.cfa__final{display:block;box-sizing:border-box;width:calc(100% - 2 * var(--margen));max-width:1100px;margin:clamp(2.5rem,2rem + 2vw,3.5rem) auto 0;padding:1rem 1.25rem;color:var(--cfa-tinta);font-size:1.0625rem;line-height:1.5;text-align:center;opacity:0;translate:0 24px;transition:opacity .8s .35s,translate .9s .35s cubic-bezier(.2,.8,.2,1)}
+  .cfa--negro .cfa__cierre.cfa__final{opacity:1;translate:0 0}
   .cfa__cierre{display:inline-block;margin-top:1.25rem;font-weight:800;font-size:1rem;background:var(--cfa-lima2);border-radius:12px;padding:.6rem .9rem}
 
   /* móvil: cada paso con su teléfono debajo */

@@ -67,6 +67,8 @@ export const comoAppLima = {
               '<b>El puente</b>: el que conecta con intereses que ya tienes',
               '<b>El salto</b>: una opción nueva que quizás no te habías planteado',
             ],
+            cierre: undefined,
+            nota: 'No tienes que elegir ya: toca un camino para ver en qué consiste y cómo llegar a él.',
           }
         : i === 2
           ? {
@@ -79,7 +81,6 @@ export const comoAppLima = {
                 '<b>Historias de personas</b> que llegaron a su trabajo por caminos diferentes',
                 '<b>Consejos e ideas</b> para seguir explorando',
               ],
-              cierre: 'NextYou no es solo un test: es conocer las profesiones que existen y los caminos para llegar a ellas, pensando también en la vida que quieres construir.',
             }
           : p
   ),
