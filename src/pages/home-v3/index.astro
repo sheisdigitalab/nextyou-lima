@@ -273,9 +273,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                   <ul class="cfa__lista" role="list">
                     {p.puntos.map((t) => <li set:html={t} />)}
                   </ul>
-                  {i === 2 && <a class="cfa__ejemplo" href="#los-de-dentro">Inspirarme con trayectorias reales <span aria-hidden="true">→</span></a>}
                   {p.cierre && <p class="cfa__cierre">{p.cierre}</p>}
-                  {i === 1 && <a class="cfa__ejemplo" href={`${BASE}resultados/`}>Ver un ejemplo de resultados <span aria-hidden="true">→</span></a>}
                 </div>
                 <div class="cfa__hueco" data-cfa-hueco={i}>
                   {i === 0 && (
@@ -376,6 +374,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           <div class="cfa__escena" data-cfa-escena aria-hidden="true">
             <div class="cfa__halo"></div>
             <div class="cfa__marcas"><i class="cfa-on"></i><i></i><i></i></div>
+          </div>
+          <!-- Cierre de los 3 pasos (dentro del flujo crema, para que se desvanezca con él): aviso y enlace al ejemplo de resultados -->
+          <div class="cfa__final">
+            <p class="cfa__cierre">No tienes que elegir ya: toca un camino para ver en qué consiste y cómo llegar a él. Si quieres ayuda para decidir, puedes contratar a un coach desde ahí mismo.</p>
+            <a class="cfa__ejemplo" href={`${BASE}resultados/`}>Ver un ejemplo de resultados <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
@@ -2921,6 +2924,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .v7uni { padding-bottom: 60px !important; }
     .sara { padding-top: 60px !important; }
   }
+  /* v3: menos aire entre el cierre del coach («¿Damos el primer paso?») y el carrusel de profesionales */
+  .cfa__prem { padding-bottom: clamp(3rem, 2rem + 3vw, 5rem) !important; }
+  .dentro { margin-top: 0 !important; padding-top: clamp(5rem, 4rem + 3vw, 7.5rem) !important; }
   .camino8__l--salto { stroke-dasharray: 2 6; }
   .camino8__nudo { fill: var(--crema); }
   .camino8__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; }
@@ -2983,6 +2989,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa__lista li{position:relative;padding-left:2.1rem;font-size:1rem;line-height:1.45}
   .cfa__lista li::before{content:"";position:absolute;left:0;top:.05em;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--cfa-tinta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/62% no-repeat}
   .cfa__lista b{font-weight:800}
+  .cfa__final{grid-column:1;grid-row:2;margin-top:clamp(1.5rem,1rem + 2vw,2.5rem);display:flex;flex-direction:column;align-items:flex-start;gap:.25rem}
+  .cfa__final .cfa__cierre{margin-top:0;max-width:44rem}
   .cfa__cierre{display:inline-block;margin-top:1.25rem;font-weight:800;font-size:1rem;background:var(--cfa-lima2);border-radius:12px;padding:.6rem .9rem}
 
   /* móvil: cada paso con su teléfono debajo */

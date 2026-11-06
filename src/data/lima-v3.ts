@@ -67,7 +67,6 @@ export const comoAppLima = {
               '<b>El puente</b>: el que conecta con intereses que ya tienes',
               '<b>El salto</b>: una opción nueva que quizás no te habías planteado',
             ],
-            cierre: 'No tienes que elegir ya: toca un camino para ver en qué consiste y cómo llegar a él. Si quieres ayuda para decidir, puedes contratar a un coach desde ahí mismo.',
           }
         : i === 2
           ? {
