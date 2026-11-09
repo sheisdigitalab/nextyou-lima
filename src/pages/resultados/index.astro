@@ -612,6 +612,11 @@ const iconos = {
     .coach--b .boton { width: 100%; justify-content: center; padding-inline: 1.25rem; }
   }
   @media (prefers-reduced-motion: reduce) { .mp__rama, .mp__dest, .mp__ico, .mp__fija, .mp__fb { transition: none; } }
+  /* Tarjeta seleccionada del selector de caminos: colores del texto invertidos (nombre en verde, etiqueta en crema).
+     En la versión crema el verde claro no se lee sobre la tarjeta blanca: nombre en verde oscuro y etiqueta oscura. */
+  .mp__dest[aria-selected='true'] .mp__nombre { color: #c8f53b; }
+  .mp__dest[aria-selected='true'] .mp__tipo { color: #f6f1e8; }
+  .res--crema .mp__dest[aria-selected='true'] .mp__nombre { color: #3d6000; }
   /* Clips de profesionales en cada ficha */
   .mp__clips .clips { margin-top: 0.25rem; }
   /* Tarjeta del coach: crema, texto oscuro y relleno amplio (sustituye a la banda con línea) */
