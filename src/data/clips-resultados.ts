@@ -7,7 +7,7 @@ import fotoLaia from '../assets/muestra/laia-v3-video.jpg';
 
 const laia = {
   placeholder: true,
-  nombre: 'Laia', edad: 29, profesion: 'Animación 3D', cita: 'Hice un curso de animación 3D y empecé en un estudio pequeño.', duracion: '3 min',
+  nombre: 'Laia', edad: 29, profesion: 'Animación 3D', cita: 'Empecé en un estudio pequeño, animando un segundo cada día.', duracion: '3 min',
   video: null as string | null, subtitulos: null as string | null, foto: fotoLaia,
   camino: ['Un curso de animación 3D', 'Un estudio pequeño', 'Anima personajes'],
   estudios: 'Un curso de animación 3D',

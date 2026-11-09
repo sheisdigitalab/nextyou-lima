@@ -284,7 +284,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                           </div>
                         </div>
                       </div></div>
-                      <div class="cfa-flota cfa-flota--frase" data-cfa-frase><p data-cfa-ella>«Empecé subiendo mis animaciones a redes. Así me escribió una productora.»</p><small>Laia, animadora 3D</small></div>
+                      <div class="cfa-flota cfa-flota--frase" data-cfa-frase><p data-cfa-ella>«Hice un curso de animación 3D y empecé en un estudio pequeño.»</p><small>Laia, animadora 3D</small></div>
                       <div class="cfa-flota cfa-flota--gente"><span class="cfa-avs"><Image src={fotoLaiaAv} alt="Laia, animadora 3D, contando cómo empezó" width={64} height={64} loading="lazy" /><i>M</i><i>J</i></span><span><small>Gente como tú</small><b>Te cuentan su camino</b></span></div>
                     </div>
                   )}
@@ -326,8 +326,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           <Fragment set:html="<!-- PENDIENTE: CTA a revisar con la propuesta de Elias (comentario #14) -->" />
           <p class="cfa__primer">¿Damos el primer paso?</p>
           <div class="cfa__accion">
-            <a href="#acompanamiento" class="cfa__boton"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
-            <p class="cfa__micro">Opcional · sesiones 1 a 1 por videollamada</p>
+            <div class="cfa__botones">
+              <a href={CTA_PRINCIPAL.href} class="cfa__boton"><span class="cfa__t cfa__t--f">Haz el test gratis</span> <span aria-hidden="true">→</span></a>
+              <a href="#acompanamiento" class="cfa__boton cfa__boton--borde"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
+            </div>
+            <p class="cfa__micro">{pasosV7.micro}</p>
           </div>
         </div>
         </div>
@@ -1251,14 +1254,13 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       const frase = sec.querySelector<HTMLElement>('[data-cfa-frase]')!;
       const ella = sec.querySelector<HTMLElement>('[data-cfa-ella]')!;
       const FRASES = [
-        '«Empecé subiendo mis animaciones a redes. Así me escribió una productora.»',
         '«Hice un curso de animación 3D y empecé en un estudio pequeño.»',
         '«Por la mañana animo personajes y por la tarde los revisamos en equipo.»',
       ];
       let c = 1;
       const cicloGente = () => {
         frase.classList.add('cfa-cambia');
-        setTimeout(() => { ella.textContent = FRASES[c % 3]; frase.classList.remove('cfa-cambia'); c++; }, 400);
+        setTimeout(() => { ella.textContent = FRASES[c % FRASES.length]; frase.classList.remove('cfa-cambia'); c++; }, 400);
       };
 
       // Paso 4 (premium): al llegar, toda la pantalla se vuelve negra y aparece el bloque del coach
@@ -2759,8 +2761,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 </style>
 
 <style is:global>
-  /* Tarjetas de profesionales: solo nombre, edad y recorrido; el play, arriba a la izquierda, fino y con la duración */
-  .reel__gancho { display: none !important; }
+  /* Tarjetas de profesionales: duración arriba a la izquierda (play fino), frase en caja crema, nombre, edad y recorrido */
   .reel__pie { top: 0 !important; display: flex !important; flex-direction: column; justify-content: flex-end; gap: 0.3rem !important; }
   .reel__ver {
     position: absolute; top: 1rem; left: 1rem; margin: 0 !important; min-height: 0 !important; padding: 0.3rem 0.75rem 0.3rem 0.6rem !important; gap: 0.4rem !important;
@@ -3432,4 +3433,13 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   #acompanamiento { scroll-margin-top: 4rem; }
   /* el botón del cierre, con texto más largo, cabe en una línea en móvil */
   @media (max-width: 30rem) { .cfa__pie .cfa__boton { font-size: 0.9375rem; padding-inline: 1.25rem; justify-content: center; white-space: nowrap; } }
+</style>
+
+<style is:global>
+  /* Cierre de «Cómo funciona»: dos botones (el del test, relleno; el de acompañamiento, solo borde). El del test lleva debajo su línea. */
+  .cfa__botones { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  @media (min-width: 56rem) { .cfa__accion .cfa__botones { grid-column: 2; grid-row: 1; justify-self: start; } }
+  .cfa__boton.cfa__boton--borde, [data-paleta='f'] .cfa__boton.cfa__boton--borde, [data-paleta='f'] .cfa__boton.cfa__boton--borde:hover { background: transparent !important; color: var(--crema) !important; border: 1.5px solid rgb(246 241 232 / 0.7); padding-block: calc(0.95rem - 1.5px); filter: none; }
+  .cfa__boton.cfa__boton--borde:hover { border-color: var(--crema); background: rgb(246 241 232 / 0.08) !important; }
+  @media (max-width: 55.99rem) { .cfa__botones { flex-direction: column; align-items: stretch; width: 100%; } .cfa__botones .cfa__boton { justify-content: center; } }
 </style>

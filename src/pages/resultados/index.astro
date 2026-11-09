@@ -9,7 +9,6 @@
 //  - Precio, sesiones y enlace de contratación del coach: hoy el botón abre el aviso «próximamente».
 import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
-import ComparaResultados from '../../components/ComparaResultados.astro';
 import ClipsProfesionales from '../../components/ClipsProfesionales.astro';
 import VisorClips from '../../components/VisorClips.astro';
 import { CTA_PRINCIPAL, BASE } from '../../config';
@@ -55,7 +54,6 @@ const iconos = {
   robots="noindex, follow"
   cta={{ texto: 'Repetir el test', href: CTA_PRINCIPAL.href }}
 >
-  <ComparaResultados actual={tema} />
   <main id="contenido" class={`res res--${tema}`}>
     <div class="ancho res__caja">
       <header class="res__cab">
@@ -141,7 +139,7 @@ const iconos = {
                 {/* PENDIENTE CLIENTA: validar dato */}
                 <h3 class="mp__h3">El dato</h3>
                 <p class="mp__p">{c.dato}</p>
-                <p class="mp__ref">Datos de referencia en España. Pueden variar según la empresa y la ciudad.</p>
+                <p class="mp__ref">{c.fuente}</p>
               </div>
               <div class="mp__bloque">
                 <h3 class="mp__h3">{c.formacionTitulo ?? 'La formación'}</h3>
@@ -174,14 +172,14 @@ const iconos = {
             {
               clipsPorCamino[c.id] && (
                 <div class="mp__bloque mp__clips">
-                  <h3 class="mp__h3">Te lo cuentan quienes ya trabajan en ello</h3>
+                  <h3 class="mp__h3">Gente que llegó a su trabajo por otro camino</h3>
                   <ClipsProfesionales clips={clipsPorCamino[c.id]} grupo={c.id} />
                 </div>
               )
             }
 
             {
-              coachVariante === 'C' && (
+              coachVariante === 'C' && i === caminos.length - 1 && (
                 <aside class="coach coach--c" data-coach aria-label="Acompañamiento opcional de pago" data-placeholder="true">
                   <Image src={coach.foto} alt="" width={220} height={220} class="coach__av" loading="lazy" />
                   <div class="coach__txt">
