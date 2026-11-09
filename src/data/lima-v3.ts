@@ -102,7 +102,7 @@ export const uniNoUnicoLima = {
     'Hay muchas formas de llegar a una profesión. Por ejemplo, a la animación 3D se puede llegar por la universidad, por una FP o combinando cursos y trabajo. Lo importante es encontrar el camino que encaja contigo.',
   rutas: [
     { t: 'Universidad', d: '4 años', x: 'Grado en Animación' },
-    { t: 'FP', d: '2 + 2 años', x: 'Un grado medio y después el superior de Animación 3D' },
-    { t: 'Curso, trabajo y especialización', d: '1 + 2 + 1 años', x: 'Un curso de animación 3D, dos años trabajando y uno para especializarte' },
+    { t: 'FP', d: '2 + 2 años', x: 'Grado medio y después superior de Animación 3D' },
+    { t: 'Curso, trabajo y especialización', d: '1 + 2 + 1 años', x: 'Un curso, 2 años trabajando y 1 especializándote' },
   ] as { t: string; d: string; x?: string }[],
 };

@@ -494,11 +494,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         <div class="ancho camino8" data-aparece>
           <div class="camino8__tu"><span>Tú</span></div>
           <p class="camino8__rotulo camino8__rotulo--1">Tres caminos, una misma profesión</p>
-          <div class="camino8__izq" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 50 50, 50 16.67, 100 16.67" class="camino8__l" /><path d="M0 50 C 50 50, 50 50, 100 50" class="camino8__l" /><path d="M0 50 C 50 50, 50 83.33, 100 83.33" class="camino8__l" /></svg></div>
+          <div class="camino8__izq" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 50 50, 50 15.03, 100 15.03" class="camino8__l" /><path d="M0 50 L 100 50" class="camino8__l" /><path d="M0 50 C 50 50, 50 84.97, 100 84.97" class="camino8__l" /></svg></div>
           <ol class="camino8__lista" role="list" aria-label="Tres caminos para llegar a la animación 3D">
             {uniNoUnicoLima.rutas.map((r, k) => <li style={`--k: ${k}`}><span><b>{r.t}</b><small>{r.d}</small>{r.x && <em>{r.x}</em>}</span></li>)}
           </ol>
-          <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 16.67 C 50 16.67, 50 50, 100 50" class="camino8__l" /><path d="M0 50 C 50 50, 50 50, 100 50" class="camino8__l" /><path d="M0 83.33 C 50 83.33, 50 50, 100 50" class="camino8__l" /></svg></div>
+          <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 15.03 C 50 15.03, 50 50, 100 50" class="camino8__l" /><path d="M0 50 L 100 50" class="camino8__l" /><path d="M0 84.97 C 50 84.97, 50 50, 100 50" class="camino8__l" /></svg></div>
           <p class="camino8__rotulo camino8__rotulo--2">para llegar a:</p>
           <ul class="camino8__profs" role="list" aria-label="Profesión a la que llegas">
             <li><span class="camino8__ic" aria-hidden="true" set:html={iconosCromo.animacion} /><b>Animación 3D</b></li>
@@ -2909,7 +2909,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .camino8__rotulo { padding-block: 1.6rem !important; }
     .camino8 { margin-top: 4.5rem; }
   }
-  .camino8 .camino8__lista li:last-child span { border-style: solid !important; }
   .camino8__lista li:last-child::before { background: var(--linea-c) !important; border-top: 0 !important; height: 1px !important; }
   /* v3: cuatro caminos hacia una profesión */
   .camino8 { --alto-fila: 9.25rem; }
@@ -2947,7 +2946,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .camino8__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; }
   .camino8__lista li { display: flex; align-items: center; min-height: var(--alto-fila); }
   .camino8__lista li span { display: flex; width: 100%; justify-content: center; text-align: center; align-items: center; min-height: 3rem; padding: 0.4rem 1.15rem; border: 1px solid rgb(246 241 232 / 0.4); border-radius: 999px; font-size: var(--t2); font-weight: 600; line-height: 1.25; background: var(--negro-2, #161412); transition: border-color 200ms ease; }
-  .camino8__lista li:last-child span { border-style: dashed; }
   .camino8__lista li span:hover { border-color: var(--crema); }
   .camino8__profs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-rows: repeat(3, 1fr); align-items: center; gap: 0; }
   .camino8__profs li { display: flex; align-items: center; gap: 0.85rem; }
@@ -3466,6 +3464,31 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .camino8__profs li { padding: 0.65rem 0.5rem; border: 0; border-radius: 16px; background: none; }
     .camino8__profs li + li { border-top: 1px solid rgb(246 241 232 / 0.1); border-radius: 0; }
     .camino8__profs b { max-width: none; font-size: 1.0625rem; }
+  }
+</style>
+<style is:global>
+  /* v3 · «La uni no es el único camino» (escritorio ≥ 768 px): medidas de la maqueta exploracion/esquema-v3-ancho.html.
+     Va el último para ganar a las capas anteriores. */
+  @media (min-width: 48rem) {
+    .camino8 { grid-template-columns: 12rem minmax(1.5rem, 1fr) 25rem minmax(1.5rem, 1fr) 12rem; align-items: center; margin-top: 8.5rem; }
+    .camino8__tu { justify-self: end; width: 7rem; height: 7rem; font-size: 1.6rem; }
+    .camino8__izq, .camino8__der { align-self: stretch; margin-left: 0; }
+    .camino8 .camino8__rotulo--1 { bottom: calc(100% + 2.5rem); padding: 0 !important; font-size: 1.125rem; }
+    .camino8 .camino8__lista { display: grid; grid-auto-rows: 6.75rem; row-gap: 1.1rem; margin: 0; padding: 0 !important; }
+    .camino8 .camino8__lista li { display: flex; min-height: 0 !important; padding: 0 !important; }
+    .camino8__lista li span { flex: 1; flex-direction: column; justify-content: center; align-items: center; gap: 0; min-height: 0; padding: 0.9rem 2rem; text-align: center; border-radius: 999px; }
+    .camino8__lista li span b { color: var(--crema); font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+    .camino8__lista li span small { margin-top: 0.2rem; color: var(--acento); font-size: 0.95rem; font-weight: 600; line-height: 1.2; opacity: 1; }
+    .camino8__lista li span em { max-width: 19rem; margin-top: 0.2rem; color: var(--gris, #b8b0a3); font-size: 0.875rem; font-weight: 400; line-height: 1.35; opacity: 1; text-wrap: wrap; }
+    .camino8 .camino8__profs { padding: 0 !important; gap: 0 !important; }
+    .camino8__profs li { white-space: nowrap; gap: 0.9rem; }
+    .camino8__profs b { max-width: none; font-size: 1.15rem; font-weight: 700; }
+  }
+  @media (max-width: 47.99rem) {
+    .camino8__lista li span { gap: 0.4rem; padding: 1rem 1.75rem; border-radius: 999px; }
+    .camino8__lista li span b { font-size: 1.125rem; line-height: 1.2; }
+    .camino8__lista li span small { font-size: 0.9375rem; font-weight: 600; color: var(--acento-texto); opacity: 1; }
+    .camino8__lista li span em { font-size: 0.9375rem; line-height: 1.45; font-weight: 400; opacity: 0.8; text-wrap: balance; }
   }
 </style>
 
