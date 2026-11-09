@@ -10,8 +10,11 @@
 import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
 import ComparaResultados from '../../components/ComparaResultados.astro';
-import { CTA_PRINCIPAL } from '../../config';
+import ClipsProfesionales from '../../components/ClipsProfesionales.astro';
+import VisorClips from '../../components/VisorClips.astro';
+import { CTA_PRINCIPAL, BASE } from '../../config';
 import { caminos, perfil, acompanamiento as coach } from '../../data/resultados';
+import { clipsPorCamino } from '../../data/clips-resultados';
 
 // Bloque del coach: 'C' = banda discreta (la que se ve) · 'B' = «tus 3 caminos llevan al coach» (montada, oculta)
 // Tema de la página: 'negro' (la de siempre) o 'crema' (/resultados-crema/, mismo diseño sobre fondo crema)
@@ -118,7 +121,6 @@ const iconos = {
               <p class="mp__sup">Camino {i + 1} · {c.tipo}</p>
               <p class="mp__def">{c.definicion}</p>
               <h2 class="mp__h2">{c.nombre}</h2>
-              <p class="mp__gancho">{c.resumen}</p>
               <ul class="mp__chips" role="list" aria-label="Se te da bien">
                 {c.chips.map((t) => <li>{t}</li>)}
               </ul>
@@ -170,17 +172,25 @@ const iconos = {
             </div>
 
             {
+              clipsPorCamino[c.id] && (
+                <div class="mp__bloque mp__clips">
+                  <h3 class="mp__h3">Te lo cuentan quienes ya trabajan en ello</h3>
+                  <ClipsProfesionales clips={clipsPorCamino[c.id]} grupo={c.id} />
+                </div>
+              )
+            }
+
+            {
               coachVariante === 'C' && (
-                <aside class="coach coach--c" data-coach aria-label="Acompañamiento premium" data-placeholder="true">
-                  <p class="coach__ayuda">¿Quieres ayuda para decidir? <b>Habla con un coach</b></p>
+                <aside class="coach coach--c" data-coach aria-label="Acompañamiento opcional de pago" data-placeholder="true">
                   <Image src={coach.foto} alt="" width={220} height={220} class="coach__av" loading="lazy" />
                   <div class="coach__txt">
-                    <p class="mp__sup"><span aria-hidden="true">★</span> {coach.eti}</p>
-                    <blockquote class="coach__frase">«{coach.frase}»</blockquote>
+                    <p class="mp__sup">{coach.eti}</p>
+                    <p class="coach__frase">¿Quieres ayuda para decidir? <em>Habla con un coach</em></p>
                     <p class="coach__firma">{coach.firma}</p>
                   </div>
                   <div class="coach__cta">
-                    <a class="boton boton--grande" href="#">{coach.cta} <span aria-hidden="true">→</span></a>
+                    <a class="boton boton--grande" href={`${BASE}home-v3/#acompanamiento`}>{coach.cta} <span aria-hidden="true">→</span></a>
                     <small>{coach.nota}</small>
                   </div>
                 </aside>
@@ -265,6 +275,7 @@ const iconos = {
       }
     </div>
   </main>
+  <VisorClips />
 </V5>
 
 <script>
@@ -390,7 +401,7 @@ const iconos = {
   .res--crema .mp__dest:hover { background: #ffffff; }
   .res--crema .mp__dest[aria-selected='true'] { background: #ffffff; border-color: #161412; box-shadow: inset 0 0 0 1px #161412; }
   .res--crema .mp__dest[aria-selected='true'] .mp__ico { color: #161412; }
-  .res--crema .mp__dest[aria-selected='true'] .mp__tipo, .res--crema .mp__sig, .res--crema .coach__ayuda b { color: #161412; }
+  .res--crema .mp__dest[aria-selected='true'] .mp__tipo, .res--crema .mp__sig { color: #161412; }
   .res--crema .mp__n { background: #161412; border-color: #161412; color: #f6f1e8; }
   .res--crema .mp[data-sel='0'] .mp__rama[data-r='0'], .res--crema .mp[data-sel='1'] .mp__rama[data-r='1'], .res--crema .mp[data-sel='2'] .mp__rama[data-r='2'] { stroke: #161412; }
   .res--crema .mp__panel { background: #ffffff; }
@@ -451,7 +462,6 @@ const iconos = {
   .mp__sup { font-size: var(--t1); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--acento-texto); }
   .mp__def { margin: -0.25rem 0 0; font-size: var(--t2); line-height: 1.4; color: rgb(var(--tinta) / 0.78); }
   .mp__h2 { font-family: var(--titular); font-weight: 700; font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem); line-height: 1.05; letter-spacing: -0.02em; }
-  .mp__gancho { font-size: var(--t3, 1.125rem); line-height: 1.45; color: rgb(var(--tinta) / 0.88); max-width: 38rem; }
   .mp__chips { list-style: none; margin: 0.25rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .mp__chips li { padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid var(--linea); font-size: var(--t1); }
   .mp__bloque { display: grid; align-content: start; gap: 0.85rem; }
@@ -535,8 +545,6 @@ const iconos = {
   /* Opción C · banda discreta: foto, una frase y el botón entre dos líneas finas */
   .coach--c { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1.125rem, 2.2vw, 1.5rem); padding: 1.25rem; border: 1px solid var(--linea); border-radius: 1.25rem; }
   .mp__panel .coach--c { margin: 0; padding: 1.5rem 0 0; border: 0; border-top: 1px solid var(--linea); border-radius: 0; }
-  .coach__ayuda { grid-column: 1 / -1; margin: 0; font-size: var(--t2); line-height: 1.4; color: var(--crema); }
-  .coach__ayuda b { color: var(--acento-texto); }
   .coach__av { width: 6.875rem; height: 6.875rem; border-radius: 50%; object-fit: cover; object-position: center 25%; }
   .coach__frase { margin: 0.5rem 0 0; font-family: var(--titular); font-weight: 900; font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.875rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--crema); }
   .coach__firma { margin: 0.5rem 0 0; font-size: var(--t1); line-height: 1.4; color: var(--gris); }
@@ -604,4 +612,17 @@ const iconos = {
     .coach--b .boton { width: 100%; justify-content: center; padding-inline: 1.25rem; }
   }
   @media (prefers-reduced-motion: reduce) { .mp__rama, .mp__dest, .mp__ico, .mp__fija, .mp__fb { transition: none; } }
+  /* Clips de profesionales en cada ficha */
+  .mp__clips .clips { margin-top: 0.25rem; }
+  /* Tarjeta del coach: crema, texto oscuro y relleno amplio (sustituye a la banda con línea) */
+  .mp__panel .coach--c { margin: 0; padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); border: 0; border-radius: 1.25rem; background: #f6f1e8; color: #161412; }
+  .res--crema .mp__panel .coach--c { border: 1px solid rgb(22 20 18 / 0.14); }
+  .coach--c .mp__sup { color: #161412; }
+  .coach--c .coach__frase { margin: 0.5rem 0 0; color: #161412; font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem); line-height: 1.1; }
+  .coach--c .coach__frase em { font-style: normal; background: linear-gradient(var(--acento), var(--acento)) no-repeat left 92% / 100% 0.14em; }
+  .coach--c .coach__firma { color: #4a453d; }
+  .coach--c .boton { gap: 0.5rem; background: #161412; color: #f6f1e8; border-color: #161412; }
+  .coach--c .coach__cta small { color: #4a453d; }
+  @media (max-width: 760px) { .coach--c .coach__txt { display: contents; } .coach--c .mp__sup { grid-column: 2; grid-row: 1; align-self: center; } .coach--c .coach__av { grid-row: 1; } .coach--c .coach__frase, .coach--c .coach__firma { grid-column: 1 / -1; margin-top: 0; } .coach--c { row-gap: 0.75rem; }
+    .coach--c { padding: 1.25rem; } .coach--c .boton { white-space: normal; text-align: center; padding-inline: 1rem; font-size: 0.9375rem; } }
 </style>

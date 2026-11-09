@@ -1,0 +1,143 @@
+---
+// Visor de vídeo de los profesionales (el mismo que el de «Los de dentro» de home-v3): vídeo si lo hay; si no, foto y ficha.
+// Las flechas pasan de un profesional a otro dentro del mismo grupo de tarjetas (la misma ficha).
+import { CTA_PRINCIPAL } from '../config';
+---
+
+<dialog class="visor" aria-labelledby="visor-nombre">
+  <div class="visor__caja">
+    <button type="button" class="visor__cerrar" aria-label="Cerrar">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+    </button>
+    <div class="visor__media">
+      <img class="visor__img" alt="" />
+      <video class="visor__video" controls playsinline preload="metadata" hidden></video>
+      <p class="visor__aviso">Aquí irá el vídeo · <span data-visor="duracion"></span></p>
+    </div>
+    <div class="visor__texto">
+      <p id="visor-nombre" class="visor__nombre" data-visor="nombre"></p>
+      <span class="etiqueta-marco" data-visor="profesion"></span>
+      <p class="visor__cita">«<span data-visor="cita"></span>»</p>
+      <div class="visor__ficha" data-visor="ficha">
+        <ol class="visor__camino" data-visor="camino" aria-label="Su camino"></ol>
+        <dl class="visor__datos">
+          <div><dt>Qué estudió</dt><dd data-visor="estudios"></dd></div>
+          <div><dt>Su primer trabajo</dt><dd data-visor="trabajo"></dd></div>
+          <div><dt>Cómo es un martes</dt><dd data-visor="martes"></dd></div>
+        </dl>
+      </div>
+      <a href={CTA_PRINCIPAL.href} class="boton visor__cta">¿Te ves aquí? Haz el test</a>
+      <div class="visor__nav" data-visor="nav">
+        <button type="button" class="flecha" data-visor-mover="-1" aria-label="Profesional anterior">←</button>
+        <span class="visor__cuenta" aria-live="polite"><span data-visor="actual"></span> / <span data-visor="total"></span></span>
+        <button type="button" class="flecha" data-visor-mover="1" aria-label="Siguiente profesional">→</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  .visor { padding: 0; border: 0; background: none; color: var(--crema); max-width: none; max-height: none; width: 100%; height: 100%; }
+  .visor::backdrop { background: rgb(0 0 0 / 0.85); backdrop-filter: blur(6px); }
+  .visor[open] { display: grid; place-items: center; }
+  .visor__caja { position: relative; display: grid; gap: 1.25rem; width: min(100% - 2rem, 58rem); max-height: calc(100svh - 2rem); padding: 1rem; border-radius: 18px; background: var(--negro-2, #161412); border: 1px solid var(--linea); overflow: auto; }
+  .visor__media { position: relative; aspect-ratio: 9 / 16; max-height: 70svh; justify-self: center; height: 70svh; border-radius: 12px; overflow: hidden; background: var(--negro); }
+  .visor__img, .visor__video { width: 100%; height: 100%; object-fit: cover; }
+  .visor__aviso { position: absolute; left: 50%; bottom: 1rem; translate: -50% 0; white-space: nowrap; padding: 0.375rem var(--t1); border-radius: 999px; background: rgb(0 0 0 / 0.65); font-size: var(--t1); }
+  .visor__texto { display: grid; justify-items: start; align-content: center; gap: 0.875rem; }
+  .visor__nombre { margin: 0; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); line-height: 1; }
+  .visor__cita { margin: 0; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t3); line-height: 1.25; color: rgb(246 241 232 / 0.9); }
+  .visor .etiqueta-marco { display: inline-block; padding: 0.25rem 0.5rem; background: rgb(0 0 0 / 0.35); border: 1px solid var(--acento-texto); border-radius: 3px; color: var(--acento-texto); font-size: var(--t1); line-height: 1.3; }
+  .visor__ficha { display: grid; gap: 1.25rem; width: 100%; }
+  .visor__ficha[hidden], .visor__nav[hidden] { display: none; }
+  .visor__camino { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem; }
+  .visor__camino li { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--tarjeta); border: 1px solid var(--linea); font-size: var(--t1); font-weight: 600; }
+  .visor__camino li:last-child { background: var(--acento); color: var(--acento-txt); border-color: var(--acento); }
+  .visor__camino li + li::before { content: '→'; margin-right: 0.375rem; margin-left: -0.125rem; color: var(--gris); }
+  .visor__camino li:last-child::before { color: var(--acento-txt); }
+  .visor__datos { display: grid; gap: 0.875rem; margin: 0; }
+  .visor__datos dt { font-size: var(--t1); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--acento-texto); }
+  .visor__datos dd { margin: 0.2rem 0 0; color: rgb(246 241 232 / 0.88); line-height: 1.5; }
+  .visor__cta { margin-top: 0.25rem; }
+  .visor__nav { display: flex; align-items: center; gap: 0.875rem; margin-top: 0.25rem; }
+  .visor__cuenta { font-size: var(--t1); color: var(--gris); min-width: 3rem; text-align: center; }
+  .visor__cerrar { position: absolute; z-index: 1; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea); background: rgb(0 0 0 / 0.6); color: var(--crema); cursor: pointer; }
+  .visor .flecha { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--crema); background: none; color: var(--crema); font-size: 1.125rem; cursor: pointer; }
+  .visor .flecha:hover:not(:disabled) { background: rgb(246 241 232 / 0.1); }
+  @media (min-width: 48rem) {
+    .visor__caja { grid-template-columns: auto 1fr; gap: 2rem; padding: 1.5rem; }
+    .visor__media { height: min(78svh, 40rem); max-height: none; }
+  }
+  @media (max-width: 47.99rem) { .visor__media { height: 42svh; } }
+</style>
+
+<script>
+  const visor = document.querySelector<HTMLDialogElement>('.visor');
+  if (visor) {
+    const img = visor.querySelector<HTMLImageElement>('.visor__img')!;
+    const video = visor.querySelector<HTMLVideoElement>('.visor__video')!;
+    const aviso = visor.querySelector<HTMLElement>('.visor__aviso')!;
+    const campo = (k: string) => visor.querySelector<HTMLElement>(`[data-visor="${k}"]`)!;
+    let tarjetas: HTMLButtonElement[] = [];
+    let actual = -1;
+    const mostrar = (b: HTMLButtonElement) => {
+      const d = b.dataset;
+      actual = tarjetas.indexOf(b);
+      campo('nombre').textContent = d.nombre ?? '';
+      campo('profesion').textContent = d.profesion ?? '';
+      campo('cita').textContent = d.cita ?? '';
+      campo('duracion').textContent = d.duracion ?? '';
+      img.src = d.img ?? '';
+      const hayVideo = Boolean(d.video);
+      video.hidden = !hayVideo;
+      img.hidden = hayVideo;
+      aviso.hidden = hayVideo;
+      // Ficha solo mientras no haya vídeo
+      const ficha = !hayVideo && Boolean(d.camino);
+      campo('ficha').hidden = !ficha;
+      if (ficha) {
+        campo('camino').replaceChildren(...d.camino!.split('|').map((paso) => Object.assign(document.createElement('li'), { textContent: paso })));
+        campo('estudios').textContent = d.estudios ?? '';
+        campo('trabajo').textContent = d.trabajo ?? '';
+        campo('martes').textContent = d.martes ?? '';
+      }
+      campo('nav').hidden = tarjetas.length < 2;
+      campo('actual').textContent = String(actual + 1);
+      campo('total').textContent = String(tarjetas.length);
+      video.pause();
+      video.querySelectorAll('track').forEach((tr) => tr.remove());
+      if (hayVideo) {
+        video.poster = d.img ?? '';
+        video.src = d.video!;
+        if (d.subtitulos) {
+          const pista = document.createElement('track');
+          Object.assign(pista, { kind: 'subtitles', srclang: 'es', label: 'Español', src: d.subtitulos, default: true });
+          video.append(pista);
+        }
+        video.play().catch(() => {});
+      } else video.removeAttribute('src');
+      visor.querySelector('.visor__caja')!.scrollTop = 0;
+    };
+    document.querySelectorAll<HTMLButtonElement>('[data-visor-abrir]').forEach((b) =>
+      b.addEventListener('click', () => {
+        tarjetas = [...document.querySelectorAll<HTMLButtonElement>(`[data-visor-abrir][data-grupo="${b.dataset.grupo}"]`)];
+        mostrar(b);
+        visor.showModal();
+      })
+    );
+    const mover = (paso: number) => {
+      if (tarjetas.length < 2) return;
+      mostrar(tarjetas[(actual + paso + tarjetas.length) % tarjetas.length]);
+    };
+    visor.querySelectorAll<HTMLButtonElement>('[data-visor-mover]').forEach((f) => f.addEventListener('click', () => mover(Number(f.dataset.visorMover))));
+    visor.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') mover(1);
+      if (e.key === 'ArrowLeft') mover(-1);
+    });
+    const cerrar = () => visor.close();
+    visor.querySelector('.visor__cerrar')!.addEventListener('click', cerrar);
+    visor.addEventListener('click', (e) => { if (e.target === visor) cerrar(); });
+    visor.querySelector('.visor__cta')!.addEventListener('click', cerrar);
+    visor.addEventListener('close', () => { video.pause(); video.removeAttribute('src'); });
+  }
+</script>
