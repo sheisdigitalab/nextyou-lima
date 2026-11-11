@@ -3,7 +3,6 @@
 // foto, «▶ X min», nombre y edad, y su camino. Al hacer clic se abre el visor de <VisorClips />.
 // En escritorio van en fila; en móvil, en carrusel horizontal deslizable.
 import { Image, getImage } from 'astro:assets';
-import '../styles/tarjeta-profesional.css';
 
 interface Props {
   clips: Array<Record<string, any>>;
@@ -29,7 +28,7 @@ const lista = await Promise.all(
         <Image src={p.foto} alt={p.alt} width={540} height={810} loading="lazy" quality={70} class="clip__foto" />
         <div class="clip__pie">
           <p class="clip__nombre">{p.nombre}, {p.edad}</p>
-          <ol class="clip__linea" aria-label="Su camino">{p.camino.map((e: string) => <li>{e.replace(/^(Empezó|Estudió) /, '')}</li>)}</ol>
+          <p class="clip__camino">{p.camino.join(' → ')}</p>
         </div>
         <span class="clip__ver">
           <svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
@@ -66,6 +65,11 @@ const lista = await Promise.all(
   .clip { position: relative; flex: 0 0 min(76vw, 17.5rem); aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; scroll-snap-align: start; background: var(--tarjeta); box-shadow: 0 24px 40px -24px rgb(0 0 0 / 0.8); color: var(--crema); }
   @media (min-width: 48rem) { .clip { flex-basis: clamp(14rem, 24vw, 17.5rem); aspect-ratio: 2 / 3; } }
   .clip__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 600ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .clip__pie { position: absolute; z-index: 1; left: 1rem; right: 1rem; bottom: 1rem; display: flex; flex-direction: column; gap: 0.3rem; }
+  .clip__gancho { margin: 0 0 0.75rem; align-self: flex-start; text-align: left; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t2); line-height: 1.6; letter-spacing: -0.01em; rotate: -2deg; transform-origin: left bottom; }
+  .clip__gancho span { padding: 0.15em 0.4em; border-radius: 6px; background: var(--crema); color: var(--negro); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .clip__nombre { margin: 0; font-family: var(--titular); font-weight: 800; font-stretch: 105%; font-size: var(--t4); letter-spacing: -0.02em; line-height: 1.05; }
+  .clip__camino { margin: 0.5rem 0 0; min-height: calc(2 * 1.35em); font-size: 14px; font-weight: 500; line-height: 1.35; color: var(--crema); text-shadow: 0 1px 8px rgb(0 0 0 / 0.6); }
   .clip::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgb(0 0 0 / 0.45) 58%, rgb(0 0 0 / 0.92)); }
   .clip__ver {
     position: absolute; z-index: 1; top: 1rem; left: 1rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem 0.3rem 0.6rem;
