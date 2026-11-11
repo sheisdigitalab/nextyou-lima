@@ -9,7 +9,7 @@ const laia = {
   placeholder: true,
   nombre: 'Laia', edad: 29, profesion: 'Animación 3D', cita: 'Empecé en un estudio pequeño, animando un segundo cada día.', duracion: '3 min',
   video: null as string | null, subtitulos: null as string | null, foto: fotoLaia,
-  camino: ['Un curso de animación 3D', 'Un estudio pequeño', 'Anima personajes'],
+  camino: ['Curso de animación 3D', 'Estudio pequeño', 'Anima personajes'],
   estudios: 'Un curso de animación 3D',
   primerTrabajo: 'Animadora en un estudio pequeño',
   martes: 'Revisa con el equipo la escena del día, anima un personaje plano a plano y al final la enseña para recibir comentarios.',

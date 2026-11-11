@@ -22,7 +22,7 @@ export const masDentro = [
   {
     placeholder: true, nombre: 'Jordi', edad: 29, profesion: 'Cocina', cita: 'Empecé fregando platos y no he salido de la cocina.', duracion: '2 min',
     video: null as string | null, subtitulos: null as string | null, foto: profCoc,
-    camino: ['Empezó Turismo', 'Escuela de hostelería', 'Jefe de partida'],
+    camino: ['Empezó Turismo', 'Hostelería', 'Jefe de partida'],
     estudios: 'Dos años de Turismo y después un ciclo de cocina',
     primerTrabajo: 'Ayudante de cocina en un restaurante de barrio',
     martes: 'Prepara el mise en place a primera hora, cocina el servicio de mediodía y por la tarde planea el menú de la semana.',
@@ -31,7 +31,7 @@ export const masDentro = [
   {
     placeholder: true, nombre: 'Raúl', edad: 26, profesion: 'Desarrollo de software', cita: 'Aprendí a programar de noche, con vídeos.', duracion: '2 min',
     video: null as string | null, subtitulos: null as string | null, foto: profDev,
-    camino: ['Empezó Económicas', 'Bootcamp de programación', 'Desarrolla apps'],
+    camino: ['Empezó Económicas', 'Bootcamp', 'Desarrolla apps'],
     estudios: 'Un año de Económicas y un bootcamp de seis meses',
     primerTrabajo: 'Desarrollador junior en una consultora',
     martes: 'Revisa el código del equipo, arregla errores que le han llegado y por la tarde construye una pantalla nueva.',
@@ -58,7 +58,7 @@ export const masDentro = [
   {
     placeholder: true, nombre: 'Carla', edad: 28, profesion: 'Fotografía', cita: 'Empecé retratando a mis amigas con el móvil.', duracion: '2 min',
     video: null as string | null, subtitulos: null as string | null, foto: profFot,
-    camino: ['Empezó Publicidad', 'Curso de fotografía', 'Fotógrafa freelance'],
+    camino: ['Empezó Publicidad', 'Fotografía', 'Fotógrafa freelance'],
     estudios: 'Publicidad y un curso intensivo de fotografía',
     primerTrabajo: 'Ayudante en un estudio de moda',
     martes: 'Hace una sesión por la mañana, edita las fotos al mediodía y por la tarde responde presupuestos.',
@@ -76,7 +76,7 @@ export const masDentro = [
   {
     placeholder: true, nombre: 'Mar', edad: 37, profesion: 'Enfermería', cita: 'Pasé de querer ser médica a querer cuidar.', duracion: '2 min',
     video: null as string | null, subtitulos: null as string | null, foto: profEnf,
-    camino: ['Empezó Medicina', 'Enfermería', 'Enfermera de urgencias'],
+    camino: ['Empezó Medicina', 'Enfermería', 'Urgencias'],
     estudios: 'Un año de Medicina y después el grado de Enfermería',
     primerTrabajo: 'Enfermera en planta de un hospital',
     martes: 'Entra al turno de mañana, pasa visita con el equipo y atiende a los pacientes que llegan a urgencias.',

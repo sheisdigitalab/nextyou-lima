@@ -617,6 +617,8 @@ const iconos = {
   .res--crema .mp__dest[aria-selected='true'] .mp__nombre { color: #3d6000; }
   /* Clips de profesionales en cada ficha */
   .mp__clips .clips { margin-top: 0.25rem; }
+  /* En móvil el carrusel llega hasta el borde de la ficha, para que se vea asomar la siguiente tarjeta */
+  @media (max-width: 47.99rem) { .mp__clips .clips { margin-right: calc(-1 * clamp(1.2rem, 1rem + 1.5vw, 2rem)); padding-right: clamp(1.2rem, 1rem + 1.5vw, 2rem); } }
   /* Tarjeta del coach: crema, texto oscuro y relleno amplio (sustituye a la banda con línea) */
   .mp__panel .coach--c { margin: 0; padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); border: 0; border-radius: 1.25rem; background: #f6f1e8; color: #161412; }
   .res--crema .mp__panel .coach--c { border: 1px solid rgb(22 20 18 / 0.14); }
