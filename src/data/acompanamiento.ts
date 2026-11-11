@@ -7,6 +7,12 @@
 //  - Plazo de cambio, cancelación y devolución de una sesión.
 //  - Los botones de reservar no tienen destino real (no hay pasarela de pago).
 
+// Fotos de MUESTRA (banco de imágenes) para los perfiles de ejemplo: sustituir por las de los coaches reales
+import fotoLaura from '../assets/muestra/coach-v.jpg';
+import fotoMarc from '../assets/muestra/coach-4.jpg';
+import fotoNuria from '../assets/muestra/aitana.jpg';
+import fotoAlex from '../assets/muestra/leo-v.jpg';
+
 export const hero = {
   etiqueta: 'Acompañamiento opcional de pago',
   titulo: 'Habla con alguien que te ayuda a ordenar tus opciones',
@@ -199,10 +205,10 @@ export const coaches = {
   nota: 'Perfiles de ejemplo: pendientes de nombres, fotos, vídeos y formación reales del equipo',
   // PLACEHOLDER: perfiles de ejemplo
   personas: [
-    { nombre: 'Laura', edad: 38, rol: 'Pedagoga · FP y salidas técnicas', cita: 'No te voy a decir qué estudiar. Te voy a ayudar a verlo claro.', duracion: '1 min' },
-    { nombre: 'Marc', edad: 41, rol: 'Psicólogo · Dudas y miedo a equivocarse', cita: 'Dudar a los 17 es lo normal. Lo raro sería tenerlo claro.', duracion: '1 min' },
-    { nombre: 'Nuria', edad: 35, rol: 'Orientadora · Universidad y acceso', cita: 'Las notas de corte asustan menos cuando las entiendes.', duracion: '1 min' },
-    { nombre: 'Álex', edad: 33, rol: 'Coach · Estudios creativos y cambios de camino', cita: 'Yo cambié de camino dos veces. Se puede.', duracion: '1 min' },
+    { foto: fotoLaura, nombre: 'Laura', edad: 38, rol: 'Pedagoga · FP y salidas técnicas', cita: 'No te voy a decir qué estudiar. Te voy a ayudar a verlo claro.', duracion: '1 min' },
+    { foto: fotoMarc, nombre: 'Marc', edad: 41, rol: 'Psicólogo · Dudas y miedo a equivocarse', cita: 'Dudar a los 17 es lo normal. Lo raro sería tenerlo claro.', duracion: '1 min' },
+    { foto: fotoNuria, nombre: 'Nuria', edad: 35, rol: 'Orientadora · Universidad y acceso', cita: 'Las notas de corte asustan menos cuando las entiendes.', duracion: '1 min' },
+    { foto: fotoAlex, nombre: 'Álex', edad: 33, rol: 'Coach · Estudios creativos y cambios de camino', cita: 'Yo cambié de camino dos veces. Se puede.', duracion: '1 min' },
   ],
 };
 
