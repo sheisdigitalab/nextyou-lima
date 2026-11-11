@@ -12,6 +12,7 @@ import V5 from '../../layouts/V5.astro';
 import ClipsProfesionales from '../../components/ClipsProfesionales.astro';
 import VisorClips from '../../components/VisorClips.astro';
 import { CTA_PRINCIPAL, BASE } from '../../config';
+import { comoAppLima } from '../../data/lima-v3';
 import { caminos, perfil, acompanamiento as coach } from '../../data/resultados';
 import { clipsPorCamino } from '../../data/clips-resultados';
 
@@ -172,26 +173,9 @@ const iconos = {
             {
               clipsPorCamino[c.id] && (
                 <div class="mp__bloque mp__clips">
-                  <h3 class="mp__h3">Gente que llegó a su trabajo por otro camino</h3>
+                  <h3 class="mp__h3">Profesionales que te cuentan cómo llegaron a su trabajo</h3>
                   <ClipsProfesionales clips={clipsPorCamino[c.id]} grupo={c.id} />
                 </div>
-              )
-            }
-
-            {
-              coachVariante === 'C' && i === caminos.length - 1 && (
-                <aside class="coach coach--c" data-coach aria-label="Acompañamiento opcional de pago" data-placeholder="true">
-                  <Image src={coach.foto} alt="" width={220} height={220} class="coach__av" loading="lazy" />
-                  <div class="coach__txt">
-                    <p class="mp__sup">{coach.eti}</p>
-                    <p class="coach__frase">¿Quieres ayuda para decidir? <em>Habla con un coach</em></p>
-                    <p class="coach__firma">{coach.firma}</p>
-                  </div>
-                  <div class="coach__cta">
-                    <a class="boton boton--grande" href={`${BASE}acompanamiento/`}>{coach.cta} <span aria-hidden="true">→</span></a>
-                    <small>{coach.nota}</small>
-                  </div>
-                </aside>
               )
             }
           </section>
@@ -213,6 +197,21 @@ const iconos = {
             </div>
             <p class="res__aviso" role="status" aria-live="polite" data-aviso></p>
           </div>
+        )
+      }
+
+      {/* ===================== Acompañamiento de pago: bloque propio, fuera de las fichas ===================== */}
+      {
+        coachVariante === 'C' && (
+          <aside id="coach" class="rc" aria-labelledby="rc-titulo" data-placeholder="true">
+            <Image src={coach.foto} alt="" width={240} height={240} class="rc__av" loading="lazy" />
+            <div class="rc__txt">
+              <p class="rc__eti">{comoAppLima.coach.eti}</p>
+              <h2 id="rc-titulo" class="rc__tit">Un profesional te ayuda a <span class="rc__l2">ordenar tus opciones</span></h2>
+              <ul class="rc__lista" role="list">{comoAppLima.coach.puntos.map((t) => <li>{t}</li>)}</ul>
+            </div>
+            <a class="rc__boton" href={`${BASE}acompanamiento/#planes`}>{coach.cta} <span aria-hidden="true">→</span></a>
+          </aside>
         )
       }
 
@@ -261,7 +260,6 @@ const iconos = {
               </ul>
               <div class="coach__cta">
                 <a class="boton boton--grande" href="#">{coach.cta} <span aria-hidden="true">→</span></a>
-                <small>{coach.nota}</small>
               </div>
             </div>
           </section>
@@ -419,7 +417,7 @@ const iconos = {
   /* Tu perfil: tres rasgos sin cajas, con una línea fina arriba de cada uno */
   .perfil { display: grid; gap: 0.9rem; }
   .perfil__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
-  .perfil__rasgo { display: grid; grid-template-columns: 2rem 1fr; column-gap: 0.85rem; align-items: start; padding-top: 0.95rem; border-top: 1px solid var(--linea); }
+  .perfil__rasgo { display: grid; grid-template-columns: 2rem 1fr; column-gap: 0.85rem; align-items: start; }
   .perfil__ic { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--acento); color: var(--crema); }
   .perfil__tx { display: grid; gap: 0.2rem; }
   .perfil__tx b { font-size: var(--t2); font-weight: 700; line-height: 1.25; color: var(--crema); }
@@ -444,7 +442,7 @@ const iconos = {
   .mp__dest[aria-selected='true'] .mp__ico { border-color: var(--acento); background: var(--acento); color: var(--negro); }
   .mp__n { position: absolute; right: -0.25rem; top: -0.25rem; display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--negro); border: 1px solid var(--linea); color: var(--crema); font-weight: 700; font-size: 0.875rem; }
   .mp__dest[aria-selected='true'] .mp__n { border-color: var(--crema); }
-  .mp__tipo { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gris); line-height: 1.15; }
+  .mp__tipo { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); line-height: 1.15; }
   .mp__dest[aria-selected='true'] .mp__tipo { color: var(--acento-texto); }
   .mp__nombre { font-family: var(--titular); font-weight: 700; font-size: clamp(0.9375rem, 0.85rem + 0.5vw, 1.2rem); line-height: 1.12; letter-spacing: -0.02em; overflow-wrap: break-word; }
 
@@ -570,8 +568,7 @@ const iconos = {
   @media (min-width: 48rem) {
     .perfil__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2.5rem; }
     /* «Así eres»: bloque propio, separado de la cabecera */
-    .perfil { margin-top: 1.25rem; padding: 2rem 2.25rem 2.25rem; border: 1px solid var(--linea); border-radius: 1.5rem; background: rgb(255 255 255 / 0.03); gap: 1.25rem; }
-    .res--crema .perfil { background: rgb(22 20 18 / 0.03); }
+    .perfil { margin-top: 1.25rem; padding: 2rem 2.25rem 2.25rem; border: 1px solid var(--linea); border-radius: 1.5rem; gap: 1.25rem; }
     .mp__panel { gap: 2.5rem; scroll-margin-top: calc(var(--menu-h, 4.5rem) + 4.1rem); }
     .res { padding-bottom: 4rem; }
     .coach { margin-top: 2rem; margin-bottom: 0; }
@@ -621,6 +618,12 @@ const iconos = {
   /* Tarjeta del coach: crema, texto oscuro y relleno amplio (sustituye a la banda con línea) */
   .mp__panel .coach--c { margin: 0; padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); border: 0; border-radius: 1.25rem; background: #f6f1e8; color: #161412; }
   .res--crema .mp__panel .coach--c { border: 1px solid rgb(22 20 18 / 0.14); }
+  /* El mismo bloque, ahora independiente (fuera de las fichas) */
+  .coach--bloque { margin: clamp(2rem, 1.5rem + 2vw, 3rem) 0 0; padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); border: 0; border-radius: 1.25rem; background: #f6f1e8; color: #161412; }
+  .res--crema .coach--bloque { border: 1px solid rgb(22 20 18 / 0.14); }
+  /* Botón centrado y del mismo tamaño que los demás CTA de la web (52 px, 16 px) */
+  :root:root .coach--bloque .coach__cta { justify-items: center; justify-self: center; align-self: center; }
+  :root:root .coach--bloque .boton { min-height: 52px; font-size: 1rem; padding: 0 1.75rem; white-space: nowrap; }
   .coach--c .mp__sup { color: #161412; }
   .coach--c .coach__frase { margin: 0.5rem 0 0; color: #161412; font-size: var(--t-paso); line-height: 1.1; }
   .coach--c .coach__frase em { font-style: normal; background: linear-gradient(var(--acento), var(--acento)) no-repeat left 92% / 100% 0.14em; }
@@ -629,4 +632,19 @@ const iconos = {
   .coach--c .coach__cta small { color: #4a453d; }
   @media (max-width: 760px) { .coach--c .coach__txt { display: contents; } .coach--c .mp__sup { grid-column: 2; grid-row: 1; align-self: center; } .coach--c .coach__av { grid-row: 1; } .coach--c .coach__frase, .coach--c .coach__firma { grid-column: 1 / -1; margin-top: 0; } .coach--c { row-gap: 0.75rem; }
     .coach--c { padding: 1.25rem; } .coach--c .boton { white-space: normal; text-align: center; padding-inline: 1rem; font-size: 0.9375rem; } }
+  /* Acompañamiento de pago (el bloque de la home, adaptado): panel oscuro con texto a la izquierda y la videollamada a la derecha */
+  .rc { margin: clamp(2.5rem, 2rem + 3vw, 4.5rem) 0 0; padding: clamp(1.25rem, 1rem + 1.5vw, 2rem); display: grid; gap: 1.5rem; align-items: center; border-radius: 1.5rem; background: #f6f1e8; color: #161412; }
+  .res--crema .rc { border: 1px solid rgb(22 20 18 / 0.14); }
+  .rc__eti { margin: 0; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #161412; }
+  .rc__tit { margin: 0.75rem 0 0; font-family: var(--titular); font-weight: 900; font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.15rem); line-height: 1.06; letter-spacing: -0.02em; color: #161412; }
+  .rc__l2 { display: block; }
+  .rc__lista { list-style: none; margin: 1.1rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem 1.75rem; }
+  .rc__lista li { position: relative; padding-left: 1.9rem; font-size: 1rem; line-height: 1.45; }
+  .rc__lista li::before { content: ''; position: absolute; left: 0; top: 0.05em; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #161412 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 62% no-repeat; }
+  .rc__boton { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 52px; margin-top: 1.5rem; padding: 0 1.75rem; border: 1.5px solid rgb(22 20 18 / 0.75); border-radius: 999px; background: transparent; color: #161412; font-weight: 800; font-size: 1rem; text-decoration: none; white-space: nowrap; }
+  .rc__boton:hover { background: rgb(22 20 18 / 0.06); border-color: #161412; }
+  .rc__boton:focus-visible { outline: 3px solid #161412; outline-offset: 3px; }
+  .rc__av { width: 7rem; height: 7rem; border-radius: 50%; object-fit: cover; object-position: center 25%; }
+  .rc__boton { margin-top: 0; justify-self: start; }
+  @media (min-width: 53.75rem) { .rc { grid-template-columns: auto minmax(0, 1fr) auto; gap: 2.25rem; } .rc__av { width: 12.5rem; height: 12.5rem; } .rc__boton { justify-self: end; } }
 </style>

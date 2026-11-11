@@ -149,7 +149,7 @@ export const acompanamiento = {
   plan: { titulo: 'Tu plan', texto: 'Qué estudiar y por dónde empezar' },
   chips: ['Online', 'Por videollamada', '1 a 1'],
   // Común a las dos
-  cta: 'Ver servicios de acompañamiento',
+  cta: 'Ver los planes',
   // PENDIENTE CLIENTA: precio, número y duración de las sesiones, condiciones, enlace de contratación y nombre del coach
   nota: 'Opcional · El test y tus 3 caminos son gratis.',
 };
