@@ -12,6 +12,7 @@ import { unicoLima as noEresElUnico, comoAppLima as comoAppV7, queEsLima, uniNoU
 import { universidad as uni } from '../../data/universidad';
 import { familiasPagina } from '../../data/familias';
 import { masDentro } from '../../data/mas-dentro';
+import '../../styles/tarjeta-profesional.css';
 const modos = familiasPagina.modos;
 
 const reels = await Promise.all(
@@ -361,9 +362,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
                 <Image src={p.foto} alt={p.alt} width={540} height={960} loading={i < 2 ? 'eager' : 'lazy'} quality={70} class="reel__foto" />
                 <div class="reel__pie">
                   <!-- La frase gancho, como una pegatina: encima del nombre para no tapar la cara -->
-                  <p class="reel__gancho"><span>{p.cita}</span></p>
                   <p class="reel__nombre">{p.nombre}, {p.edad}</p>
-                  <p class="reel__camino">{p.camino.join(' → ')}</p>
+                  <ol class="reel__linea" aria-label="Su camino">{p.camino.map((e: string) => <li>{e.replace(/^(Empezó|Estudió) /, '')}</li>)}</ol>
                   <span class="reel__ver">
                     <svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
                     {p.duracion}
