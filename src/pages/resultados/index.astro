@@ -194,10 +194,6 @@ const iconos = {
                 </aside>
               )
             }
-
-            <button type="button" class="mp__sig" data-ir={i === caminos.length - 1 ? 0 : i + 1}>
-              {i === caminos.length - 1 ? `← Volver al primer camino: ${caminos[0].nombre}` : `Siguiente camino: ${caminos[i + 1].nombre} →`}
-            </button>
           </section>
         ))
       }
@@ -573,6 +569,9 @@ const iconos = {
 
   @media (min-width: 48rem) {
     .perfil__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2.5rem; }
+    /* «Así eres»: bloque propio, separado de la cabecera */
+    .perfil { margin-top: 1.25rem; padding: 2rem 2.25rem 2.25rem; border: 1px solid var(--linea); border-radius: 1.5rem; background: rgb(255 255 255 / 0.03); gap: 1.25rem; }
+    .res--crema .perfil { background: rgb(22 20 18 / 0.03); }
     .mp__panel { gap: 2.5rem; scroll-margin-top: calc(var(--menu-h, 4.5rem) + 4.1rem); }
     .res { padding-bottom: 4rem; }
     .coach { margin-top: 2rem; margin-bottom: 0; }

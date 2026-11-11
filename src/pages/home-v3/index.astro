@@ -298,12 +298,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           </div>
         </div>
 
-        <!-- Separa los 3 pasos gratuitos (fondo claro) del bloque 04 de pago -->
-        <div class="cfa__final">
-          <h2 id="no-solo-test-titulo" class="cfa__tit"><span class="que__marca wow-logo"><span class="que__logo-d"><LogoV3 clase="logo--grande" /></span><span class="que__logo-f" aria-hidden="true"><span class="que__next">Next</span><LogoV3 clase="logo--grande" solo="you" /></span><span class="solo-lector">NextYou</span></span> <span class="wow-w" style="--i:0">no</span> <span class="wow-w" style="--i:1">es</span> <span class="wow-w" style="--i:2">solo</span> <span class="wow-w" style="--i:3">un</span> <span class="wow-w" style="--i:4">test</span></h2>
-          <p class="cfa__sub">Es conocer las profesiones que existen y los caminos para llegar a ellas, pensando también en la vida que quieres construir.</p>
-        </div>
-
         <Fragment set:html="<!-- PENDIENTE CLIENTA: precio y condiciones del coach (número de sesiones, duración) -->" />
         <div class="cfa__prem" data-cfa-prem>
         <div class="cfa__coach" id="acompanamiento">
@@ -313,7 +307,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <p class="cfa__p">{comoAppV7.coach.texto}</p>
             <ul class="cfa__lista" role="list">{comoAppV7.coach.puntos.map((t) => <li>{t}</li>)}</ul>
             <p class="cfa__micro cfa__nota-coach">El test, los caminos y las historias son gratis.</p>
-            <a href={ENLACES.acompanamiento} class="cfa__boton cfa__boton--borde cfa__boton--coach"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
+            <a class="cfa__boton cfa__boton--borde cfa__boton--coach" aria-disabled="true" style="cursor:default"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
           </div>
           <div class="cfa__call" aria-hidden="true" data-placeholder="true">
             <Image src={fotoCoach} alt="" width={900} height={600} class="cfa__call-img" loading="lazy" />
@@ -332,7 +326,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         <div class="ancho">
           <header class="cabecera" data-aparece>
             <p class="antetitulo">Su camino, contado por ellos</p>
-            <h2 id="dentro-titulo" class="titular titular--dentro rotulador">Profesionales que te cuentan cómo llegaron a <em>su trabajo</em></h2>
+            <h2 id="dentro-titulo" class="titular titular--dentro">Profesionales que te cuentan <u>cómo llegaron</u> a su trabajo</h2>
             <p class="cabecera__sub">Sin discursos. Te cuentan cómo entraron, en qué se equivocaron y cómo es su día a día.</p>
           </header>
           <div class="dentro__nav" data-solo-carrusel>
@@ -1268,7 +1262,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       const armarNegro = () => {
         obsNegro?.disconnect();
         const dist = caja ? prem.getBoundingClientRect().top - caja.getBoundingClientRect().top : 0;
-        const linea = Math.min(innerHeight * 0.9, Math.max(0, 280 + dist));
+        const linea = Math.min(innerHeight * 0.9, Math.max(0, innerHeight * 0.75 + dist));
         obsNegro = new IntersectionObserver((es) => { sec.classList.toggle('cfa--negro', es[0].isIntersecting); }, { rootMargin: `0px 0px ${-(innerHeight - linea)}px 0px` });
         obsNegro.observe(prem);
       };
@@ -3202,6 +3196,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 </style>
 <style is:global>
   /* Versión naranja: todos los títulos con la misma tipografía y peso, y sin subrayados ni rotulador en las palabras destacadas */
+  /* «cómo llegaron» subrayado en lima, mismo tipo que el resto del título */
+  #dentro-titulo u { text-decoration: none; background: linear-gradient(var(--acento), var(--acento)) no-repeat left 92% / 100% 0.12em; }
   [data-paleta='f'] main :is(h1, h2, h3, .titular, .hero__pregunta, .cfa__tit, .v7que__tit, .cfa__paso h3, .cfa__coach h3) { font-family: var(--titular) !important; font-weight: 800 !important; font-style: normal; }
   [data-paleta='f'] main :is(h1, h2, h3, p) em,
   [data-paleta='f'] main .cfa__tit u,
