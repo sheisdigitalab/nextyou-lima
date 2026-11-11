@@ -180,7 +180,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   .paso__pantalla { display: grid; gap: 1.1rem; }
   .paso__pantalla[hidden] { display: none; }
   .paso__eti { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--acento-texto); }
-  .paso__titulo { font-family: var(--titular); font-weight: 800; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.375rem); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; outline: 0; }
+  .paso__titulo { font-family: var(--titular); font-weight: 900; font-size: var(--t-paso); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; outline: 0; }
   .paso__nombre { color: var(--acento-texto); }
   .paso__lead { max-width: 30rem; color: rgb(246 241 232 / 0.78); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.55; }
 
@@ -260,7 +260,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   .paso__micro { margin-top: 0; font-size: 0.75rem; }
   @media (max-height: 780px) {
     .paso__tecla { display: none; }
-    .paso__titulo { font-size: clamp(1.375rem, 1rem + 1.4vw, 2rem); }
+    .paso__titulo { font-size: var(--t-paso); }
   }
 </style>
 <style is:global>
@@ -306,7 +306,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   /* Pantallas bajas: el paso del correo (el más largo) se compacta para seguir sin scroll */
   @media (max-height: 800px) {
     .paso__pantalla { gap: 0.6rem; }
-    .paso__titulo { font-size: clamp(1.375rem, 1rem + 1.4vw, 2rem); }
+    .paso__titulo { font-size: var(--t-paso); }
     .paso__lead { font-size: 0.875rem; line-height: 1.45; }
     .paso__form { margin-top: 0.25rem; }
     .paso__fichas { margin-top: 0.4rem; }

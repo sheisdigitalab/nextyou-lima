@@ -3427,6 +3427,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   /* Todos los títulos de sección (h2) iguales, con el de «Cómo funciona» como referencia: una variable y una regla.
      No afecta al h1 del hero ni a los h3 de los pasos 01-04. */
   :root { --t-h2: clamp(1.9rem, 1.2rem + 3.2vw, 3.25rem); }
+  /* Títulos de los 4 pasos de «Cómo funciona» (01-04): un solo tamaño, también el del paso 04 */
+  :root { --t-paso: clamp(1.65rem, 1.2rem + 1.7vw, 2.5rem); }
+  :root:root :is(.cfa__paso h3, .cfa__coach h3) { font-size: var(--t-paso) !important; }
   :root:root :is(.cfa__tit, .titular--unico, .v7que__tit, .uni-no__titulo, #dentro-titulo, #sara-titulo, .cfa__primer, #aviso-titulo) {
     font-family: var(--titular) !important; font-size: var(--t-h2) !important; font-weight: 900 !important; font-stretch: 100% !important;
     line-height: 1.05 !important; letter-spacing: -0.02em !important;
@@ -3448,4 +3451,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 <style is:global>
   /* Botón del bloque 04 (acompañamiento): bajo la nota, sin pegarse a ella */
   .cfa__boton--coach { margin-top: 1.5rem; }
+  /* Botones de «Cómo funciona»: mismo tamaño de letra que el resto de botones; en móvil, los largos caben en una línea */
+  :root:root .cfa__boton { font-size: 1rem; min-height: 52px; }
+  @media (max-width: 30rem) { :root:root .cfa__boton { font-size: 0.9375rem; white-space: nowrap; padding-inline: 1.25rem; justify-content: center; } }
 </style>

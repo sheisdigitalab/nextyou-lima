@@ -18,7 +18,7 @@ export const hero = {
   titulo: 'Habla con alguien que te ayuda a ordenar tus opciones',
   resaltado: 'ordenar tus opciones',
   texto:
-    'El test, tus 3 caminos y los vídeos de los Insiders son gratis. Si después sigues con dudas, un coach se sienta contigo, por videollamada, a pensar en tu siguiente paso.',
+    'El test, tus 3 caminos y los vídeos de Los de dentro son gratis. Si después sigues con dudas, un coach se sienta contigo, por videollamada, a pensar en tu siguiente paso.',
   boton: 'Ver planes y precios',
   chat: {
     etiqueta: 'Sesión con tu coach · por videollamada',
@@ -58,10 +58,10 @@ export const queEs = {
 
 export const quienEs = {
   etiqueta: 'Quién hay detrás',
-  titulo: 'Insiders y coaches no son lo mismo',
+  titulo: 'Los de dentro y los coaches no son lo mismo',
   resaltado: 'no son lo mismo',
   insiders: {
-    titulo: 'Los Insiders · gratis',
+    titulo: 'Los de dentro · gratis',
     texto:
       'Profesionales que te enseñan su trabajo en vídeo. No te aconsejan, no te venden su profesión y no cobran por que elijas la suya.',
   },
@@ -106,7 +106,7 @@ export const comoFunciona = {
       n: '03',
       titulo: 'Entre sesiones, pruebas cosas',
       texto:
-        'Tu coach te propone retos, te presenta a algún Insider o te ayuda a preparar una conversación. No son deberes: es probar.',
+        'Tu coach te propone retos, te presenta a alguien de Los de dentro o te ayuda a preparar una conversación. No son deberes: es probar.',
     },
     {
       n: '04',
@@ -173,7 +173,7 @@ export const planes = {
       incluye: [
         'Todo lo de «Comparar caminos»',
         'Una cuarta sesión para cerrar tu plan',
-        'Charla de 20 min con un Insider de tu camino',
+        'Charla de 20 min con un profesional de tu camino',
         '<b>Sesión final con tu familia:</b> les cuentas tú lo que has decidido',
         'Un mes de dudas por mensaje después',
       ],
@@ -190,7 +190,7 @@ export const planes = {
       ['Tu plan por escrito', 'Siguiente paso', '✓', '✓'],
       ['Comparativa con notas de corte, centros y precios', '—', '✓', '✓'],
       ['Dudas por mensaje', '—', 'Mientras dure', 'Mientras dure + 1 mes'],
-      ['Charla con un Insider de tu camino', '—', '—', '✓'],
+      ['Charla con un profesional de tu camino', '—', '—', '✓'],
       ['Sesión final con tu familia', '—', '—', '✓'],
     ],
   },
