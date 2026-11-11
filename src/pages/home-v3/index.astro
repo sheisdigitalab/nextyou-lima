@@ -314,6 +314,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <p class="cfa__p">{comoAppV7.coach.texto}</p>
             <ul class="cfa__lista" role="list">{comoAppV7.coach.puntos.map((t) => <li>{t}</li>)}</ul>
             <p class="cfa__micro cfa__nota-coach">El test, los caminos y las historias son gratis.</p>
+            <a href={ENLACES.acompanamiento} class="cfa__boton cfa__boton--coach"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
           </div>
           <div class="cfa__call" aria-hidden="true" data-placeholder="true">
             <Image src={fotoCoach} alt="" width={900} height={600} class="cfa__call-img" loading="lazy" />
@@ -329,7 +330,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           <div class="cfa__accion">
             <div class="cfa__botones">
               <a href={CTA_PRINCIPAL.href} class="cfa__boton"><span class="cfa__t cfa__t--f">Haz el test gratis</span> <span aria-hidden="true">→</span></a>
-              <a href="#acompanamiento" class="cfa__boton cfa__boton--borde"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
+              <a href={ENLACES.acompanamiento} class="cfa__boton cfa__boton--borde"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
             </div>
             <p class="cfa__micro">{pasosV7.micro}</p>
           </div>
@@ -3442,4 +3443,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa__boton.cfa__boton--borde, [data-paleta='f'] .cfa__boton.cfa__boton--borde, [data-paleta='f'] .cfa__boton.cfa__boton--borde:hover { background: transparent !important; color: var(--crema) !important; border: 1.5px solid rgb(246 241 232 / 0.7); padding-block: calc(0.95rem - 1.5px); filter: none; }
   .cfa__boton.cfa__boton--borde:hover { border-color: var(--crema); background: rgb(246 241 232 / 0.08) !important; }
   @media (max-width: 55.99rem) { .cfa__botones { flex-direction: column; align-items: stretch; width: 100%; } .cfa__botones .cfa__boton { justify-content: center; } }
+</style>
+
+<style is:global>
+  /* Botón del bloque 04 (acompañamiento): bajo la nota, sin pegarse a ella */
+  .cfa__boton--coach { margin-top: 1.5rem; }
 </style>

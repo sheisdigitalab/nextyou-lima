@@ -5,7 +5,6 @@
 
 import { noEresElUnico, queEsNextYou } from './home';
 import { familiasPagina } from './familias';
-import { acompanamiento } from './acompanamiento';
 import irene from '../assets/muestra/que-es.jpg';
 
 export const BASE_V4 = 'v4/';
@@ -182,6 +181,3 @@ export const familiasV4 = {
     sara: 'Leer la historia de Sara',
   },
 };
-
-// Para tener a mano la fuente de los puntos anteriores (prompt «Quién hay detrás»)
-export const fuenteEleccion = acompanamiento.eleccion;
