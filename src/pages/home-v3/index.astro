@@ -1262,7 +1262,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       const armarNegro = () => {
         obsNegro?.disconnect();
         const dist = caja ? prem.getBoundingClientRect().top - caja.getBoundingClientRect().top : 0;
-        const linea = Math.min(innerHeight * 0.9, Math.max(0, innerHeight * 0.75 + dist));
+        const linea = Math.min(innerHeight * 0.98, Math.max(0, innerHeight * 0.96 + dist));
         obsNegro = new IntersectionObserver((es) => { sec.classList.toggle('cfa--negro', es[0].isIntersecting); }, { rootMargin: `0px 0px ${-(innerHeight - linea)}px 0px` });
         obsNegro.observe(prem);
       };
@@ -2829,11 +2829,11 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .camino8__lista li span em { font-style: normal; font-size: var(--t1, 0.875rem); font-weight: 500; line-height: 1.3; opacity: 0.75; text-wrap: balance; }
   .camino8__profs { grid-template-rows: auto !important; align-self: center; }
   .cfa__nota-coach { margin-top: 1rem; }
-  @media (max-width: 47.99rem) {
+  @media (max-width: 62.49rem) {
     .camino8__lista li { min-height: 8.5rem !important; }
   }
   /* v3 · escritorio: el rótulo de arriba se ve centrado sobre el esquema, a unos 40 px de la primera caja; el de abajo solo se ve en móvil */
-  @media (min-width: 48rem) {
+  @media (min-width: 62.5rem) {
     .camino8 { position: relative; }
     .camino8 .camino8__rotulo { display: block; position: absolute; margin: 0; line-height: 1.35; color: var(--acento-texto); }
     .camino8 .camino8__rotulo--1 { bottom: calc(100% + 0.75rem); left: 50%; translate: -50% 0; text-align: center; white-space: nowrap; }
@@ -2865,7 +2865,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .camino8__ic { flex: none; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; border: 1.5px solid var(--acento); color: var(--crema); }
   .camino8__ic svg { width: 1.6rem; height: 1.6rem; }
   /* Móvil: el camino baja en vertical, con una rama por opción y las profesiones al final */
-  @media (max-width: 47.99rem) {
+  @media (max-width: 62.49rem) {
     .camino8 { grid-template-columns: 1fr; justify-items: start; margin-top: 3.5rem; }
     .camino8__izq, .camino8__der { display: none; }
     .camino8__tu { width: 4.5rem; height: 4.5rem; font-size: 1.25rem; }
@@ -2990,12 +2990,12 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa-cam.cfa-pulsado{border-color:var(--cfa-tinta);background:var(--cfa-suave);scale:.98}
   .cfa-cam__n{width:28px;height:28px;border-radius:50%;background:var(--cfa-tinta);color:#fff;font-family:var(--titular);font-weight:900;font-size:13px;display:grid;place-items:center}
   .cfa-cam__tx{display:grid;gap:2px;min-width:0}
-  .cfa-cam__tx small{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cfa-gris2)}
+  .cfa-cam__tx small{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cfa-gris2)}
   .cfa-cam__tx b{font-family:var(--titular);font-weight:900;font-size:16px;line-height:1.12}
   .cfa-cam__f{width:46px;height:46px;border-radius:50%;object-fit:cover}
   .cfa-c-pie{text-align:center;font-size:12.5px;font-weight:700;color:var(--cfa-gris2);margin-top:16px}
   .cfa-nav{margin-top:auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--cfa-linea);padding-top:9px}
-  .cfa-nav span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--cfa-gris2)}
+  .cfa-nav span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--cfa-gris2)}
   .cfa-nav svg{width:20px;height:20px}
   .cfa-nav .cfa-on{color:var(--cfa-tinta)}
   .cfa-app--2 .cfa-cam{opacity:0;transform:translateY(20px)}
@@ -3016,18 +3016,18 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa-ficha__ban img.cfa-on{opacity:1}
   .cfa-ficha__ban::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgb(0 0 0 / .72))}
   .cfa-ficha__ban > span{position:absolute;z-index:1;left:12px;right:12px;bottom:10px;display:grid;gap:1px}
-  .cfa-ficha__ban small{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+  .cfa-ficha__ban small{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
   .cfa-ficha__ban b{font-family:var(--titular);font-weight:900;font-size:21px;line-height:1.08}
   .cfa-ficha__chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .cfa-ficha__chips span{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:99px;background:var(--cfa-suave)}
   .cfa-ficha dl{margin:10px 0 0;display:grid;gap:9px}
   .cfa-ficha dl div{border-top:1px solid var(--cfa-linea);padding-top:8px}
-  .cfa-ficha dt{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cfa-gris2)}
+  .cfa-ficha dt{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cfa-gris2)}
   .cfa-ficha dd{margin:2px 0 0;font-size:13.5px;line-height:1.35;font-weight:600}
   .cfa-ficha__rutas{margin-top:12px;background:var(--cfa-suave);border-radius:16px;padding:11px 11px 6px}
   .cfa-ficha__rutas > p{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
   .cfa-ficha__rutas > p b{font-family:var(--titular);font-weight:900;font-size:15px}
-  .cfa-ficha__rutas > p small{font-size:11px;font-weight:700;color:var(--cfa-gris2)}
+  .cfa-ficha__rutas > p small{font-size:11.5px;font-weight:700;color:var(--cfa-gris2)}
   .cfa-ficha__rutas ul{list-style:none;margin:8px 0 0;padding:0}
   .cfa-ficha__rutas li{display:flex;gap:9px;align-items:center;padding:7px 0;border-top:1px solid #E3E1D9}
   .cfa-ficha__rutas li:first-child{border-top:0}
@@ -3065,6 +3065,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .cfa-app--3.cfa-visto .cfa-vi__barra > i b{animation:cfa-video 14s linear infinite}
   @keyframes cfa-video{from{width:30%}to{width:100%}}
   .cfa-vi__barra > span{display:flex;justify-content:space-between;margin-top:5px;font-size:11.5px;opacity:.8}
+  .cfa-vi__barra > span small{font-size:inherit}
   .cfa-vi__ctrl{display:flex;justify-content:center;align-items:center;gap:22px;padding-bottom:4px}
   .cfa-vi__ctrl i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center}
   .cfa-vi__ctrl svg{width:22px;height:22px}
@@ -3131,6 +3132,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .wow-on .cfa__sub{opacity:1;translate:0 0;transition:opacity .8s ease 1.35s,translate .9s cubic-bezier(.2,.8,.2,1) 1.35s}
   :root:root .cfa__final{margin-bottom:clamp(1rem,.75rem + 1vw,1.75rem)}
   :root:root .cfa__prem{min-height:0;margin-top:0;padding-top:clamp(1.5rem,1rem + 1.5vw,2.5rem)}
+  /* El coach empieza a aparecer en cuanto el bloque entra en pantalla: sin retardo y con un desplazamiento corto */
+  :root:root .cfa__coach{translate:0 24px;transition:opacity .55s ease,translate .7s cubic-bezier(.2,.8,.2,1)}
+  :root:root .cfa--negro .cfa__coach{translate:0 0}
   .cfa__num--prem{color:var(--acento)}
   .cfa__num--prem span{background:var(--acento);color:var(--cfa-tinta)}
   .cfa__coach h3{font-size:clamp(1.9rem,1.3rem + 2.4vw,3.25rem)}
@@ -3369,7 +3373,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   /* Cómo llegar · móvil: tres recuadros apilados (Tú → caminos → profesiones) unidos por flechas hacia abajo.
      Escritorio no cambia: los rótulos están ocultos. */
   .camino8__rotulo { display: none; }
-  @media (max-width: 47.99rem) {
+  @media (max-width: 62.49rem) {
     .camino8 { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: stretch; row-gap: 0; }
     .camino8__izq, .camino8__der { display: none; }
     /* Recuadro 1: Tú */
@@ -3395,7 +3399,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 <style is:global>
   /* v3 · «La uni no es el único camino» (escritorio ≥ 768 px): medidas de la maqueta exploracion/esquema-v3-ancho.html.
      Va el último para ganar a las capas anteriores. */
-  @media (min-width: 48rem) {
+  @media (min-width: 62.5rem) {
     .camino8 { grid-template-columns: 12rem minmax(1.5rem, 1fr) 25rem minmax(1.5rem, 1fr) 12rem; align-items: center; margin-top: 8.5rem; }
     .camino8__tu { justify-self: end; width: 7rem; height: 7rem; font-size: 1.6rem; }
     .camino8__izq, .camino8__der { align-self: stretch; margin-left: 0; }
@@ -3410,7 +3414,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .camino8__profs li { white-space: nowrap; gap: 0.9rem; }
     .camino8__profs b { max-width: none; font-size: 1.15rem; font-weight: 700; }
   }
-  @media (max-width: 47.99rem) {
+  @media (max-width: 62.49rem) {
     .camino8__lista li span { gap: 0.4rem; padding: 1rem 1.75rem; border-radius: 999px; }
     .camino8__lista li span b { font-size: 1.125rem; line-height: 1.2; }
     .camino8__lista li span small { font-size: 0.9375rem; font-weight: 600; color: var(--acento-texto); opacity: 1; }
@@ -3418,6 +3422,43 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   }
 </style>
 
+<style is:global>
+  /* «La uni no es el único camino» por debajo de 1000 px (móvil y tablet): sin cajas que envuelvan, tres píldoras a todo el ancho
+     unidas por una sola línea vertical: Tú arriba y «Animación 3D» al final. */
+  @media (max-width: 62.49rem) {
+    .camino8 { position: relative; max-width: 34rem; margin-inline: auto; row-gap: 0; }
+    .camino8::before { content: ''; position: absolute; z-index: 0; left: 50%; top: 1.5rem; bottom: 1.9rem; width: 1.5px; translate: -50% 0; background: var(--linea-c); }
+    .camino8 > * { position: relative; z-index: 1; }
+    .camino8__tu { padding: 0.7rem 2.25rem; }
+    /* El rótulo de arriba se queda sobre la línea; sin flecha ni trazo propio */
+    .camino8__rotulo--1 { padding: 1.1rem 0.75rem !important; margin-inline: auto; width: fit-content; background: var(--negro); }
+    .camino8__rotulo--1::before, .camino8__rotulo--1::after { display: none !important; }
+    .camino8__rotulo--2 { display: none !important; }
+    /* Sin caja alrededor de las píldoras */
+    .camino8__lista { display: grid; row-gap: 1rem; padding: 1.25rem 0 !important; border: 0 !important; border-radius: 0; background: none !important; }
+    .camino8__lista li { min-height: 0 !important; }
+    .camino8__lista li span { width: 100%; min-height: 3.5rem; }
+    /* Profesión al final, sin caja */
+    .camino8__profs { margin-top: 0.5rem !important; padding: 0 !important; border: 0 !important; border-radius: 0; background: none !important; gap: 0 !important; }
+    .camino8__profs li { justify-content: center; padding: 0.55rem 1.1rem !important; border: 1.5px solid var(--acento-texto) !important; border-radius: 999px !important; background: var(--negro); }
+    .camino8__profs li + li { border-top: 1.5px solid var(--acento-texto) !important; }
+  }
+</style>
+<style is:global>
+  /* Tablet horizontal (p. ej. 1024×768): menos franja oscura vacía entre el hero y «No eres el único» */
+  @media (min-width: 48rem) and (max-width: 75rem) and (orientation: landscape) {
+    :root:root .v7unico { padding-top: clamp(3.5rem, 2rem + 4vw, 5.5rem) !important; }
+  }
+</style>
+<style is:global>
+  /* Bloque 04 (coach) en móvil y tablet vertical: el bloque trae su propio fondo oscuro y ya es visible al entrar en pantalla.
+     Así no se oscurece toda la sección ni queda un hueco negro vacío mientras se termina de ver el paso 03. */
+  :root:root .cfa:not(.cfa--escena).cfa--negro { background-color: var(--cfa-fondo) !important; }
+  :root:root .cfa:not(.cfa--escena).cfa--negro .cfa__cab, :root:root .cfa:not(.cfa--escena).cfa--negro .cfa__flujo { opacity: 1 !important; }
+  :root:root .cfa:not(.cfa--escena) .cfa__prem { background: var(--cfa-tinta); }
+  [data-paleta='f'] :root:root .cfa:not(.cfa--escena) .cfa__prem, :root:root[data-paleta='f'] .cfa:not(.cfa--escena) .cfa__prem { background: #000; }
+  :root:root .cfa:not(.cfa--escena) .cfa__coach { opacity: 1; translate: 0 0; }
+</style>
 <style is:global>
   /* Paso 2 de «Cómo funciona»: enlace al ejemplo de la página de resultados */
   .cfa__ejemplo { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; margin-top: 0.75rem; font-weight: 700; font-size: var(--t2); color: var(--acento-oscuro); text-decoration: underline; text-underline-offset: 0.28em; text-decoration-thickness: 1.5px; }
