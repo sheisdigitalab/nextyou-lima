@@ -15,6 +15,9 @@ import { CTA_PRINCIPAL, BASE } from '../../config';
 import { comoAppLima } from '../../data/lima-v3';
 import { caminos, perfil, acompanamiento as coach } from '../../data/resultados';
 import { clipsPorCamino } from '../../data/clips-resultados';
+import ComoLlegarV2 from '../../components/ComoLlegarV2.astro';
+import { comoLlegarV2 } from '../../data/como-llegar-v2';
+import { comoLlegar, COMUNIDADES, ESTADOS, TEXTOS, datosDe, dondeDe, type Centro, type Dato } from '../../data/como-llegar';
 
 // Bloque del coach: 'C' = banda discreta (la que se ve) · 'B' = «tus 3 caminos llevan al coach» (montada, oculta)
 // Tema de la página: 'negro' (la de siempre) o 'crema' (/resultados-crema/, mismo diseño sobre fondo crema)
@@ -22,9 +25,6 @@ const tema: 'negro' | 'crema' = Astro.props.tema ?? 'negro';
 const coachVariante: 'C' | 'B' = 'C';
 // Fila «Envíame mis caminos» / «Compartir»: solo diseño, sin funcionalidad ni datos (pon false para quitarla)
 const mostrarGuardar = false;
-// El detalle de cada vía sin la duración, que ya se ve a la derecha («Universidad · 4 años» → «Universidad»)
-const sinDuracion = (detalle: string, duracion: string) =>
-  detalle.split(' · ').filter((t) => t !== duracion && !/^\d+ años$/.test(t) && t !== 'Unos meses').join(' · ');
 const MAX_MESES = 48; // la línea más larga (4 años) ocupa todo el ancho
 const ramas = ['M150 0 V10 C150 38 50 34 50 70', 'M150 0 V70', 'M150 0 V10 C150 38 250 34 250 70'];
 // Icono de la profesión de cada camino, en las tarjetas del gráfico (en lugar de foto)
@@ -55,7 +55,17 @@ const iconos = {
   robots="noindex, follow"
   cta={{ texto: 'Repetir el test', href: CTA_PRINCIPAL.href }}
 >
-  <main id="contenido" class={`res res--${tema}`}>
+  <main id="contenido" class={`res res--${tema}`} data-ccaa="cat">
+    {/* Antes de pintar nada: la comunidad llega en la dirección (?ccaa=cat|mad|val|and|otra) o es la que se guardó la última vez; si no hay ninguna, Cataluña.
+        PENDIENTE DESARROLLO: cuando el test guarde dónde vive la persona, leerlo aquí (mismo valor: cat, mad, val, and u otra). */}
+    <script is:inline>
+      (function () {
+        var main = document.currentScript.parentElement, validas = ['cat', 'mad', 'val', 'and', 'otra'], v = '';
+        try { v = (new URLSearchParams(location.search).get('ccaa') || '').toLowerCase(); } catch (e) {}
+        if (validas.indexOf(v) < 0) { try { v = localStorage.getItem('nextyou-ccaa') || ''; } catch (e) { v = ''; } }
+        main.setAttribute('data-ccaa', validas.indexOf(v) < 0 ? 'cat' : v);
+      })();
+    </script>
     <div class="ancho res__caja">
       <header class="res__cab">
         <p class="res__saludo" data-saludo>¡Listo!</p>
@@ -77,6 +87,14 @@ const iconos = {
             ))
           }
         </ul>
+      </section>
+
+      {/* ¿Dónde vives? Uno solo para las tres fichas: cambia centros, notas y precios de «Cómo llegar» */}
+      <section class="donde" aria-labelledby="donde-tit">
+        <p id="donde-tit" class="donde__tit">¿Dónde vives?</p>
+        <div class="donde__op" role="group" aria-labelledby="donde-tit">
+          {COMUNIDADES.map((c) => <button type="button" class="donde__b" data-ccaa={c.id} aria-pressed="false">{c.nombre}</button>)}
+        </div>
       </section>
 
       <p class="res__toca">Toca cada uno para ver de qué va y cómo llegar.</p>
@@ -150,24 +168,84 @@ const iconos = {
 
             <div class="mp__bloque">
               <h3 class="mp__h3">Cómo llegar <small>Hay varias vías</small></h3>
-              <ol class="vias" role="list">
-                {
-                  c.rutas.map((r) => {
-                    const detalle = sinDuracion(r.detalle, r.duracion);
-                    return (
-                      <li class={`via via--${r.tipo}`} style={r.meses ? `--w: ${Math.round((r.meses / MAX_MESES) * 100)}%` : undefined}>
-                        <span class="via__i" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[r.tipo]} /></span>
-                        <span class="via__tx">
-                          <b class="via__tit">{r.titulo}</b>
-                          {/* El detalle solo se ve en «Por tu cuenta» (es el cómo); en las demás queda para lectores de pantalla */}
-                          {detalle && <small class={r.tipo === 'solo' ? 'via__det' : 'solo-lector'}>{r.tipo === 'solo' ? detalle : `. ${detalle}`}</small>}
-                        </span>
-                        <span class="via__dur">{r.duracion}</span>
-                      </li>
-                    );
-                  })
-                }
-              </ol>
+              {
+                c.id !== 'ciberseguridad' && (
+                  <div class="donde donde--cl" role="group" aria-label="¿Dónde vives?">
+                    <p class="donde__tit" aria-hidden="true">¿Dónde vives?</p>
+                    <div class="donde__op">
+                      {COMUNIDADES.map((z) => <button type="button" class="donde__b" data-ccaa={z.id} aria-pressed="false">{z.nombre}</button>)}
+                    </div>
+                  </div>
+                )
+              }
+              {
+                c.id === 'ciberseguridad' ? (
+                  <>
+                  <div class="cl">
+                    {
+                      comoLlegar[c.id].map((v, k) => (
+                        <details class={`cl__via cl__via--${v.icono}`} open={k === 0}>
+                          <summary class="cl__sum" style={v.meses ? `--w: ${Math.round((v.meses / MAX_MESES) * 100)}%` : undefined}>
+                            <span class="cl__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[v.icono]} /></span>
+                            <span class="cl__st"><b class="cl__tit">{v.titulo}</b><span class="cl__of">{v.oficial}</span></span>
+                            <span class="cl__dur">{v.duracion}</span>
+                            <span class="cl__mas" aria-hidden="true">+</span>
+                          </summary>
+                          <div class="cl__in">
+                            <p class="cl__que">{v.frase}</p>
+                            <div class="cl__qa">
+                              <div class="cl__d"><small>Qué necesitas</small><b>{v.necesitas.valor}</b>{v.necesitas.nota && <em>{v.necesitas.nota}</em>}</div>
+                              {
+                                (v.depende ? ESTADOS : ['']).map((e) => {
+                                  const { nota, cuesta } = datosDe(v, e);
+                                  const tarjetas: [string, Dato][] = [['Nota para entrar', nota], ['Cuánto cuesta', cuesta]];
+                                  return (
+                                    <div class="cl__est" data-est={v.depende ? e : undefined}>
+                                      {tarjetas.map(([t, d]) => <div class="cl__d"><small>{t}</small><b>{d.valor}</b>{d.nota && <em>{d.nota}</em>}</div>)}
+                                    </div>
+                                  );
+                                })
+                              }
+                            </div>
+                            {
+                              v.depende &&
+                                ESTADOS.map((e) => {
+                                  const d = dondeDe(v, e);
+                                  return (
+                                    <div class="cl__est cl__est--lugar" data-est={e}>
+                                      {d?.titulo && <h4 class="cl__h4">{d.titulo}</h4>}
+                                      {d?.centros.length ? (
+                                        <ul class="cl__centros" role="list">
+                                          {d.centros.map((z: Centro) => (
+                                            <li>
+                                              <b>{z.nombre}</b>
+                                              {z.lugar && <span class="cl__lugar">{z.lugar}</span>}
+                                              {z.tipo && <span class={`cl__tag${z.tipo === 'Pública' ? ' cl__tag--pub' : ''}`}>{z.tipo}</span>}
+                                              {z.etiquetas?.map((t) => <span class="cl__tag cl__tag--dat">{t}</span>)}
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      ) : null}
+                                      {d?.aviso && <p class="cl__aviso">{d.aviso}</p>}
+                                      {d?.resto && <p class="cl__aviso">{d.resto}</p>}
+                                      {d?.bueno && <p class="cl__tip"><b>Bueno saber:</b> {d.bueno}</p>}
+                                    </div>
+                                  );
+                                })
+                            }
+                            {v.bueno && <p class="cl__tip"><b>Bueno saber:</b> {v.bueno}</p>}
+                          </div>
+                        </details>
+                      ))
+                    }
+                  </div>
+                  <p class="cl__glos"><b>{TEXTOS.notaDeCorte.pregunta}</b> {TEXTOS.notaDeCorte.respuesta}</p>
+                  <p class="cl__pie">{TEXTOS.pie}</p>
+                  </>
+                ) : (
+                  <ComoLlegarV2 camino={comoLlegarV2[c.id]} id={c.id} iconos={iconos} />
+                )
+              }
             </div>
 
             {
@@ -275,6 +353,40 @@ const iconos = {
   const nombre = (new URLSearchParams(location.search).get('nombre') || '').trim().slice(0, 40);
   const saludo = document.querySelector<HTMLElement>('[data-saludo]');
   if (saludo && nombre) saludo.textContent = `¡Listo, ${nombre}!`;
+
+  // ¿Dónde vives?: una sola elección para las tres fichas. El valor inicial ya lo puso el script de arriba (dirección o lo guardado);
+  // aquí solo se marcan los botones y se guarda lo que la persona elige.
+  const raiz = document.querySelector<HTMLElement>('main.res');
+  const pildoras = [...document.querySelectorAll<HTMLButtonElement>('.donde__b')];
+  const marcar = (v: string) => pildoras.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.ccaa === v)));
+  if (raiz) {
+    marcar(raiz.dataset.ccaa ?? '');
+    pildoras.forEach((b) =>
+      b.addEventListener('click', () => {
+        const v = b.dataset.ccaa ?? '';
+        raiz.dataset.ccaa = v;
+        marcar(v);
+        try { localStorage.setItem('nextyou-ccaa', v); } catch { /* sin almacenamiento: se queda solo en esta visita */ }
+        try { const u = new URL(location.href); u.searchParams.set('ccaa', v); history.replaceState(null, '', u); } catch { /* sin historial: la dirección no se actualiza */ }
+      })
+    );
+  }
+
+  // «Cómo llegar» v2: solo una fila abierta a la vez (aunque el navegador no entienda name=""), y siempre alguna abierta a la vista
+  const bloquesCl = [...document.querySelectorAll<HTMLElement>('[data-cl]')];
+  bloquesCl.forEach((cl) => {
+    const filas = [...cl.querySelectorAll<HTMLDetailsElement>('details')];
+    filas.forEach((d) => d.addEventListener('toggle', () => { if (d.open) filas.forEach((o) => { if (o !== d) o.open = false; }); }));
+  });
+  const abrirPrimera = () => {
+    const sinLugar = raiz?.dataset.ccaa === 'otra';
+    bloquesCl.forEach((cl) => {
+      const visibles = [...cl.querySelectorAll<HTMLDetailsElement>('details')].filter((d) => !(sinLugar && d.classList.contains('cl__via--lugar')));
+      if (visibles.length && !visibles.some((d) => d.open)) visibles[0].open = true;
+    });
+  };
+  pildoras.forEach((b) => b.addEventListener('click', abrirPrimera));
+  abrirPrimera();
 
   // «Envíame mis caminos» y «Compartir»: de momento solo un aviso discreto; no se recoge ni se envía nada
   const aviso = document.querySelector<HTMLElement>('[data-aviso]');
@@ -398,7 +510,6 @@ const iconos = {
   .res--crema .mp[data-sel='0'] .mp__rama[data-r='0'], .res--crema .mp[data-sel='1'] .mp__rama[data-r='1'], .res--crema .mp[data-sel='2'] .mp__rama[data-r='2'] { stroke: #161412; }
   .res--crema .mp__panel { background: #ffffff; }
   .res--crema .mp__chips li { background: #f6f1e8; border-color: transparent; }
-  .res--crema .via::after { background: #161412; }
   .res--crema .mp__fb[aria-pressed='true'] { border-color: #161412; background: #ffffff; }
   .res--crema .mp__fn { border-color: #161412; }
   .res--crema .coach__ok { background: #161412; color: var(--acento); }
@@ -502,15 +613,121 @@ const iconos = {
     .mp__fb:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
   }
 
-  /* Cómo llegar: lista discreta, una fila por vía y sin desplegables; la línea de abajo marca el tiempo de formación */
-  .vias { list-style: none; margin: 0; padding: 0; display: grid; }
-  .via { position: relative; display: grid; grid-template-columns: 1.25rem minmax(0, 1fr) auto; column-gap: 0.7rem; align-items: baseline; padding-block: 1rem; border-bottom: 1px solid var(--linea); }
-  .via::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 3px; width: var(--w, 0); max-width: 100%; border-radius: 3px; background: var(--acento); }
-  .via__i { align-self: start; display: grid; margin-top: 0.2rem; color: var(--acento-texto); }
-  .via__tx { display: grid; gap: 0.2rem; min-width: 0; }
-  .via__tit { font-size: var(--t2); line-height: 1.3; font-weight: 600; }
-  .via__det { margin: 0; font-size: 0.875rem; line-height: 1.4; color: rgb(var(--tinta) / 0.72); }
-  .via__dur { font-size: var(--t1); font-weight: 600; color: var(--crema); white-space: nowrap; }
+  /* Cómo llegar: una fila desplegable por vía (icono, título corto, nombre oficial, duración y «+»); la línea de abajo marca el tiempo de formación */
+  .res { --cl-verde: var(--acento); }
+  .res--crema { --cl-verde: #4a6400; }
+  .cl { display: grid; }
+  .cl__sum { position: relative; list-style: none; cursor: pointer; display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) auto 1.9rem; column-gap: 0.85rem; align-items: center; min-height: 44px; padding-block: 1.1rem; border-bottom: 1px solid var(--linea); }
+  .cl__sum::-webkit-details-marker { display: none; }
+  .cl__sum::marker { content: ''; }
+  .cl__sum::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 3px; width: var(--w, 0); max-width: 100%; border-radius: 3px; background: var(--acento); }
+  .res--crema .cl__sum::after { background: #161412; }
+  .cl__sum:focus-visible { outline: 3px solid var(--cl-verde); outline-offset: 2px; border-radius: 0.5rem; }
+  .cl__ic { display: grid; color: var(--acento-texto); }
+  .cl__st { display: grid; gap: 0.15rem; min-width: 0; }
+  .cl__tit { font-size: 1.1875rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+  .cl__of { font-size: 0.9375rem; line-height: 1.4; color: var(--gris); }
+  .cl__dur { font-size: 1rem; font-weight: 800; color: var(--cl-verde); white-space: nowrap; }
+  .cl__mas { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; justify-self: end; border-radius: 50%; border: 1px solid rgb(var(--tinta) / 0.35); font-size: 1.125rem; line-height: 1; transition: transform 200ms ease, border-color 200ms ease, color 200ms ease; }
+  .cl__via[open] .cl__mas { transform: rotate(45deg); border-color: var(--cl-verde); color: var(--cl-verde); }
+  @media (max-width: 40rem) {
+    .cl__sum { grid-template-columns: 1.5rem minmax(0, 1fr) 1.9rem; row-gap: 0.1rem; }
+    .cl__st { grid-column: 2; grid-row: 1; }
+    .cl__ic { grid-row: 1; }
+    .cl__mas { grid-column: 3; grid-row: 1; }
+    .cl__dur { grid-column: 2; grid-row: 2; font-size: 0.9375rem; }
+  }
+
+  /* Lo desplegado: tarjeta crema con texto oscuro y acentos en verde oscuro (el verde de marca no se lee sobre crema) */
+  .cl__in { --cl-g: #5f574e; --cl-at: #4a6400; --cl-l: rgb(22 20 18 / 0.14); display: grid; gap: 1.1rem; margin-block: 1rem 1.5rem; padding: 24px; border-radius: 20px; background: #f6f1e8; color: #161412; font-size: 1rem; }
+  .res--crema .cl__in { border: 1px solid rgb(22 20 18 / 0.14); }
+  .cl__que { max-width: 60ch; margin: 0; font-size: 1.0625rem; line-height: 1.55; color: #2f2a24; }
+  .cl__qa { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+  .cl__d { display: grid; align-content: start; gap: 0.2rem; padding: 14px 16px; border: 1px solid var(--cl-l); border-radius: 14px; background: #fff; }
+  .cl__d small { font-size: 0.875rem; line-height: 1.3; color: var(--cl-g); }
+  .cl__d b { font-size: 1.0625rem; line-height: 1.3; font-weight: 700; }
+  .cl__d em { font-style: normal; font-size: 0.875rem; line-height: 1.4; color: var(--cl-g); }
+  /* Un bloque por comunidad: solo se ve el de la comunidad elegida (el que no depende del lugar se ve siempre) */
+  .cl__est { display: none; }
+  .cl__est:not([data-est]) { display: contents; }
+  .res[data-ccaa=''] .cl__est[data-est=''],
+  .res[data-ccaa='cat'] .cl__est[data-est='cat'],
+  .res[data-ccaa='mad'] .cl__est[data-est='mad'],
+  .res[data-ccaa='val'] .cl__est[data-est='val'],
+  .res[data-ccaa='and'] .cl__est[data-est='and'],
+  .res[data-ccaa='otra'] .cl__est[data-est='otra'] { display: contents; }
+  .cl__est--lugar:empty { display: none !important; }
+  .res[data-ccaa=''] .cl__est--lugar[data-est=''],
+  .res[data-ccaa='cat'] .cl__est--lugar[data-est='cat'],
+  .res[data-ccaa='mad'] .cl__est--lugar[data-est='mad'],
+  .res[data-ccaa='val'] .cl__est--lugar[data-est='val'],
+  .res[data-ccaa='and'] .cl__est--lugar[data-est='and'],
+  .res[data-ccaa='otra'] .cl__est--lugar[data-est='otra'] { display: grid; gap: 0.6rem; }
+  .cl__h4 { margin: 0; font-size: 0.9375rem; font-weight: 700; color: var(--cl-g); }
+  .cl__centros { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .cl__centros li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.65rem; padding: 12px 14px; border: 1px solid var(--cl-l); border-radius: 12px; background: #fff; }
+  .cl__centros b { flex: 1 1 14rem; min-width: 0; font-weight: 700; line-height: 1.35; }
+  .cl__lugar { font-size: 0.875rem; color: var(--cl-g); }
+  .cl__tag { padding: 2px 10px; border: 1px solid rgb(22 20 18 / 0.25); border-radius: 999px; font-size: 0.8125rem; font-weight: 700; line-height: 1.5; color: var(--cl-g); }
+  .cl__tag--pub { border-color: var(--cl-at); color: var(--cl-at); }
+  .cl__tag--dat { border-color: transparent; background: #ebe4d6; color: #161412; }
+  .cl__aviso { margin: 0; padding: 12px 16px; border: 1px dashed rgb(22 20 18 / 0.3); border-radius: 12px; font-size: 0.9375rem; line-height: 1.45; color: #2f2a24; }
+  .cl__tip { margin: 0; padding: 12px 16px; border-radius: 12px; background: #ebe4d6; font-size: 1rem; line-height: 1.5; color: #2f2a24; }
+  .cl__tip b { color: var(--cl-at); }
+  .cl__glos { max-width: 60ch; margin: 0.25rem 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--gris); }
+  .cl__glos b { color: var(--crema); }
+  .cl__pie { margin: 0; font-size: 0.875rem; line-height: 1.45; color: var(--gris); }
+  @media (max-width: 47.99rem) { .cl__qa { grid-template-columns: 1fr; } }
+  @media (max-width: 40rem) { .cl__in { padding: 18px 16px; border-radius: 16px; font-size: 1.0625rem; } .cl__que { font-size: 1.0625rem; } .cl__d b { font-size: 1.0625rem; } .cl__tip { font-size: 1.0625rem; } }
+  @media (prefers-reduced-motion: reduce) { .cl__mas { transition: none; } }
+
+  /* «Cómo llegar» v2 (contenido y animación): línea verde con precio y nota, barra de duración de 3 px, lista de lo que aprendes y de qué trabajas */
+  .cl__sum:focus { outline: none; }
+  .cl__sum:focus-visible { outline: 3px solid var(--cl-verde); outline-offset: 2px; border-radius: 0.5rem; }
+  .cl__via--v2 { border-top: 1px solid var(--linea); }
+  .cl__via--v2:last-of-type { border-bottom: 1px solid var(--linea); }
+  .cl__via--v2 .cl__sum { border-bottom: 0; }
+  .cl__sm { display: block; margin-top: 0.3rem; font-style: normal; font-size: 0.875rem; line-height: 1.4; font-weight: 600; color: var(--cl-verde); }
+  .cl__pt { grid-column: 1 / -1; height: 3px; margin-top: 0.35rem; border-radius: 3px; background: rgb(var(--tinta) / 0.12); }
+  .cl__pt i { display: block; height: 100%; border-radius: 3px; background: var(--acento); }
+  .res--crema .cl__pt i { background: #161412; }
+  .cl__tot { display: block; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed var(--cl-l); font-size: 0.875rem; line-height: 1.4; color: #161412; }
+  .cl__ex { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .cl__ex > div { padding: 16px 18px; border: 1px solid var(--cl-l); border-radius: 14px; background: #fff; }
+  .cl__ex h4 { margin: 0 0 0.6rem; font-size: 0.875rem; font-weight: 600; color: var(--cl-g); }
+  .cl__ex ul { list-style: none; margin: 0; padding: 0; }
+  .cl__ex li { position: relative; padding: 4px 0 4px 16px; font-size: 0.9375rem; line-height: 1.4; }
+  .cl__ex li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 6px; height: 6px; border-radius: 50%; background: var(--cl-at); }
+  .cl__when { margin: 0; font-size: 0.9375rem; line-height: 1.5; }
+  .cl__when b { font-weight: 700; }
+  .cl__donde { display: grid; gap: 0.6rem; }
+  .cl__sub { flex-basis: 100%; font-size: 0.875rem; color: var(--cl-g); }
+  .cl__est--lugar.cl__est--v2[data-est] { gap: 1.1rem; }
+  /* Una sola fila abierta: la flecha «+» y la barra siguen igual; en «Otra» solo quedan las vías que no dependen del lugar */
+  .cl__aviso--otra { display: none; margin-bottom: 0.75rem; border-color: rgb(var(--tinta) / 0.35); color: var(--crema); }
+  .res[data-ccaa='otra'] .cl__aviso--otra { display: block; }
+  .res[data-ccaa='otra'] .cl__via--lugar { display: none; }
+  @media (max-width: 47.99rem) { .cl__ex { grid-template-columns: 1fr; } }
+
+  /* ¿Dónde vives?: una sola elección arriba, para las tres fichas */
+  .donde { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.75rem; }
+  .donde__tit { margin: 0 0.4rem 0 0; font-size: var(--t2); font-weight: 700; }
+  .donde__op { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .donde__b { min-height: 44px; padding: 0 1.1rem; border: 1px solid rgb(var(--tinta) / 0.4); border-radius: 999px; background: none; color: var(--crema); font: inherit; font-size: 0.9375rem; font-weight: 700; cursor: pointer; transition: background-color 200ms ease, border-color 200ms ease; }
+  .donde__b:hover { border-color: rgb(var(--tinta) / 0.75); }
+  .donde__b:focus-visible { outline: 3px solid var(--cl-verde); outline-offset: 2px; }
+  .donde__b[aria-pressed='true'],
+  .res[data-ccaa='cat'] .donde__b[data-ccaa='cat'],
+  .res[data-ccaa='mad'] .donde__b[data-ccaa='mad'],
+  .res[data-ccaa='val'] .donde__b[data-ccaa='val'],
+  .res[data-ccaa='and'] .donde__b[data-ccaa='and'],
+  .res[data-ccaa='otra'] .donde__b[data-ccaa='otra'] { background: var(--acento); border-color: var(--acento); color: #161412; }
+  .donde--cl { gap: 0.4rem 0.6rem; }
+  .donde--cl .donde__tit { font-size: 0.9375rem; }
+  .donde--cl .donde__op { gap: 0.4rem; }
+  .donde--cl .donde__b { min-height: 36px; padding: 0 0.85rem; font-size: 0.875rem; }
+  @media (max-width: 47.99rem) { .donde--cl .donde__b { min-height: 44px; } }
+  @media (prefers-reduced-motion: reduce) { .donde__b { transition: none; } }
 
   .mp__sig { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; padding: 0.4rem 0.2rem; border: 0; background: none; color: var(--acento-texto); font: inherit; font-weight: 600; font-size: var(--t2); line-height: 1.3; text-align: right; cursor: pointer; }
   .mp__sig:hover { text-decoration: underline; text-underline-offset: 0.25em; }
@@ -581,7 +798,6 @@ const iconos = {
     .mp__panel { gap: 3rem; padding: 2.75rem; }
     .mp__datos { column-gap: 3.5rem; }
     .mp__par { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.5rem; }
-    .vias { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.5rem; }
     .coach { margin-top: 2.5rem; margin-bottom: 0; }
     .coach--c { padding: 2rem 2.75rem; }
   }

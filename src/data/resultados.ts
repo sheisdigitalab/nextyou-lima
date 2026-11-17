@@ -6,16 +6,6 @@ import laia from '../assets/muestra/laia.jpg';
 import aitana from '../assets/muestra/aitana.jpg';
 import coach from '../assets/muestra/coach-4.jpg';
 
-export interface Ruta {
-  titulo: string;
-  detalle: string;
-  tipo: 'fp' | 'uni' | 'curso' | 'solo';
-  // Duración aproximada en meses, solo para dibujar la línea de cada vía; null = a tu ritmo
-  meses: number | null;
-  // Duración en pocas palabras, visible junto a la línea de la vía
-  duracion: string;
-}
-
 export interface Camino {
   id: string;
   tipo: string; // «El que más te pega», «El puente», «El salto»
@@ -34,7 +24,7 @@ export interface Camino {
   // Opcionales: cómo se llama el trabajo y el título del bloque de formación (por defecto, «La formación»)
   trabajo?: string;
   formacionTitulo?: string;
-  rutas: Ruta[];
+  // Las vías («Cómo llegar») viven en como-llegar.ts
 }
 
 export const caminos: Camino[] = [
@@ -56,14 +46,6 @@ export const caminos: Camino[] = [
     formacionTitulo: 'Qué necesitas saber',
     formacion:
       'Grabar y editar vídeo, escribir textos cortos que enganchen y entender los números: qué funciona y por qué. Las empresas no te piden un título concreto. Te piden ver lo que ya has hecho.',
-    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y requisitos de acceso
-    rutas: [
-      { titulo: 'FP de Realización de Proyectos Audiovisuales y Espectáculos', detalle: 'Grado superior · 2 años · Grabación, montaje y postproducción', tipo: 'fp', meses: 24, duracion: '2 años' },
-      { titulo: 'FP de Marketing y Publicidad', detalle: 'Grado superior · 2 años · Redes y campañas para marcas', tipo: 'fp', meses: 24, duracion: '2 años' },
-      { titulo: 'Grado en Comunicación Audiovisual', detalle: 'Universidad · 4 años', tipo: 'uni', meses: 48, duracion: '4 años' },
-      { titulo: 'Cursos de vídeo y redes', detalle: 'Unos meses · Muchos son online', tipo: 'curso', meses: 6, duracion: 'Unos meses' },
-      { titulo: 'Por tu cuenta', detalle: 'Abre un canal y aprende publicando', tipo: 'solo', meses: null, duracion: 'A tu ritmo' },
-    ],
   },
   {
     id: 'animacion',
@@ -84,12 +66,6 @@ export const caminos: Camino[] = [
     formacionTitulo: 'Qué necesitas saber',
     formacion:
       'Dibujar y entender cómo se mueven las cosas (el peso, el equilibrio, el ritmo), y manejar programas 3D. En este sector tu portfolio pesa tanto como el título: lo que importa es lo que eres capaz de hacer.',
-    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones y si los cursos son online
-    rutas: [
-      { titulo: 'Grado en Animación', detalle: 'Universidad · 4 años', tipo: 'uni', meses: 48, duracion: '4 años' },
-      { titulo: 'Grado medio y después superior de Animación 3D', detalle: 'FP · 2 + 2 años', tipo: 'fp', meses: 48, duracion: '2 + 2 años' },
-      { titulo: 'Curso, trabajo y especialización', detalle: 'Un curso, 2 años trabajando y 1 especializándote', tipo: 'curso', meses: 48, duracion: '1 + 2 + 1 años' },
-    ],
   },
   {
     id: 'ciberseguridad',
@@ -109,13 +85,6 @@ export const caminos: Camino[] = [
     formacionTitulo: 'Qué necesitas saber',
     formacion:
       'Cómo funcionan los ordenadores y las redes, y después cómo se protegen y cómo se atacan (siempre de forma legal). Se aprende practicando: hay webs gratuitas con retos para empezar desde cero.',
-    // PENDIENTE CLIENTA (Lali): confirmar títulos, duraciones, requisitos de acceso y la duración del curso de especialización
-    rutas: [
-      { titulo: 'FP de Informática + curso de especialización en Ciberseguridad', detalle: 'Grado superior como ASIR (2 años) y después un curso de unos 9 meses', tipo: 'fp', meses: 33, duracion: '2 años + curso' },
-      { titulo: 'Grado en Ingeniería de la Ciberseguridad', detalle: 'Universidad · 4 años', tipo: 'uni', meses: 48, duracion: '4 años' },
-      { titulo: 'Cursos y certificaciones', detalle: 'Unos meses · Muchos son online', tipo: 'curso', meses: 6, duracion: 'Unos meses' },
-      { titulo: 'Por tu cuenta', detalle: 'Retos gratis de hacking ético, como picoCTF o TryHackMe', tipo: 'solo', meses: null, duracion: 'A tu ritmo' },
-    ],
   },
 ];
 

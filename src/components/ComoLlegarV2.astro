@@ -1,0 +1,88 @@
+---
+// «Cómo llegar» v2 (Creación de contenido y Animación 3D): una fila desplegable por vía, solo una abierta a la vez.
+// Los textos vienen de src/data/como-llegar-v2.ts (copiados de la propuesta). Los estilos están en /resultados/ (clases .cl__*).
+// Qué cambia con la comunidad (línea verde, tarjetas, fechas, centros y «Bueno saber») se pinta una vez por comunidad
+// y la página enseña solo la elegida (main[data-ccaa]); en «Otra» se ocultan las vías con centros y sale el aviso.
+import { type CaminoV2, GLOSARIO_V2, PIE_V2 } from '../data/como-llegar-v2';
+
+interface Props {
+  camino: CaminoV2;
+  id: string;
+  iconos: Record<string, string>;
+}
+const { camino, id, iconos } = Astro.props;
+const COMUNIDADES = ['cat', 'mad', 'val', 'and'] as const;
+---
+
+<div class="cl cl--v2" data-cl>
+  <p class="cl__aviso cl__aviso--otra" role="note">{camino.avisoOtra}</p>
+  {
+    camino.vias.map((v, k) => {
+      const regiones = v.porComunidad ? COMUNIDADES.map((c) => [c, v.porComunidad![c]] as const) : [[undefined, v.igual!] as const];
+      return (
+        <details class={`cl__via cl__via--v2${v.porComunidad ? ' cl__via--lugar' : ''}`} name={`cl-${id}`} open={k === 0}>
+          <summary class="cl__sum">
+            <span class="cl__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={iconos[v.icono]} /></span>
+            <span class="cl__st">
+              <b class="cl__tit">{v.titulo}</b>
+              <span class="cl__of">{v.oficial}</span>
+              {regiones.map(([c, r]) => <span class="cl__est" data-est={c}><em class="cl__sm">{r.resumen}</em></span>)}
+            </span>
+            <span class="cl__dur">{v.duracion}</span>
+            <span class="cl__mas" aria-hidden="true">+</span>
+            {v.barra != null && <span class="cl__pt" aria-hidden="true"><i style={`width: ${v.barra}%`} /></span>}
+          </summary>
+          <div class="cl__in">
+            <p class="cl__que">{v.que}</p>
+            <div class="cl__qa">
+              {
+                regiones.map(([c, r]) => (
+                  <div class="cl__est" data-est={c}>
+                    {r.qa.map((t) => (
+                      <div class="cl__d">
+                        <small>{t.t}</small>
+                        <b>{t.valor}</b>
+                        {t.nota && <em>{t.nota}</em>}
+                        {t.total && <strong class="cl__tot">{t.total}</strong>}
+                      </div>
+                    ))}
+                  </div>
+                ))
+              }
+            </div>
+            <div class="cl__ex">
+              {v.ex.map((e) => <div><h4>{e.h}</h4><ul>{e.items.map((t) => <li>{t}</li>)}</ul></div>)}
+            </div>
+            {
+              regiones.map(([c, r]) => (
+                <div class="cl__est cl__est--lugar cl__est--v2" data-est={c}>
+                  {r.cuando.map((w) => <p class="cl__when"><b>{w.b}</b> {w.t}</p>)}
+                  {
+                    r.centros && (
+                      <div class="cl__donde">
+                        <h4 class="cl__h4">{r.dondeTitulo}</h4>
+                        <ul class="cl__centros" role="list">
+                          {r.centros.map((z) => (
+                            <li>
+                              <b>{z.nombre}</b>
+                              {z.lugar && <span class="cl__lugar">{z.lugar}</span>}
+                              {z.etiquetas.map((e) => <span class={`cl__tag${e.k ? ` cl__tag--${e.k}` : ''}`}>{e.t}</span>)}
+                              {z.sub && <span class="cl__sub">{z.sub}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  }
+                  {r.bueno && <p class="cl__tip"><b>Bueno saber:</b> {r.bueno}</p>}
+                </div>
+              ))
+            }
+          </div>
+        </details>
+      );
+    })
+  }
+</div>
+{GLOSARIO_V2.map((g) => <p class="cl__glos"><b>{g.q}</b> {g.a}</p>)}
+<p class="cl__pie">{PIE_V2}</p>
