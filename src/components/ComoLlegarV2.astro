@@ -3,7 +3,7 @@
 // Los textos vienen de src/data/como-llegar-v2.ts (copiados de la propuesta). Los estilos están en /resultados/ (clases .cl__*).
 // Qué cambia con la comunidad (línea verde, tarjetas, fechas, centros y «Bueno saber») se pinta una vez por comunidad
 // y la página enseña solo la elegida (main[data-ccaa]); en «Otra» se ocultan las vías con centros y sale el aviso.
-import { type CaminoV2, GLOSARIO_V2, PIE_V2 } from '../data/como-llegar-v2';
+import { type CaminoV2, NOTA_CORTE_V2, PIE_V2 } from '../data/como-llegar-v2';
 
 interface Props {
   camino: CaminoV2;
@@ -84,5 +84,5 @@ const COMUNIDADES = ['cat', 'mad', 'val', 'and'] as const;
     })
   }
 </div>
-{GLOSARIO_V2.map((g) => <p class="cl__glos"><b>{g.q}</b> {g.a}</p>)}
+<p class="cl__pie"><b>{NOTA_CORTE_V2.b}</b> {NOTA_CORTE_V2.t}</p>
 <p class="cl__pie">{PIE_V2}</p>

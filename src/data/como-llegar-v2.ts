@@ -30,8 +30,9 @@ export interface ViaV2 {
 }
 export interface CaminoV2 { avisoOtra: string; vias: ViaV2[] }
 
-export const GLOSARIO_V2: { q: string; a: string }[] = [{"q": "¿Qué es la nota de corte?", "a": "La nota del último alumno que entró el año pasado, sobre 14. Cambia cada año."}, {"q": "¿Qué es un Grado Superior?", "a": "Una FP de dos años, muy práctica y con prácticas en empresa. Al acabar puedes trabajar o pasar a la universidad."}, {"q": "¿Qué es la preinscripción?", "a": "La solicitud de plaza: eliges centros por orden de preferencia y te asignan uno según tu nota."}];
-export const PIE_V2 = "Datos del curso 2026-27. Las notas, los precios y las fechas cambian cada año: confírmalos en la web del centro antes de apuntarte.";
+// Las dos líneas finas bajo las vías (texto pequeño y gris)
+export const NOTA_CORTE_V2 = { b: 'Nota de corte:', t: 'la del último que entró el año pasado, sobre 14.' };
+export const PIE_V2 = 'Datos del curso 2026-27. Cambian cada año: confírmalos en la web del centro.';
 
 export const comoLlegarV2: Record<string, CaminoV2> = {
   contenido: {
