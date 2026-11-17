@@ -29,7 +29,7 @@ const COMUNIDADES = ['cat', 'mad', 'val', 'and'] as const;
               {regiones.map(([c, r]) => <span class="cl__est" data-est={c}><em class="cl__sm">{r.resumen}</em></span>)}
             </span>
             <span class="cl__dur">{v.duracion}</span>
-            <span class="cl__mas" aria-hidden="true">+</span>
+            <span class="cl__mas" aria-hidden="true"><span class="cl__mas-v">Ver más</span><span class="cl__mas-c">Cerrar</span><span class="cl__mas-s">+</span></span>
             {v.barra != null && <span class="cl__pt" aria-hidden="true"><i style={`width: ${v.barra}%`} /></span>}
           </summary>
           <div class="cl__in">

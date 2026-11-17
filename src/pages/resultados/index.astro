@@ -703,6 +703,22 @@ const iconos = {
   .cl__donde { display: grid; gap: 0.6rem; }
   .cl__sub { flex-basis: 100%; font-size: 0.875rem; color: var(--cl-g); }
   .cl__est--lugar.cl__est--v2[data-est] { gap: 1.1rem; }
+  /* Píldora «Ver más» / «Cerrar» de las filas v2: borde y texto verdes; abierta, fondo verde y «+» girado a «×» */
+  .cl__via--v2 .cl__sum { grid-template-columns: 1.5rem minmax(0, 1fr) auto auto; }
+  .cl__via--v2 .cl__mas { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; width: auto; height: 34px; padding: 0 14px; border: 1px solid var(--cl-verde); border-radius: 999px; font-size: 0.84375rem; font-weight: 700; line-height: 1; color: var(--cl-verde); white-space: nowrap; transform: none; transition: background-color 200ms ease, color 200ms ease; }
+  .cl__mas-s { display: inline-block; font-size: 1.125rem; line-height: 1; transition: transform 200ms ease; }
+  .cl__mas-c { display: none; }
+  .cl__via--v2[open] .cl__mas-v { display: none; }
+  .cl__via--v2[open] .cl__mas-c { display: inline; }
+  .cl__via--v2[open] .cl__mas { transform: none; background: var(--cl-verde); border-color: var(--cl-verde); color: #161412; }
+  .res--crema .cl__via--v2[open] .cl__mas { color: #f6f1e8; }
+  .cl__via--v2[open] .cl__mas-s { transform: rotate(45deg); }
+  .cl__via--v2:not([open]) .cl__sum:hover .cl__mas { background: rgb(200 245 59 / 0.12); }
+  .res--crema .cl__via--v2:not([open]) .cl__sum:hover .cl__mas { background: rgb(74 100 0 / 0.1); }
+  .cl__via--v2 .cl__sum:hover .cl__tit { text-decoration: underline; text-decoration-color: var(--cl-verde); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+  @media (max-width: 47.99rem) { .cl__via--v2 .cl__mas { height: 44px; } }
+  @media (max-width: 40rem) { .cl__via--v2 .cl__sum { grid-template-columns: 1.5rem minmax(0, 1fr) auto; } }
+  @media (prefers-reduced-motion: reduce) { .cl__via--v2 .cl__mas, .cl__mas-s { transition: none; } }
   /* Una sola fila abierta: la flecha «+» y la barra siguen igual; en «Otra» solo quedan las vías que no dependen del lugar */
   .cl__aviso--otra { display: none; margin-bottom: 0.75rem; border-color: rgb(var(--tinta) / 0.35); color: var(--crema); }
   .res[data-ccaa='otra'] .cl__aviso--otra { display: block; }
