@@ -307,7 +307,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <p class="cfa__p">{comoAppV7.coach.texto}</p>
             <ul class="cfa__lista" role="list">{comoAppV7.coach.puntos.map((t) => <li>{t}</li>)}</ul>
             <p class="cfa__micro cfa__nota-coach">El test, los caminos y las historias son gratis.</p>
-            <a class="cfa__boton cfa__boton--borde cfa__boton--coach" aria-disabled="true" style="cursor:default"><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
+            <a class="cfa__boton cfa__boton--borde cfa__boton--coach" href={ENLACES.acompanamiento}><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
           </div>
           <div class="cfa__call" aria-hidden="true" data-placeholder="true">
             <Image src={fotoCoach} alt="" width={900} height={600} class="cfa__call-img" loading="lazy" />

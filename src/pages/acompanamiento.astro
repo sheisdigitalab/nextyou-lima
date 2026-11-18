@@ -1,303 +1,489 @@
 ---
-// /acompanamiento/: el acompañamiento opcional de pago con un coach. Sustituye a la antigua «Quién hay detrás».
-// Referencia: exploracion/acompanamiento-propuesta.html (nextyou-landing). Contenido en src/data/acompanamiento.ts.
+// /acompanamiento/: acompañamiento opcional de pago con un coach. Sustituye a la versión anterior.
+// Referencia: exploracion/acompanamiento-propuesta.html (nextyou-landing); textos y orden de secciones tal cual.
 //
-// PENDIENTE CLIENTA: precios y condiciones de los planes, perfiles reales de los coaches (hoy de ejemplo) y política de cancelación.
-// Los botones de reservar no tienen destino real (no hay pasarela de pago): llevan a #planes.
-import { Image, getImage } from 'astro:assets';
+// PENDIENTE CLIENTA / SARA: enlaces de reservar y «Escríbenos» (hoy #), perfiles reales de los coaches (hoy de ejemplo, sin vídeo),
+// política de cancelación y devolución. Los botones de vídeo de los coaches no hacen nada todavía.
 import V5 from '../layouts/V5.astro';
-import VisorClips from '../components/VisorClips.astro';
+import AppPantalla from '../components/AppPantalla.astro';
 import { CTA_PRINCIPAL } from '../config';
-import { hero, queEs, quienEs, criterios, comoFunciona, planes, coaches, preguntas, cierre, meta } from '../data/acompanamiento';
 
-// Foto grande para el visor de cada coach
-const perfiles = await Promise.all(coaches.personas.map(async (p) => ({ ...p, grande: (await getImage({ src: p.foto, width: 900, format: 'webp' })).src })));
-
-// Subrayado verde en la parte destacada del título
-const resaltar = (titulo: string, parte: string) => titulo.replace(parte, `<u>${parte}</u>`);
+const faq = {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"¿Tengo que hacer el test antes?","acceptedAnswer":{"@type":"Answer","text":"Sí. El coach trabaja a partir de tus 3 caminos, así la primera sesión empieza con información sobre ti y no perdéis tiempo. El test es gratis."}},
+{"@type":"Question","name":"¿Me vais a decir qué tengo que estudiar?","acceptedAnswer":{"@type":"Answer","text":"No. Te ayudamos a ordenar lo que sabes de ti y de cada camino, y a ver los pros y contras con datos. La decisión es tuya."}},
+{"@type":"Question","name":"¿Mis padres se enteran de lo que hablo con el coach?","acceptedAnswer":{"@type":"Answer","text":"No. Tu familia está al principio, pero las sesiones son tuyas. Lo que cuentas no se comparte, salvo que estés en peligro."}},
+{"@type":"Question","name":"¿Qué plan me conviene?","acceptedAnswer":{"@type":"Answer","text":"Si tienes una duda concreta, Resolver dudas. Si dudas entre varios caminos, Comparar caminos. Si tienes que elegir pronto, Decidir con calma."}},
+{"@type":"Question","name":"¿Puedo elegir coach?","acceptedAnswer":{"@type":"Answer","text":"Sí. Al reservar eliges con quién quieres hablar."}},
+{"@type":"Question","name":"¿Qué necesito para la sesión?","acceptedAnswer":{"@type":"Answer","text":"Un ordenador o un móvil con cámara, conexión a internet y un sitio tranquilo donde puedas hablar."}}]};
 ---
 
-<V5 titulo={meta.titulo} descripcion={meta.descripcion} actual="bachillerato" soloBachillerato ruta="home-v3/" robots="noindex, follow">
+<V5
+  titulo="Coach para decidir qué estudiar · NextYou"
+  descripcion="Sesiones por videollamada con un coach para comparar tus 3 caminos con datos reales y decidir qué estudiar. Tu familia, al principio. Desde 49 €."
+  actual="bachillerato"
+  soloBachillerato
+  ruta="home-v3/"
+  robots="noindex, follow"
+>
   <main id="contenido" class="ac">
-    <!-- Hero con el chat de ejemplo -->
-    <section class="ac__sec ac__hero" aria-labelledby="ac-titulo">
-      <div class="ancho ac__hero-rejilla">
-        <div>
-          <p class="ac__eti">{hero.etiqueta}</p>
-          <h1 id="ac-titulo" class="ac__h1" set:html={resaltar(hero.titulo, hero.resaltado)} />
-          <p class="ac__sub">{hero.texto}</p>
-          <a class="boton" href="#planes">{hero.boton} <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="ac__tarjeta ac__chat" role="img" aria-label="Ejemplo de conversación con un coach">
-          <small>{hero.chat.etiqueta}</small>
-          {hero.chat.mensajes.map((m) => <p class={m.de === 'coach' ? 'ac__chat-k' : 'ac__chat-y'}>{m.texto}</p>)}
-        </div>
-      </div>
-    </section>
+<div class="ancho">
 
-    <!-- Qué es / qué no es -->
-    <section class="ac__sec" aria-labelledby="ac-que-es">
-      <div class="ancho">
-        <p class="ac__eti">{queEs.etiqueta}</p>
-        <h2 id="ac-que-es" class="ac__h2" set:html={resaltar(queEs.titulo, queEs.resaltado)} />
-        <div class="ac__dos">
-          <div class="ac__tarjeta">
-            <h3>{queEs.si.titulo}</h3>
-            <ul>{queEs.si.puntos.map((t) => <li>{t}</li>)}</ul>
-          </div>
-          <div class="ac__tarjeta ac__tarjeta--no">
-            <h3>{queEs.no.titulo}</h3>
-            <ul>{queEs.no.puntos.map((t) => <li>{t}</li>)}</ul>
-          </div>
-        </div>
-      </div>
-    </section>
+<div class="ac-hero">
+<div><p class="ac-ey">Acompañamiento con un coach</p>
+<h1>Decide tu siguiente paso <em class="ac-hl">con un coach a tu lado</em></h1>
+<p class="ac-sub">Cuando tengas tus 3 caminos, un coach te ayuda a compararlos con datos reales y a decidir por dónde empezar.</p>
+<div class="ac-ctas"><a class="boton" href="#planes">Ver planes desde 49 €</a><a class="boton boton--contorno" href="#familias">Información para familias</a></div>
+<ul class="ac-facts"><li>Por videollamada, desde casa</li><li>Sesiones de 45 minutos</li><li>Tú eliges a tu coach</li><li>Tu familia, al principio</li></ul></div>
+<figure class="ac-card ac-chat" style="margin:0" aria-label="Ejemplo de conversación en una sesión">
+<p class="ac-cap"><span>Así puede ser una sesión</span><span>Ejemplo</span></p>
+<p class="ac-y">Me salen Animación 3D y Ciberseguridad y no sé por cuál tirar.</p>
+<p class="ac-k">Vamos a ver qué te atrae de cada una, qué se estudia y cómo es un día de trabajo.</p>
+<p class="ac-y">¿Y si elijo mal?</p>
+<p class="ac-k">Hoy no tienes que decidirlo todo. Buscamos un primer paso que puedas probar.</p></figure>
+</div>
 
-    <!-- Insiders y coaches -->
-    <section class="ac__sec" aria-labelledby="ac-quien">
-      <div class="ancho">
-        <p class="ac__eti">{quienEs.etiqueta}</p>
-        <h2 id="ac-quien" class="ac__h2" set:html={resaltar(quienEs.titulo, quienEs.resaltado)} />
-        <div class="ac__dos">
-          <div class="ac__tarjeta"><h3>{quienEs.insiders.titulo}</h3><p>{quienEs.insiders.texto}</p></div>
-          <div class="ac__tarjeta"><h3>{quienEs.coaches.titulo}</h3><p>{quienEs.coaches.texto}</p></div>
-        </div>
-      </div>
-    </section>
+<section aria-labelledby="t-quien"><p class="ac-ey">Para quién es</p><h2 id="t-quien">¿Te suena <em class="ac-hl">alguna de estas?</em></h2>
+<div class="ac-sit" role="region" aria-label="Situaciones frecuentes, desliza para ver más" tabindex="0">
+<div><blockquote>«Me salen tres caminos y no sé por cuál empezar.»</blockquote><p>Los ponéis uno al lado del otro: qué se estudia, cuánto dura, qué nota piden, cuánto cuesta y de qué se trabaja al acabar.</p></div>
+<div><blockquote>«Me gusta algo creativo, pero en casa no lo ven claro.»</blockquote><p>Preparáis cómo contarlo en casa, con salidas y precios reales, para que la conversación vaya de datos y no de miedos.</p></div>
+<div><blockquote>«Tengo que elegir este curso y me bloqueo.»</blockquote><p>Convertís la decisión en un primer paso pequeño que puedes probar. No hace falta acertar a la primera: casi todo se puede reorientar.</p></div>
+</div></section>
 
-    <!-- Cómo los elegimos -->
-    <section class="ac__sec" aria-labelledby="ac-criterios">
-      <div class="ancho">
-        <p class="ac__eti">{criterios.etiqueta}</p>
-        <h2 id="ac-criterios" class="ac__h2" set:html={resaltar(criterios.titulo, criterios.resaltado)} />
-        <ul class="ac__cuatro ac__criterios" role="list">
-          {criterios.items.map((c) => <li class="ac__tarjeta"><b aria-hidden="true">{c.dato}</b><p>{c.texto}</p></li>)}
-        </ul>
-        <p class="ac__frase">{criterios.frase}</p>
-      </div>
-    </section>
+<section id="como" aria-labelledby="t-como"><p class="ac-ey">Cómo funciona</p><h2 id="t-como">Así funciona, <em class="ac-hl">paso a paso</em></h2>
+<ol class="ac-steps">
+<li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 14.5c2.8 0 5 2.2 5 5"/></svg></span><span class="ac-num">Paso 1</span><h3>Empezáis con tu familia</h3><p>Al principio está tu madre, padre o tutor. Habláis de qué os preocupa, qué esperáis del acompañamiento y qué se queda solo entre tú y tu coach.</p></li>
+<li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span><span class="ac-num">Paso 2</span><h3>Las sesiones son tuyas</h3><p>A partir de ahí, solo tú y tu coach. Repasáis tus 3 caminos, lo que te atrae de cada uno y lo que te frena. Lo que cuentas es confidencial, salvo que estés en peligro.</p></li>
+<li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6L5 18a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 14h9"/></svg></span><span class="ac-num">Paso 3</span><h3>Entre sesiones, pruebas</h3><p>Tu coach te propone retos pequeños para comprobar si un camino te encaja: ver la entrevista de un Insider, ir a las puertas abiertas de un centro o preguntar a un estudiante de ese grado.</p></li>
+<li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span><span class="ac-num">Paso 4</span><h3>Acabas con un plan</h3><p>Lo escribís juntos: qué has descubierto de ti, qué camino quieres probar primero, cuándo hay que apuntarse y un plan B por si no sale a la primera.</p></li>
+</ol>
+<p class="ac-note">Tú marcas el ritmo: una sesión por semana, cada dos semanas o una al mes.</p>
+<p class="ac-callout"><b>Lo que no hace un coach:</b> no decide por ti, no te consigue plaza y no hace terapia. Si lo que necesitas es un psicólogo, te lo dice.</p></section>
 
-    <!-- Cómo funciona -->
-    <section class="ac__sec" aria-labelledby="ac-como">
-      <div class="ancho">
-        <p class="ac__eti">{comoFunciona.etiqueta}</p>
-        <h2 id="ac-como" class="ac__h2" set:html={resaltar(comoFunciona.titulo, comoFunciona.resaltado)} />
-        <ol class="ac__cuatro ac__pasos" role="list">
-          {comoFunciona.pasos.map((p) => <li class="ac__tarjeta"><b aria-hidden="true">{p.n}</b><h3>{p.titulo}</h3><p>{p.texto}</p></li>)}
-        </ol>
-        <p class="ac__nota ac__nota--izq">{comoFunciona.nota}</p>
-      </div>
-    </section>
 
-    <!-- Planes y precios -->
-    <section class="ac__sec" id="planes" aria-labelledby="ac-planes">
-      <div class="ancho">
-        <p class="ac__eti">{planes.etiqueta}</p>
-        <h2 id="ac-planes" class="ac__h2" set:html={resaltar(planes.titulo, planes.resaltado)} />
-        <div class="ac__planes">
-          {
-            planes.lista.map((p) => (
-              <article class:list={['ac__tarjeta', 'ac__plan', { 'ac__plan--rec': p.recomendado }]}>
-                {p.recomendado && <span class="ac__tag">Recomendado</span>}
-                <h3>{p.nombre}</h3>
-                <p class="ac__para">{p.para}</p>
-                <p class="ac__precio">{p.precio}<small>IVA incl.</small></p>
-                <p class="ac__ses">{p.sesiones}</p>
-                <ul>{p.incluye.map((t) => <li set:html={t} />)}</ul>
-                <p class="ac__fam" set:html={p.familia} />
-                <a class:list={['boton', p.recomendado ? 'boton--oscuro' : 'boton--contorno']} href="#planes">{p.boton}</a>
-              </article>
-            ))
-          }
-        </div>
-        <div class="ac__tarjeta ac__tabla">
-          <h3>{planes.tabla.titulo}</h3>
-          <div class="ac__tabla-caja">
-            <table>
-              <thead>
-                <tr><td></td>{planes.tabla.columnas.map((c) => <th scope="col">{c}</th>)}</tr>
-              </thead>
-              <tbody>
-                {planes.tabla.filas.map((f) => <tr><th scope="row">{f[0]}</th>{f.slice(1).map((c) => <td>{c}</td>)}</tr>)}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <p class="ac__nota">{planes.nota}</p>
-      </div>
-    </section>
+<section id="planes" aria-labelledby="t-planes"><p class="ac-ey">Planes y precios</p><h2 id="t-planes">Elige cuánto <em class="ac-hl">acompañamiento</em> quieres</h2>
+<p class="ac-lead">Los tres empiezan con tu familia y acaban con algo por escrito. Lo que cambia es cuánto tiempo tenéis para comparar y decidir.</p>
+<div class="ac-plans">
+<article class="ac-card ac-plan" aria-labelledby="p1"><h3 id="p1">Resolver dudas</h3><p class="ac-for">Tienes una duda concreta (una nota, un centro, FP o universidad) y quieres resolverla con alguien que sabe.</p>
+<p class="ac-pr">49 €<small>IVA incl.</small></p><p class="ac-per">Sesión suelta</p>
+<ul class="ac-chips" aria-label="Formato"><li>1 sesión de 45 min</li><li>10 min con tu familia</li></ul>
+<ul class="ac-li ac-ok"><li>Repasáis tus 3 caminos</li><li>Resuelves las dudas que traigas preparadas</li><li>Te llevas por escrito tu siguiente paso</li></ul>
+<a class="boton boton--contorno" href="#" aria-label="Reservar el plan Resolver dudas, 49 euros">Reservar sesión</a></article>
 
-    <!-- Los coaches -->
-    <section class="ac__sec" id="coaches" aria-labelledby="ac-coaches">
-      <div class="ancho">
-        <p class="ac__eti">{coaches.etiqueta}</p>
-        <h2 id="ac-coaches" class="ac__h2" set:html={resaltar(coaches.titulo, coaches.resaltado)} />
-        <p class="ac__sub ac__sub--ancho">{coaches.texto}</p>
-        <ul class="ac__perfiles" role="list">
-          {
-            perfiles.map((p, i) => (
-              <li class="ac__perfil" data-placeholder="true">
-                <Image src={p.foto} alt={`Foto de muestra de ${p.nombre}`} width={176} height={176} loading="lazy" class="ac__perfil-foto" />
-                <div>
-                  <p class="ac__perfil-nombre">{p.nombre}, {p.edad}</p>
-                  <p class="ac__perfil-rol">{p.rol}</p>
-                </div>
-                <p class="ac__perfil-cita">«{p.cita}»</p>
-                <button
-                  type="button"
-                  class="boton boton--contorno boton--sm ac__perfil-ver"
-                  data-visor-abrir
-                  data-grupo="coaches"
-                  aria-haspopup="dialog"
-                  aria-label={`Ver el vídeo de ${p.nombre}, ${p.rol}, ${p.duracion}`}
-                  data-nombre={`${p.nombre}, ${p.edad}`}
-                  data-profesion={p.rol}
-                  data-cita={p.cita}
-                  data-duracion={p.duracion}
-                  data-img={p.grande}
-                  data-video=""
-                  data-subtitulos=""
-                  data-indice={i}
-                >
-                  <svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg>
-                  Ver vídeo · {p.duracion}
-                </button>
-              </li>
-            ))
-          }
-        </ul>
-        <p class="ac__pendiente">{coaches.nota}</p>
-      </div>
-    </section>
+<article class="ac-card ac-plan ac-rec" aria-labelledby="p2"><span class="ac-tag">Para comparar tus 3 caminos</span><h3 id="p2">Comparar caminos</h3><p class="ac-for">Dudas entre varias opciones y quieres compararlas con calma.</p>
+<p class="ac-pr">149 €<small>IVA incl.</small></p><p class="ac-per">Unos 37 € por sesión</p>
+<ul class="ac-chips" aria-label="Formato"><li>4 sesiones de 45 min</li><li>1 con tu familia</li></ul>
+<ul class="ac-li ac-ok"><li><b>1.ª</b> Qué te mueve y qué te atrae de cada camino</li><li><b>2.ª</b> Ponéis frente a frente universidad, FP y cursos</li><li><b>3.ª</b> Eliges un primer paso para probar</li><li>Comparativa hecha para ti: según tu nota, tu presupuesto y dónde vives</li><li>Dudas por mensaje entre sesiones</li></ul>
+<a class="boton boton--oscuro" href="#" aria-label="Empezar el plan Comparar caminos, 149 euros">Empezar acompañamiento</a></article>
 
-    <!-- Preguntas frecuentes -->
-    <section class="ac__sec" aria-labelledby="ac-faq">
-      <div class="ancho">
-        <p class="ac__eti">{preguntas.etiqueta}</p>
-        <h2 id="ac-faq" class="ac__h2" set:html={resaltar(preguntas.titulo, preguntas.resaltado)} />
-        <div class="ac__faq">
-          {
-            preguntas.lista.map((q, i) => (
-              <details open={i === 0}>
-                <summary>{q.p}</summary>
-                <p>{q.r}</p>
-                {q.pendiente && <span class="ac__pendiente">{q.pendiente}</span>}
-              </details>
-            ))
-          }
-        </div>
-      </div>
-    </section>
+<article class="ac-card ac-plan" aria-labelledby="p3"><h3 id="p3">Decidir con calma</h3><p class="ac-for">Tienes que elegir pronto (preinscripción, matrícula) y quieres llegar con todo claro.</p>
+<p class="ac-pr">249 €<small>IVA incl.</small></p><p class="ac-per">Unos 42 € por sesión, con extras</p>
+<ul class="ac-chips" aria-label="Formato"><li>6 sesiones de 45 min</li><li>2 con tu familia</li></ul>
+<ul class="ac-li ac-ok"><li>Todo lo de «Comparar caminos»</li><li>Una sesión más para cerrar tu plan y tu plan B</li><li>Charla de 20 min con un Insider de tu camino</li><li>Sesión final con tu familia: se lo cuentas tú</li><li>Un mes de dudas por mensaje al acabar</li></ul>
+<a class="boton boton--contorno" href="#" aria-label="Empezar el plan Decidir con calma, 249 euros">Empezar acompañamiento</a></article>
+</div>
+<div class="ac-book" aria-labelledby="t-book"><h3 id="t-book">Cómo se reserva</h3><ol><li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><div><b>Eliges plan y coach</b><span>Si no lo tienes claro, te proponemos el que mejor encaja con tus caminos.</span></div></li><li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div><b>Escoges día y hora</b><span>Según la agenda de tu coach. Si eres menor, la reserva y el pago los hace un adulto.</span></div></li><li><span class="ac-mk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span><div><b>Os llega el enlace</b><span>Recibís por email la confirmación y el enlace de la videollamada.</span></div></li></ol></div>
+<ul class="ac-trust"><li>Por videollamada, desde casa</li><li>Tú eliges a tu coach</li><li>Tú marcas el ritmo</li></ul>
 
-    <!-- Cierre -->
-    <section class="ac__sec ac__cierre" aria-labelledby="ac-cierre">
-      <div class="ancho">
-        <h2 id="ac-cierre" class="ac__h2" set:html={resaltar(cierre.titulo, cierre.resaltado)} />
-        <p class="ac__sub">{cierre.texto}</p>
-        <a class="boton" href={CTA_PRINCIPAL.href}>{cierre.boton} <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
+<details class="ac-cmp"><summary>Qué incluye cada plan <span class="ac-vt" aria-hidden="true"></span></summary><div class="ac-tw"><table><caption class="ac-sr">Comparativa de los tres planes de acompañamiento</caption><thead><tr><td></td><th scope="col"><b>Resolver dudas</b><span class="ac-tp">49 €</span><small>Sesión suelta</small></th><th scope="col" class="ac-r"><i class="ac-rt">Para comparar tus 3 caminos</i><b>Comparar caminos</b><span class="ac-tp">149 €</span><small>Unos 37 € por sesión</small></th><th scope="col"><b>Decidir con calma</b><span class="ac-tp">249 €</span><small>Unos 42 € por sesión</small></th></tr></thead><tbody><tr><th scope="row">Con tu familia al empezar</th><td>10 min</td><td class="ac-r">1 sesión</td><td>1 sesión</td></tr><tr><th scope="row">Sesiones tuyas con el coach</th><td>1</td><td class="ac-r">3</td><td>4</td></tr><tr><th scope="row">Sesión final con tu familia</th><td><span class="ac-x" role="img" aria-label="No incluido">—</span></td><td class="ac-r"><span class="ac-x" role="img" aria-label="No incluido">—</span></td><td><span class="ac-y" role="img" aria-label="Incluido"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></td></tr><tr><th scope="row">Plan por escrito</th><td>Tu siguiente paso</td><td class="ac-r">Completo</td><td>Completo</td></tr><tr><th scope="row">Comparativa personalizada</th><td><span class="ac-x" role="img" aria-label="No incluido">—</span></td><td class="ac-r"><span class="ac-y" role="img" aria-label="Incluido"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></td><td><span class="ac-y" role="img" aria-label="Incluido"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></td></tr><tr><th scope="row">Dudas por mensaje</th><td><span class="ac-x" role="img" aria-label="No incluido">—</span></td><td class="ac-r">Entre sesiones</td><td>Entre sesiones y 1 mes después</td></tr><tr><th scope="row">Charla de 20 min con un Insider</th><td><span class="ac-x" role="img" aria-label="No incluido">—</span></td><td class="ac-r"><span class="ac-x" role="img" aria-label="No incluido">—</span></td><td><span class="ac-y" role="img" aria-label="Incluido"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span></td></tr></tbody><tfoot><tr><td></td><td><a class="boton boton--contorno boton--sm" href="#" aria-label="Reservar el plan Resolver dudas, 49 euros">Reservar</a></td><td class="ac-r"><a class="boton boton--oscuro boton--sm" href="#" aria-label="Empezar el plan Comparar caminos, 149 euros">Empezar</a></td><td><a class="boton boton--contorno boton--sm" href="#" aria-label="Empezar el plan Decidir con calma, 249 euros">Empezar</a></td></tr></tfoot></table></div></details>
+<p class="ac-small">Precios con IVA incluido. Si eres menor de edad, la reserva y el pago los hace tu madre, padre o tutor.</p>
+</section>
+
+<section id="familias" aria-labelledby="t-fam" style="border-top:0;padding-top:16px"><div class="ac-light">
+<p class="ac-ey">Para madres, padres y tutores</p><h2 id="t-fam">Lo que <em class="ac-hl">tenéis que saber</em></h2>
+<p class="ac-lead">Elegir qué estudiar también os preocupa a vosotros. Aquí sabéis desde el principio cómo se trabaja, qué se comparte y qué os vais a llevar.</p>
+<div class="ac-fg" role="region" aria-label="Lo que tenéis que saber, desliza para ver más" tabindex="0">
+<div><span class="ac-fi" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 14.5c2.8 0 5 2.2 5 5"/></svg></span><h3>Estáis desde el primer día</h3><p>En todos los planes, la primera parte es con vosotros: qué buscáis, cómo trabaja el coach y qué se os contará y qué no.</p></div>
+<div><span class="ac-fi" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><h3>Sus sesiones se respetan</h3><p>Lo que vuestro hijo o hija cuenta es confidencial. La única excepción es que esté en peligro, y se explica el primer día.</p></div>
+<div><span class="ac-fi" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span><h3>Os lleváis datos, no opiniones</h3><p>Un plan por escrito y, desde «Comparar caminos», una comparativa hecha para vuestro caso: según su nota, vuestro presupuesto y dónde vivís.</p></div>
+<div><span class="ac-fi" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Nadie cobra por recomendar</h3><p>Ningún coach recibe dinero de universidades, escuelas ni centros. Si alguien cobra por recomendar, no orienta: hace publicidad.</p></div>
+</div>
+<div class="ac-frow"><div class="ac-tips"><h3>Cómo podéis ayudar en casa</h3>
+<ol>
+<li><b>Preguntad qué le atrae</b>No solo qué salida tiene. Lo que le motiva hoy es la mejor pista.</li>
+<li><b>Hablad de un primer paso</b>No de la decisión de su vida. Casi todo se puede cambiar después.</li>
+<li><b>Dejad que lo cuente él o ella</b>Escuchad antes de opinar. En «Decidir con calma», la última sesión es para que os lo explique.</li>
+</ol></div></div>
+<div class="ac-why"><h3>¿Por qué pagar si hay orientador en el instituto?</h3><p>El orientador atiende a muchos alumnos a la vez y hace un trabajo necesario. Aquí las sesiones son solo para vuestro hijo o hija, parten de sus resultados del test y acaban con un plan y datos concretos. Es un complemento, no un sustituto.</p></div>
+<div class="ac-ctas"><a class="boton" href="#planes">Ver planes y precios</a><a class="boton boton--contorno" href="#faq">Más preguntas</a></div>
+</div></section>
+
+<section id="coaches" aria-labelledby="t-co"><p class="ac-ey">Los coaches</p><h2 id="t-co">Conoce a quien <em class="ac-hl">te va a acompañar</em></h2>
+<p class="ac-lead">Cada coach se presenta en un vídeo de un minuto: quién es, cómo trabaja y en qué te puede ayudar. Al reservar, eliges con quién quieres hablar.</p>
+<ul class="ac-co">
+<li class="ac-cl"><div class="ac-fo" aria-hidden="true">L</div><div class="ac-pie"><h3>Laura, 38</h3><p>Pedagoga · Te ayuda con FP y salidas técnicas</p><button type="button" aria-label="Ver el vídeo de Laura, 1 minuto"><svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor"/></svg>1 min</button></div></li>
+<li class="ac-cl"><div class="ac-fo" aria-hidden="true">M</div><div class="ac-pie"><h3>Marc, 41</h3><p>Educador social · Te ayuda con las dudas y el miedo a equivocarte</p><button type="button" aria-label="Ver el vídeo de Marc, 1 minuto"><svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor"/></svg>1 min</button></div></li>
+<li class="ac-cl"><div class="ac-fo" aria-hidden="true">N</div><div class="ac-pie"><h3>Nuria, 35</h3><p>Orientadora · Te ayuda con la universidad y las notas de corte</p><button type="button" aria-label="Ver el vídeo de Nuria, 1 minuto"><svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor"/></svg>1 min</button></div></li>
+<li class="ac-cl"><div class="ac-fo" aria-hidden="true">Á</div><div class="ac-pie"><h3>Álex, 33</h3><p>Coach · Te ayuda con estudios creativos y cambios de camino</p><button type="button" aria-label="Ver el vídeo de Álex, 1 minuto"><svg width="10" height="12" viewBox="0 0 12 14" aria-hidden="true"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor"/></svg>1 min</button></div></li>
+</ul>
+<h3 class="ac-mini">Cómo los elegimos</h3>
+<ul class="ac-crit">
+<li><h4>Experiencia</h4><p>Al menos cinco años de experiencia en su campo.</p></li>
+<li><h4>Comprobado</h4><p>Comprobamos que trabajan donde dicen que trabajan.</p></li>
+<li><h4>Sin comisiones</h4><p>No cobran por recomendar ninguna universidad, escuela ni centro.</p></li>
+<li><h4>Conocen su límite</h4><p>Si lo que necesitas es un psicólogo, te lo dicen.</p></li>
+</ul></section>
+
+<section id="faq" aria-labelledby="t-faq"><p class="ac-ey">Preguntas frecuentes</p><h2 id="t-faq">Lo que <em class="ac-hl">más nos preguntan</em></h2>
+<div class="ac-faq">
+<details open><summary>¿Tengo que hacer el test antes?</summary><p>Sí. El coach trabaja a partir de tus 3 caminos, así la primera sesión empieza con información sobre ti y no perdéis tiempo. El test es gratis.</p></details>
+<details><summary>¿Me vais a decir qué tengo que estudiar?</summary><p>No. Te ayudamos a ordenar lo que sabes de ti y de cada camino, y a ver los pros y contras con datos. La decisión es tuya, y tu coach la respeta.</p></details>
+<details><summary>¿Mis padres se enteran de lo que hablo con el coach?</summary><p>No. Tu familia está al principio (y al final en «Decidir con calma»), pero las sesiones son tuyas. Lo que cuentas no se comparte, salvo que estés en peligro.</p></details>
+<details><summary>¿Qué plan me conviene?</summary><p>Si tienes una duda concreta, «Resolver dudas». Si dudas entre varios caminos, «Comparar caminos». Si tienes que elegir pronto y quieres llegar con todo claro, «Decidir con calma».</p></details>
+<details><summary>¿Qué diferencia hay entre un coach y un Insider?</summary><p>Los Insiders son profesionales que enseñan su trabajo en vídeo, gratis: te cuentan cómo es su día a día, pero no te aconsejan. El coach es quien te acompaña a decidir.</p></details>
+<details><summary>¿Puedo elegir coach?</summary><p>Sí. Al reservar eliges con quién quieres hablar. Si no lo tienes claro, te proponemos el que mejor encaja con tus caminos.</p></details>
+<details><summary>¿Qué necesito para la sesión?</summary><p>Un ordenador o un móvil con cámara, conexión a internet y un sitio tranquilo donde puedas hablar.</p></details>
+<details><summary>¿Y si no puedo ir a una sesión?</summary><p>Puedes cambiarla avisando con antelación y buscáis otro día y hora.</p></details>
+</div>
+<div class="ac-card ac-contact" id="contacto"><div><h3>¿Te queda alguna duda?</h3><p>Escríbenos y te respondemos. Si eres madre o padre y preferís hablarlo antes de reservar, también.</p></div><a class="boton boton--contorno" href="#">Escríbenos</a></div></section>
+
+<section class="ac-end" aria-labelledby="t-end"><div class="ac-endg"><div>
+<h2 id="t-end">¿Aún no tienes <em class="ac-hl">tus 3 caminos</em>?</h2>
+<p class="ac-sub">Empieza por el test: es gratis y te da tus 3 caminos, con qué se estudia, cuánto dura y de qué se trabaja. Después decides si quieres hablar con un coach.</p>
+<div class="ac-ctas"><a class="boton" href={CTA_PRINCIPAL.href}>Hacer el test gratis</a><a class="boton boton--contorno" href="#planes">Ver planes</a></div></div>
+<div class="ac-tel" aria-hidden="true">
+<AppPantalla pantalla="caminos" nombre="Lucía" iconos />
+<div class="ac-noti"><i>N</i><span><small>NextYou · ahora</small><b>Tus 3 caminos están listos</b></span></div>
+</div></div></section>
+
+</div>
   </main>
-  <VisorClips />
+
+  <div class="ac-stick" id="ac-stick" aria-hidden="true"><p><b>Desde 49 €</b></p><a class="boton" href="#planes" tabindex="-1">Ver planes</a></div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faq)} />
 </V5>
 
 <style is:global>
-  /* ---------- Acompañamiento (propuesta): mismos tokens que la home v3 ---------- */
-  .ac { background: var(--negro-2, #161412); color: var(--crema); }
-  .ac__sec { padding-block: clamp(4rem, 3rem + 5vw, 7rem); border-top: 1px solid var(--linea); }
-  .ac__hero { border-top: 0; padding-block: clamp(3rem, 2rem + 4vw, 6rem) clamp(4rem, 3rem + 5vw, 7rem); }
-  .ac__eti { margin: 0 0 0.875rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--acento-texto); }
-  .ac__h1, .ac__h2 { margin: 0 0 1rem; font-family: var(--titular); font-weight: 900; font-stretch: 100%; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
-  .ac__h1 { font-size: var(--t-h1); line-height: 1.02; max-width: 15ch; margin-bottom: 1.25rem; }
-  .ac__h2 { font-size: clamp(1.9rem, 1.2rem + 3.2vw, 3.25rem); max-width: 22ch; }
-  .ac u { text-decoration: none; background: linear-gradient(var(--acento), var(--acento)) no-repeat left 92% / 100% 0.14em; }
-  .ac__sub { margin: 0 0 1.75rem; max-width: 40ch; font-size: var(--t3); line-height: 1.55; color: rgb(246 241 232 / 0.85); }
-  .ac__sub--ancho { max-width: 52ch; margin-bottom: 0.5rem; }
-  .ac__hero-rejilla { display: grid; gap: clamp(2rem, 1.5rem + 3vw, 3.5rem); align-items: center; }
-  @media (min-width: 56rem) { .ac__hero-rejilla { grid-template-columns: 1.2fr 1fr; } }
-  .ac__tarjeta { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 24px; padding: clamp(1.25rem, 1rem + 1.2vw, 1.75rem); }
-  .ac__tarjeta h3 { margin: 0 0 0.75rem; font-family: var(--titular); font-weight: 800; font-size: var(--t-h3); line-height: 1.2; }
-  .ac__tarjeta p { margin: 0; }
-  .ac__tarjeta ul { margin: 0; padding-left: 1.25rem; color: rgb(246 241 232 / 0.85); }
-  .ac__tarjeta li { margin: 0.4rem 0; }
-  .ac__tarjeta--no { border-style: dashed; }
-  /* Chat de ejemplo */
-  .ac__chat small { display: block; margin-bottom: 1rem; font-size: var(--t1); color: var(--gris); }
-  .ac__chat p { max-width: 85%; margin: 0 0 0.75rem; padding: 0.75rem 1rem; border-radius: 16px; font-size: var(--t2); }
-  .ac__chat-y { background: rgb(246 241 232 / 0.1); }
-  .ac__chat-k { background: var(--acento); color: #161412; margin-left: auto !important; font-weight: 600; }
-  .ac__dos { display: grid; gap: 1.25rem; margin-top: 2.25rem; }
-  @media (min-width: 48rem) { .ac__dos { grid-template-columns: 1fr 1fr; } }
-  /* Cuatro tarjetas: criterios y pasos */
-  .ac__cuatro { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: 1fr; }
-  @media (min-width: 36rem) { .ac__cuatro { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 64rem) { .ac__cuatro { grid-template-columns: repeat(4, 1fr); } }
-  .ac__criterios b, .ac__pasos b { display: block; margin-bottom: 0.5rem; font-family: var(--titular); font-weight: 800; color: var(--acento-texto); }
-  .ac__criterios b { font-size: 1.625rem; }
-  .ac__pasos b { font-size: 2rem; }
-  .ac__criterios p { font-size: var(--t2); color: rgb(246 241 232 / 0.85); }
-  .ac__pasos h3 { margin-bottom: 0.4rem; }
-  .ac__pasos p { font-size: var(--t1); line-height: 1.55; color: var(--gris); }
-  .ac__frase { margin: 1.75rem 0 0; max-width: 40ch; font-family: var(--titular); font-weight: 800; font-size: clamp(1.1875rem, 1rem + 0.8vw, 1.5rem); line-height: 1.25; }
-  .ac__nota { margin: 1.25rem 0 0; font-size: var(--t1); color: var(--gris); text-align: center; }
-  .ac__nota--izq { text-align: left; }
-  /* Planes */
-  .ac__planes { display: grid; gap: 1.25rem; margin-top: 2.5rem; align-items: stretch; }
-  @media (min-width: 64rem) { .ac__planes { grid-template-columns: repeat(3, 1fr); } }
-  .ac__plan { position: relative; display: flex; flex-direction: column; }
-  .ac__plan--rec { background: var(--crema); color: #161412; border-color: var(--crema); }
-  @media (max-width: 63.99rem) { .ac__plan--rec { order: -1; } }
-  .ac__tag { position: absolute; top: -0.8125rem; left: 1.75rem; padding: 0.3rem 0.75rem; border-radius: 99px; background: var(--acento); color: #161412; font-size: 0.75rem; font-weight: 800; }
-  .ac__plan h3 { margin-bottom: 0.25rem; }
-  .ac__para { min-height: 2.75rem; margin-bottom: 1.25rem !important; font-size: var(--t1); line-height: 1.5; color: var(--gris); }
-  .ac__plan--rec .ac__para, .ac__plan--rec .ac__precio small { color: #574e46; }
-  .ac__precio { font-family: var(--titular); font-weight: 800; font-size: 3rem; letter-spacing: -0.03em; line-height: 1; }
-  .ac__precio small { margin-left: 0.375rem; font-family: var(--sans, inherit); font-size: var(--t1); font-weight: 600; letter-spacing: 0; color: var(--gris); }
-  .ac__ses { margin: 0.5rem 0 1.25rem !important; font-size: var(--t1); font-weight: 700; color: var(--acento-texto); }
-  .ac__plan--rec .ac__ses { color: #3d6000; }
-  .ac__plan ul { flex: 1; list-style: none; margin: 0 0 1.5rem; padding: 0; }
-  .ac__plan li { position: relative; margin: 0; padding: 0.6rem 0 0.6rem 1.625rem; border-top: 1px solid rgb(246 241 232 / 0.08); font-size: var(--t2); line-height: 1.45; color: inherit; }
-  .ac__plan--rec ul { color: #161412; }
-  .ac__plan--rec li { border-color: rgb(22 20 18 / 0.1); }
-  .ac__plan li::before { content: ''; position: absolute; left: 0.125rem; top: 1rem; width: 0.75rem; height: 0.4375rem; border-left: 2px solid var(--acento); border-bottom: 2px solid var(--acento); transform: rotate(-45deg); }
-  .ac__plan--rec li::before { border-color: #3d6000; }
-  .ac__fam { margin: 0 0 1.25rem !important; padding-top: 0.75rem; border-top: 1px dashed rgb(246 241 232 / 0.2); font-size: var(--t1); line-height: 1.5; color: var(--gris); }
-  .ac__plan--rec .ac__fam { color: #574e46; border-color: rgb(22 20 18 / 0.2); }
-  .ac__plan .boton { justify-content: center; }
-  /* Tabla comparativa */
-  .ac__tabla { margin-top: 1.75rem; }
-  .ac__tabla-caja { overflow-x: auto; }
-  .ac__tabla table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: var(--t1); }
-  .ac__tabla th, .ac__tabla td { padding: 0.7rem 0.4rem; text-align: center; border-top: 1px solid var(--linea); vertical-align: middle; }
-  .ac__tabla thead th, .ac__tabla thead td { border-top: 0; }
-  .ac__tabla thead th { color: var(--acento-texto); font-size: var(--t1); font-weight: 800; }
-  .ac__tabla tbody th { text-align: left; font-weight: 400; color: rgb(246 241 232 / 0.85); width: 34%; padding-left: 0; }
-  @media (min-width: 48rem) { .ac__tabla tbody th { width: 40%; } }
-  /* Coaches: nota de ejemplo */
-  .ac__pendiente { display: inline-block; margin-top: 1.25rem; padding: 0.625rem 0.875rem; border: 1px dashed rgb(246 241 232 / 0.35); border-radius: 12px; font-size: var(--t1); color: var(--gris); }
-  /* Perfiles de los coaches: tarjeta sencilla con foto redonda, nombre, rol, frase y botón de vídeo */
-  .ac__perfiles { list-style: none; margin: 1.75rem 0 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: 1fr; }
-  @media (min-width: 36rem) { .ac__perfiles { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 64rem) { .ac__perfiles { grid-template-columns: repeat(4, 1fr); } }
-  .ac__perfil { display: grid; grid-template-rows: auto auto 1fr auto; gap: 1rem; padding: clamp(1.25rem, 1rem + 1vw, 1.5rem); background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 24px; }
-  .ac__perfil-foto { width: 5.5rem; height: 5.5rem; border-radius: 50%; object-fit: cover; object-position: center 22%; border: 2px solid var(--acento); }
-  .ac__perfil-nombre { margin: 0; font-family: var(--titular); font-weight: 800; font-size: 1.375rem; line-height: 1.1; letter-spacing: -0.02em; }
-  .ac__perfil-rol { margin: 0.3rem 0 0; font-size: var(--t1); line-height: 1.4; color: var(--gris); }
-  .ac__perfil-cita { margin: 0; font-family: var(--titular); font-weight: 700; font-size: var(--t3); line-height: 1.3; color: rgb(246 241 232 / 0.92); }
-  .ac__perfil-ver { align-self: end; justify-self: start; gap: 0.5rem; }
-  /* Preguntas frecuentes */
-  .ac__faq { max-width: 47.5rem; margin-top: 1.75rem; }
-  .ac__faq details { padding: 1.125rem 0; border-top: 1px solid var(--linea); }
-  .ac__faq details:last-child { border-bottom: 1px solid var(--linea); }
-  .ac__faq summary { display: flex; justify-content: space-between; gap: 1rem; cursor: pointer; list-style: none; font-weight: 700; font-size: var(--t3); }
-  .ac__faq summary::-webkit-details-marker { display: none; }
-  .ac__faq summary::after { content: '+'; font-size: 1.375rem; line-height: 1; color: var(--acento-texto); }
-  .ac__faq details[open] summary::after { content: '–'; }
-  .ac__faq details p { margin: 0.75rem 0 0; color: rgb(246 241 232 / 0.85); line-height: 1.55; }
-  .ac__faq summary:focus-visible { outline: 3px solid var(--acento-texto); outline-offset: 4px; border-radius: 4px; }
-  /* Cierre */
-  .ac .boton { min-height: 52px; font-size: 1rem; }
-  .ac__cierre { text-align: center; }
-  .ac__cierre .ac__h2, .ac__cierre .ac__sub { margin-inline: auto; }
-  @media (max-width: 47.99rem) { .ac__plan .boton { width: 100%; } .ac .boton { white-space: normal; text-align: center; } }
+
+
+
+
+@media(prefers-reduced-motion:reduce){}
+
+
+
+
+
+
+
+
+
+
+
+
+.ac a:focus-visible, .ac button:focus-visible, .ac summary:focus-visible{outline:2px solid var(--a);outline-offset:3px}
+.ac summary:focus{outline:none}
+.ac .ac-ey{color:var(--a);font-weight:700;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 14px}
+.ac h1{font-size:clamp(36px,4.6vw,60px);line-height:1.04;letter-spacing:-.035em;margin:0 0 20px;max-width:17ch;text-wrap:balance}
+.ac h2{font-size:clamp(30px,3.5vw,48px);line-height:1.08;letter-spacing:-.03em;margin:0 0 14px;text-wrap:balance}
+.ac h3{text-wrap:balance}
+.ac .ac-hl{font-style:normal;color:var(--a)}
+.ac .ac-sub{color:var(--g2);font-size:19px;max-width:44ch;margin:0 0 28px}
+.ac .ac-lead{color:var(--g2);font-size:17.5px;max-width:58ch;margin:0}
+.ac section{padding:64px 0;border-top:1px solid var(--l)}
+.ac .ac-card{background:var(--t);border:1px solid var(--l);border-radius:22px;padding:26px}
+
+/* hero */
+.ac .ac-hero{padding:40px 0 64px;display:grid;grid-template-columns:1.2fr 1fr;gap:50px;align-items:center}
+.ac .ac-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.ac .ac-facts{display:flex;flex-wrap:wrap;gap:10px 20px;margin:26px 0 0;padding:0;list-style:none;color:var(--g2);font-size:15px}
+.ac .ac-facts li{display:flex;align-items:center;gap:8px}
+.ac .ac-facts li:before{content:"";width:12px;height:7px;border-left:2px solid var(--a);border-bottom:2px solid var(--a);transform:rotate(-45deg) translateY(-2px)}
+.ac .ac-chat p{margin:0 0 12px;padding:12px 16px;border-radius:16px;max-width:86%;font-size:15px}
+.ac .ac-chat .ac-y{background:#f6f1e81a}.ac .ac-chat .ac-k{background:var(--a);color:var(--n);margin-left:auto;font-weight:600}
+.ac .ac-chat .ac-cap{display:flex;justify-content:space-between;color:var(--g);font-size:13px;margin:0 0 14px;padding:0;background:none;max-width:none}
+
+/* para quién */
+.ac .ac-sit{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:34px}
+.ac .ac-sit>div{padding:4px 28px 4px 0;display:flex;flex-direction:column;gap:12px}
+.ac .ac-sit>div+div{padding-left:28px;border-left:1px solid var(--l)}
+.ac .ac-sit blockquote{margin:0;font-size:clamp(20px,2vw,24px);font-weight:800;line-height:1.22;letter-spacing:-.01em;color:var(--a)}
+.ac .ac-sit p{margin:0;color:var(--g2);font-size:15.5px}
+
+/* pasos */
+.ac .ac-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin:36px 0 0;padding:0;list-style:none;position:relative}
+.ac .ac-steps:before{content:"";position:absolute;left:20px;right:20px;top:19px;height:2px;background:linear-gradient(90deg,var(--a),#c8f53b33)}
+.ac .ac-steps li{position:relative}
+.ac .ac-mk{position:relative;z-index:1;width:40px;height:40px;border-radius:12px;background:var(--a);display:grid;place-items:center;box-shadow:0 0 0 6px var(--n)}
+.ac .ac-steps .ac-num{display:block;color:var(--a);font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:18px 0 6px}
+.ac .ac-steps h3{margin:0 0 6px;font-size:18px}.ac .ac-steps p{margin:0;color:var(--g);font-size:15px}
+.ac .ac-note{color:var(--g);font-size:15px;margin:18px 0 0}
+
+/* qué es */
+.ac .ac-two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.ac .ac-two h3{margin:0 0 12px;font-size:18px}
+.ac .ac-li{list-style:none;margin:0;padding:0}.ac .ac-li li{position:relative;padding:7px 0 7px 28px;color:var(--g2);font-size:15.5px}
+.ac .ac-li.ac-ok li:before{content:"";position:absolute;left:2px;top:13px;width:12px;height:7px;border-left:2px solid var(--a);border-bottom:2px solid var(--a);transform:rotate(-45deg)}
+.ac .ac-li.ac-no li:before, .ac .ac-li.ac-no li:after{content:"";position:absolute;left:3px;top:17px;width:13px;height:2px;background:var(--g);transform:rotate(45deg)}
+.ac .ac-li.ac-no li:after{transform:rotate(-45deg)}
+.ac .ac-card.ac-dash{border-style:dashed;background:transparent}
+.ac .ac-callout{margin:18px 0 0;border-left:3px solid var(--a);padding:4px 0 4px 18px;color:var(--g2);font-size:15.5px;max-width:78ch}
+.ac .ac-callout b{color:var(--c)}
+
+/* planes */
+.ac .ac-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px;align-items:stretch}
+.ac .ac-plan{display:flex;flex-direction:column;position:relative}
+.ac .ac-plan.ac-rec{background:var(--c);color:var(--n);border-color:var(--c)}
+.ac .ac-tag{position:absolute;top:-13px;left:26px;background:var(--a);color:var(--n);font-size:12.5px;font-weight:800;padding:5px 12px;border-radius:99px}
+.ac .ac-plan h3{font-size:22px;margin:0 0 6px}
+.ac .ac-plan .ac-for{color:var(--g);font-size:15.5px;margin:0 0 18px;min-height:48px}.ac .ac-plan.ac-rec .ac-for{color:var(--gl)}
+.ac .ac-pr{font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:0}
+.ac .ac-pr small{font-size:14px;font-weight:600;color:var(--g);letter-spacing:0;margin-left:6px}.ac .ac-plan.ac-rec .ac-pr small{color:var(--gl)}
+.ac .ac-per{font-size:14.5px;color:var(--g);margin:8px 0 0}.ac .ac-plan.ac-rec .ac-per{color:var(--gl)}
+.ac .ac-chips{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 16px;padding:0;list-style:none}
+.ac .ac-chips li{font-size:13.5px;font-weight:700;padding:5px 11px;border-radius:99px;background:#f6f1e814}
+.ac .ac-plan.ac-rec .ac-chips li{background:#16141210}
+.ac .ac-plan .ac-li{margin:0 0 24px;flex:1}.ac .ac-plan .ac-li li{border-top:1px solid #f6f1e814;font-size:15.5px;color:var(--c)}
+.ac .ac-plan.ac-rec .ac-li li{border-color:#16141214;color:var(--n)}
+.ac .ac-plan.ac-rec .ac-li.ac-ok li:before{border-color:var(--n)}
+.ac .ac-plan.ac-rec .ac-btn{background:var(--n);color:var(--c)!important;border-color:var(--n)}
+.ac .ac-book{margin-top:22px;border:1px solid var(--l);border-radius:22px;padding:24px}
+.ac .ac-book h3{margin:0 0 18px;font-size:19px}
+.ac .ac-book ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ac .ac-book li{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start}
+.ac .ac-book .ac-mk{box-shadow:none}
+.ac .ac-book b{display:block;font-size:16px;margin-bottom:2px}.ac .ac-book span{color:var(--g);font-size:14.5px}
+@media(max-width:860px){.ac .ac-book ol{grid-template-columns:1fr}}
+.ac .ac-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px;margin:26px 0 0;padding:0;list-style:none;color:var(--g2);font-size:15px}
+.ac .ac-trust li{display:flex;align-items:center;gap:8px}
+.ac .ac-trust li:before{content:"";width:12px;height:7px;border-left:2px solid var(--a);border-bottom:2px solid var(--a);transform:rotate(-45deg) translateY(-2px)}
+.ac .ac-cmp{margin-top:26px;background:var(--t);border:1px solid var(--l);border-radius:22px;padding:0 24px}
+.ac .ac-cmp>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 0;font-weight:800;font-size:20px;min-height:48px}
+.ac .ac-cmp>summary::-webkit-details-marker{display:none}
+.ac .ac-cmp>summary span{font-size:13.5px;font-weight:700;color:var(--a);border:1px solid var(--a);border-radius:99px;padding:6px 14px;white-space:nowrap}
+.ac .ac-cmp[open]>summary span{background:var(--a);color:var(--n)}
+.ac .ac-cmp .ac-vt:before{content:"Ver tabla"}.ac .ac-cmp[open] .ac-vt:before{content:"Ocultar"}
+.ac .ac-tw{overflow-x:auto;padding-bottom:22px;-webkit-overflow-scrolling:touch}
+.ac .ac-cmp table{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;min-width:560px}
+.ac .ac-cmp thead th{text-align:center;vertical-align:bottom;padding:12px 10px 10px;font-weight:400}
+.ac .ac-cmp thead b{display:block;font-size:16px;font-weight:800;color:var(--c)}
+.ac .ac-cmp .ac-tp{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:6px}
+.ac .ac-cmp thead small{display:block;color:var(--g);font-size:13px;margin-top:2px}
+.ac .ac-cmp .ac-rt{display:inline-block;font-style:normal;background:var(--a);color:var(--n);font-size:11px;font-weight:800;padding:2px 9px;border-radius:99px;margin-bottom:6px}
+.ac .ac-cmp .ac-r{background:var(--c);color:var(--n)}
+.ac .ac-cmp thead .ac-r{border-radius:16px 16px 0 0}.ac .ac-cmp thead .ac-r b{color:var(--n)}.ac .ac-cmp thead .ac-r small{color:var(--gl)}
+.ac .ac-cmp tfoot .ac-r{border-radius:0 0 16px 16px}
+.ac .ac-cmp tbody th{text-align:left;font-weight:600;color:var(--c);padding:10px 12px 10px 0;border-top:1px solid var(--l);font-size:15px;width:34%}
+.ac .ac-cmp tbody th small{display:block;font-weight:400;color:var(--g);font-size:13.5px;margin-top:2px}
+.ac .ac-cmp td{text-align:center;padding:10px 12px;border-top:1px solid var(--l);font-weight:600}
+.ac .ac-cmp td.ac-r{border-top-color:#16141214}
+.ac .ac-cmp tr.ac-gr th{border-top:0;padding:22px 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--a);width:auto}
+.ac .ac-cmp tr.ac-gr+tr th, .ac .ac-cmp tr.ac-gr+tr td, .ac .ac-cmp tr.ac-gr td{border-top:0}.ac .ac-cmp tr.ac-gr td{padding:0}.ac .ac-cmp thead td{border:0}
+.ac .ac-cmp .ac-y{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--a);vertical-align:middle}
+.ac .ac-cmp .ac-x{color:#b8b0a366}
+.ac .ac-cmp td.ac-r .ac-x{color:#5f574e80}
+.ac .ac-cmp tfoot td{border-top:0;padding:12px 10px 14px}
+
+.ac .ac-cmp .ac-r .ac-btn.ac-sm{background:var(--n);color:var(--c)!important;border-color:var(--n)}
+.ac .ac-sr{position:absolute;left:-9999px}
+.ac .ac-small{color:var(--g);font-size:14.5px;margin:16px 0 0;text-align:center}
+
+/* familias */
+.ac .ac-light{background:var(--c);color:var(--n);border-radius:28px;padding:48px}
+.ac .ac-light .ac-ey{color:var(--n)}
+.ac .ac-light .ac-hl{color:var(--n);background:var(--a);padding:0 .14em;border-radius:8px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.ac .ac-light .ac-lead{color:var(--gl)}
+.ac .ac-fg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}
+.ac .ac-fg div{background:#fff;border:1px solid #16141214;border-radius:16px;padding:22px}
+.ac .ac-fg h3{margin:0 0 6px;font-size:17px}.ac .ac-fg p{margin:0;color:var(--gl);font-size:15.5px}
+.ac .ac-why{margin-top:14px;padding:22px;border-radius:16px;background:#ebe4d7}
+.ac .ac-why h3{margin:0 0 6px;font-size:17px}.ac .ac-why p{margin:0;color:var(--gl);font-size:15.5px}
+.ac .ac-light .ac-fg{grid-template-columns:repeat(4,1fr)}
+.ac .ac-frow{margin-top:14px}
+.ac .ac-fg div{display:flex;flex-direction:column}
+.ac .ac-fi{width:38px;height:38px;border-radius:11px;background:var(--a);display:grid;place-items:center;margin-bottom:12px}
+.ac .ac-sample{margin:0;background:var(--n);color:var(--c);border-radius:18px;padding:22px;display:flex;flex-direction:column}
+.ac .ac-sample figcaption{display:flex;flex-direction:column;gap:2px;margin-bottom:14px}
+.ac .ac-sample figcaption b{font-size:17px}.ac .ac-sample figcaption>span:last-child{color:var(--g);font-size:13.5px}
+.ac .ac-stag{align-self:flex-start;background:var(--a);color:var(--n);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-bottom:8px}
+.ac .ac-sample table{width:100%;border-collapse:collapse;font-size:14px}
+.ac .ac-sample thead th{color:var(--a);font-size:12px;font-weight:700;text-align:left;padding:0 6px 8px;letter-spacing:.04em}
+.ac .ac-sample tbody th, .ac .ac-sample td{padding:11px 6px;border-top:1px solid var(--l);text-align:left;vertical-align:top;font-weight:700}
+.ac .ac-sample small{display:block;font-weight:400;color:var(--g);font-size:12.5px}
+.ac .ac-snote{margin:0;padding-top:14px;color:var(--g);font-size:13.5px}
+.ac .ac-tips{background:#fff;border:1px solid #16141214;border-radius:16px;padding:22px}
+.ac .ac-tips h3{margin:0 0 12px;font-size:17px}
+.ac .ac-tips ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:t}
+.ac .ac-tips li{color:var(--gl);font-size:15px;border-top:3px solid var(--a);padding-top:14px}
+
+.ac .ac-tips b{color:var(--n);display:block;font-size:16px;margin-bottom:2px}
+@media(max-width:960px){.ac .ac-light .ac-fg{grid-template-columns:1fr 1fr}.ac .ac-frow{grid-template-columns:1fr}}
+
+@media(max-width:560px){.ac .ac-light .ac-fg{grid-template-columns:1fr}.ac .ac-sample td, .ac .ac-sample tbody th{font-size:13px;padding:10px 4px}}
+.ac .ac-light .ac-ctas{margin-top:26px}
+.ac .ac-light .ac-btn.ac-o{color:var(--n)!important;border-color:#16141266}
+
+/* coaches */
+.ac .ac-co{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:30px 0 0;padding:0;list-style:none}
+.ac .ac-cl{position:relative;aspect-ratio:4/5;border-radius:22px;overflow:hidden;background:linear-gradient(170deg,#3a342c,#1f1b17);box-shadow:0 24px 40px -24px #000c;transition:translate .3s cubic-bezier(.2,.7,.2,1)}
+
+.ac .ac-cl:after{content:"";position:absolute;inset:0;background:linear-gradient(#0000 40%,#00000073 58%,#000000eb);pointer-events:none}
+.ac .ac-cl .ac-fo{position:absolute;top:34%;left:50%;translate:-50% -50%;font-size:110px;font-weight:800;color:#f6f1e814;line-height:1}
+.ac .ac-cl .ac-pie{position:absolute;left:16px;right:16px;bottom:16px;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.ac .ac-cl h3{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.ac .ac-cl p{color:var(--c);font-size:14.5px;font-weight:500;line-height:1.35;margin:6px 0 0;min-height:2.7em;text-shadow:0 1px 8px #0009}
+.ac .ac-cl .ac-soon{display:inline-flex;align-items:center;margin-top:10px;background:#f6f1e81f;color:var(--c);font-size:13px;font-weight:600;border-radius:99px;padding:7px 14px;border:1px solid #f6f1e833}
+.ac .ac-cl button{display:inline-flex;align-items:center;gap:7px;margin-top:10px;background:var(--a);color:var(--n);font:700 14px 'Archivo',sans-serif;border:0;border-radius:99px;padding:8px 16px;min-height:44px;cursor:pointer}
+.ac .ac-cl button:after{content:"";position:absolute;inset:0}
+.ac .ac-crit{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:22px 0 0;padding:0;list-style:none}
+.ac .ac-crit li{border-top:2px solid var(--a);padding-top:14px}
+.ac .ac-crit h4{margin:0 0 4px;font-size:16.5px}.ac .ac-crit p{margin:0;color:var(--g);font-size:15px}
+.ac .ac-mini{font-size:19px;margin:36px 0 0}
+
+/* faq */
+.ac .ac-faq{max-width:800px;margin-top:26px}
+.ac .ac-faq details{border-top:1px solid var(--l)}.ac .ac-faq details:last-child{border-bottom:1px solid var(--l)}
+.ac .ac-faq summary{cursor:pointer;font-weight:700;font-size:17.5px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;min-height:56px}
+.ac .ac-faq summary::-webkit-details-marker{display:none}
+.ac .ac-faq summary:after{content:"+";color:var(--a);font-size:24px;line-height:1;flex:none;transition:transform .2s}
+.ac .ac-faq details[open] summary:after{transform:rotate(45deg)}
+.ac .ac-faq details p{color:var(--g2);margin:0 0 20px;max-width:64ch}
+
+.ac .ac-contact{max-width:800px;margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.ac .ac-contact h3{margin:0 0 4px;font-size:19px}.ac .ac-contact p{margin:0;color:var(--g2);font-size:15.5px;max-width:52ch}
+.ac .ac-endg{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
+.ac .ac-end .ac-sub{margin:0 0 28px}
+.ac .ac-tel{justify-self:center;width:290px;height:590px;background:#121212;border-radius:46px;padding:9px;box-shadow:inset 0 0 0 1.5px #2e2e2e,0 40px 70px -40px #000;transform:rotate(3deg)}
+.ac .ac-pan{height:100%;background:#fbfaf6;color:#161412;border-radius:37px;padding:0 15px 15px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.ac .ac-pan:before{content:"";position:absolute;top:9px;left:50%;translate:-50%;width:82px;height:23px;border-radius:20px;background:#0c0c0c}
+.ac .ac-est{display:flex;justify-content:space-between;align-items:center;padding:12px 8px 4px;font-size:12px;font-weight:800}
+.ac .ac-est b{border:1.5px solid;border-radius:3px;width:20px;height:10px;position:relative}.ac .ac-est b:after{content:"";position:absolute;inset:1.5px 4px 1.5px 1.5px;background:currentColor;border-radius:1px}
+.ac .ac-top{display:flex;align-items:center;gap:10px;margin:14px 2px 18px;font-size:12px;font-weight:700;color:#5f574e}
+.ac .ac-top .ac-pbar{flex:1;height:4px;max-height:4px;border-radius:4px;background:#161412;align-self:center}.ac .ac-top .ac-bar em{display:block;height:100%;width:100%;border-radius:4px;background:#161412}
+.ac .ac-tey{margin:0;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7a7268}
+.ac .ac-pan h4{margin:6px 0 14px;font-size:22px;font-weight:900;letter-spacing:-.01em;line-height:1.15}
+.ac .ac-op{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid #e8e4dc;border-radius:16px;padding:10px;margin-bottom:8px;position:relative}
+.ac .ac-op i{width:34px;height:34px;border-radius:10px;background:#f1eee6;display:grid;place-items:center;flex:none}
+.ac .ac-op svg{width:18px;height:18px;fill:none;stroke:#161412;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ac .ac-op small{display:block;font-size:10.5px;font-weight:600;color:#7a7268}.ac .ac-op b{font-size:14px;line-height:1.15}
+.ac .ac-op.ac-sel{border-color:#161412;box-shadow:inset 0 0 0 1px #161412}.ac .ac-op.ac-sel i{background:var(--a)}
+.ac .ac-op.ac-sel:after{content:"✓";position:absolute;top:9px;right:9px;width:20px;height:20px;border-radius:50%;background:var(--a);color:#161412;font-size:11px;font-weight:900;display:grid;place-items:center}
+.ac .ac-prf{background:#fff;border:1.5px solid #e8e4dc;border-radius:16px;padding:12px;margin-top:4px}
+.ac .ac-prf .ac-tey{font-size:9.5px;margin-bottom:8px}
+.ac .ac-prf div{display:grid;grid-template-columns:1fr 70px;gap:8px;align-items:center;font-size:11.5px;font-weight:700;margin-top:6px}
+.ac .ac-prf i{height:5px;border-radius:5px;background:linear-gradient(90deg,#161412 var(--w),#e8e4dc var(--w))}
+.ac .ac-prf div:first-of-type i{background:linear-gradient(90deg,var(--a) var(--w),#e8e4dc var(--w))}
+.ac .ac-cta{margin-top:auto;background:#161412;color:#fbfaf6;border-radius:16px;text-align:center;font-weight:800;font-size:14.5px;padding:15px}
+
+
+
+/* barra móvil */
+
+
+
+
+
+@media(max-width:860px){
+.ac .ac-hero, .ac .ac-two, .ac .ac-fg, .ac .ac-endg{grid-template-columns:1fr}.ac .ac-tel{display:none}.ac .ac-hero{gap:34px;padding-top:32px}
+
+.ac .ac-steps{grid-template-columns:1fr;gap:26px}.ac .ac-steps:before{left:19px;right:auto;top:20px;bottom:20px;width:2px;height:auto;background:linear-gradient(180deg,var(--a),#c8f53b33)}.ac .ac-steps li{padding-left:58px}.ac .ac-steps .ac-mk{position:absolute;left:0;top:0}.ac .ac-steps .ac-num{margin-top:0}.ac .ac-sit{grid-template-columns:1fr;gap:22px}.ac .ac-sit>div, .ac .ac-sit>div+div{padding:0 0 0 18px;border-left:3px solid var(--a)}
+.ac .ac-plans{grid-template-columns:1fr;gap:26px}.ac .ac-plan.ac-rec{order:-1}.ac .ac-plan .ac-for{min-height:0}
+.ac .ac-co{grid-template-columns:1fr 1fr}.ac .ac-crit{grid-template-columns:1fr 1fr}
+.ac section{padding:48px 0}.ac .ac-light{padding:32px 22px;border-radius:22px}
+
+}
+@media(max-width:480px){
+
+.ac .ac-crit{grid-template-columns:1fr}.ac .ac-ctas .ac-btn{width:100%}.ac .ac-cmp{padding:0 16px}
+.ac .ac-co{grid-template-columns:1fr 1fr;gap:12px}.ac .ac-cmp{padding:0 14px}.ac .ac-cmp tbody th{position:sticky;left:0;background:var(--t);z-index:1;font-size:14px;min-width:130px}.ac .ac-cmp td{font-size:14px;padding:10px 6px}.ac .ac-cmp thead b{font-size:14px}.ac .ac-cmp .ac-tp{font-size:20px}.ac .ac-cl h3{font-size:19px}.ac .ac-cl p{font-size:13px}.ac .ac-cl .ac-pie{left:12px;right:12px;bottom:12px}}
+@media(max-width:640px){.ac .ac-cmp{display:none}}
+
+
+@media(prefers-reduced-motion:reduce){}
+@media(max-width:700px){
+.ac .ac-sit, .ac .ac-light .ac-fg{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:82%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:6px;margin-right:-16px;padding-right:16px}
+.ac .ac-sit::-webkit-scrollbar, .ac .ac-light .ac-fg::-webkit-scrollbar{display:none}
+.ac .ac-sit>div, .ac .ac-light .ac-fg>div{scroll-snap-align:start}
+.ac .ac-sit>div, .ac .ac-sit>div+div{background:var(--t);border:1px solid var(--l);border-left:3px solid var(--a);border-radius:18px;padding:18px}
+.ac .ac-light .ac-fg{margin-right:-22px;padding-right:22px}
+.ac .ac-tips ol{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:80%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.ac .ac-tips ol::-webkit-scrollbar{display:none}.ac .ac-tips li{scroll-snap-align:start}
+.ac .ac-sit:focus-visible, .ac .ac-light .ac-fg:focus-visible{outline:2px solid var(--a);outline-offset:4px}
+}
+
 </style>
+<style is:global>
+  /* ---------- Ajustes a la web: tokens, tipografía, botones, teléfono y barra fija ---------- */
+  .ac { --n: #161412; --t: var(--tarjeta, #24201c); --c: var(--crema, #f6f1e8); --g: var(--gris, #b8b0a3); --g2: #d9d2c6; --a: #c8f53b; --gl: #5f574e; --l: var(--linea, #f6f1e81a);
+    background: var(--negro-2, #161412); color: var(--crema); font-family: var(--sans); line-height: 1.55; }
+  .ac h1, .ac h2 { font-family: var(--titular); font-weight: 900; font-stretch: 100%; }
+  .ac h1 { font-size: var(--t-h1); line-height: 1.04; max-width: 17ch; }
+  .ac h2 { font-size: clamp(1.9rem, 1.2rem + 3.2vw, 3rem); }
+  .ac h3, .ac h4 { font-family: var(--titular); }
+  .ac .ac-ey { color: var(--a); }
+  /* Palabras destacadas: verde lima, sin subrayado ni franja. En el bloque crema, negro sobre píldora lima */
+  .ac .ac-hl { font-style: normal; color: #c8f53b; text-decoration: none; background: none; }
+  .ac .ac-light .ac-hl { color: #161412; background: #c8f53b; padding: 0 0.14em; border-radius: 8px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .ac .ac-light .ac-ey { color: #161412; }
+  .ac .boton { min-height: 48px; justify-content: center; }
+  .ac .boton.boton--sm { min-height: 44px; width: 100%; }
+  .ac .ac-light .boton--contorno { color: #161412; border-color: rgb(22 20 18 / 0.4); }
+  .ac .ac-plan.ac-rec .boton--oscuro, .ac .ac-cmp .ac-r .boton--oscuro { background: #161412; color: #f6f1e8; border-color: #161412; }
+  .ac a:focus-visible, .ac button:focus-visible, .ac summary:focus-visible { outline: 2px solid var(--a); outline-offset: 3px; }
+  .ac .ac-light a:focus-visible { outline-color: #161412; }
+  .ac summary:focus:not(:focus-visible) { outline: none; }
+  .ac .ac-rec .ac-chips li { background: rgb(22 20 18 / 0.08); }
+
+  /* Teléfono del cierre: la pantalla «Tus 3 caminos» de la home, con iconos */
+  .ac .ac-endg { grid-template-columns: 1fr; }
+  @media (min-width: 54rem) { .ac .ac-endg { grid-template-columns: 1.3fr 1fr; } }
+  .ac .ac-tel { position: relative; justify-self: center; width: 290px; height: 600px; border-radius: 46px; background: #121212; padding: 9px; box-shadow: inset 0 0 0 1.5px #2e2e2e, 0 40px 70px -40px #000; transform: rotate(3deg); }
+  .ac .ac-tel .cfa-pan { width: 100%; height: 100%; }
+  .ac .ac-noti { position: absolute; z-index: 6; bottom: 84px; left: -64px; display: flex; gap: 9px; align-items: center; width: max-content; max-width: 220px; padding: 9px 13px 9px 9px; border-radius: 16px; background: #fff; color: #141414; box-shadow: 0 18px 36px -18px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(0 0 0 / 0.05); }
+  .ac .ac-noti > i { flex: none; width: 34px; height: 34px; border-radius: 11px; background: #c8f53b; display: grid; place-items: center; font: 900 16px/1 var(--titular); font-style: normal; }
+  .ac .ac-noti span { display: grid; gap: 1px; }
+  .ac .ac-noti small { font-size: 11.5px; font-weight: 700; color: #5f5e58; }
+  .ac .ac-noti b { font-size: 13.5px; font-weight: 800; line-height: 1.2; }
+  @media (max-width: 53.99rem) { .ac .ac-tel { display: none; } }
+
+  /* Coaches: tarjetas de vídeo con el estilo de los reels de la home, alineadas */
+  .ac .ac-co { align-items: stretch; }
+  .ac .ac-cl { aspect-ratio: 3 / 4.2; border-radius: 18px; background: var(--negro-2, #161412); isolation: isolate; box-shadow: none; transition: none; }
+  .ac .ac-cl::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(170deg, #3a342c, #1f1b17); }
+  .ac .ac-cl::after { background: linear-gradient(to bottom, rgb(22 20 18 / 0.35) 0%, rgb(22 20 18 / 0) 22%, rgb(22 20 18 / 0) 40%, rgb(22 20 18 / 0.92) 100%); }
+  .ac .ac-cl .ac-pie { left: 0; right: 0; bottom: 0; padding: 1.125rem; display: grid; gap: 0.25rem; justify-items: start; }
+  .ac .ac-cl h3 { font-size: 1.1875rem; font-weight: 800; }
+  .ac .ac-cl p { margin: 0.2rem 0 0; min-height: 0; font-size: 0.9375rem; line-height: 1.3; }
+  .ac .ac-cl button { background: rgb(22 20 18 / 0.55); color: var(--hueso, #ece8de); border: 1px solid rgb(236 232 222 / 0.35); backdrop-filter: blur(6px); font-weight: 600; font-size: 0.8125rem; padding: 0.3rem 0.8rem; margin-top: 0.6rem; }
+  .ac .ac-cl button:hover { background: #c8f53b; border-color: #c8f53b; color: #161412; }
+  .ac .ac-cl .ac-fo { color: #f6f1e81f; }
+  @media (max-width: 30rem) { .ac .ac-cl { aspect-ratio: auto; min-height: 19rem; } .ac .ac-cl .ac-pie { padding: 0.875rem; } }
+
+  /* Entrada suave al hacer scroll */
+  html.ac-js .ac .ac-rv { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  html.ac-js .ac .ac-rv.ac-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { html.ac-js .ac .ac-rv { opacity: 1; transform: none; transition: none; } .ac { scroll-behavior: auto; } }
+
+  /* Barra fija en móvil: aparece al pasar el hero y se oculta en planes y en el pie */
+  .ac-stick { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: none; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem max(1rem, env(safe-area-inset-left, 0px)) calc(0.75rem + env(safe-area-inset-bottom, 0px)); background: rgb(22 20 18 / 0.95); border-top: 1px solid var(--linea); backdrop-filter: blur(8px); transform: translateY(110%); transition: transform 0.25s; }
+  .ac-stick.ac-on { transform: none; }
+  .ac-stick p { margin: 0; font-size: 0.9375rem; color: #d9d2c6; }
+  .ac-stick b { color: #f6f1e8; }
+  .ac-stick .boton { min-height: 44px; padding: 0.5rem 1.125rem; font-size: 0.9375rem; }
+  @media (max-width: 53.75rem) { .ac-stick { display: flex; } }
+</style>
+
+<script>
+  // Entrada suave de los bloques
+  (function () {
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('ac-js');
+    var els = document.querySelectorAll('.ac section > h2, .ac section > .ac-lead, .ac .ac-sit > div, .ac .ac-steps li, .ac .ac-plans > article, .ac .ac-light, .ac .ac-co > li, .ac .ac-faq, .ac .ac-contact, .ac .ac-endg > *');
+    els.forEach(function (e, i) { e.classList.add('ac-rv'); (e as HTMLElement).style.transitionDelay = (i % 4) * 70 + 'ms'; });
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('ac-in'); io.unobserve(x.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+  // Barra fija «Desde 49 €»: visible tras el hero, oculta en la sección de planes y en el pie
+  (function () {
+    var s = document.getElementById('ac-stick'), h = document.querySelector('.ac-hero'), p = document.getElementById('planes'), f = document.querySelector('.pie, footer');
+    if (!s || !h || !p || !('IntersectionObserver' in window)) return;
+    var vis = { h: true, p: false, f: false };
+    function u() { s.classList.toggle('ac-on', !vis.h && !vis.p && !vis.f); }
+    var o = new IntersectionObserver(function (e) {
+      e.forEach(function (x) { if (x.target === h) vis.h = x.isIntersecting; if (x.target === p) vis.p = x.isIntersecting; if (x.target === f) vis.f = x.isIntersecting; });
+      u();
+    });
+    o.observe(h); o.observe(p); if (f) o.observe(f);
+  })();
+</script>

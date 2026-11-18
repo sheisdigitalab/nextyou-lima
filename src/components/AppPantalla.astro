@@ -16,8 +16,10 @@ interface Props {
   /** Sin la barra de pestañas de abajo ni el «Toca un camino…» (para pantallas recortadas) */
   sinPie?: boolean;
   clase?: string;
+  /** «Tus 3 caminos» con un icono en cada círculo en lugar de la foto (para no reutilizar las fotos de las personas) */
+  iconos?: boolean;
 }
-const { pantalla, nombre = 'Lucía', sinPie = false, clase } = Astro.props;
+const { pantalla, nombre = 'Lucía', sinPie = false, clase, iconos = false } = Astro.props;
 
 const opciones = [
   { t: 'Crear algo desde cero', i: '<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/>' },
@@ -26,9 +28,9 @@ const opciones = [
   { t: 'Descubrir un sitio nuevo', i: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>' },
 ];
 const caminos = [
-  { tipo: 'Lo que más te pega', nombre: 'Creación de contenido', foto: fotoNoa },
-  { tipo: 'El puente', nombre: 'Animación 3D', foto: fotoLaia },
-  { tipo: 'El salto', nombre: 'Ciberseguridad', foto: fotoAitana },
+  { tipo: 'Lo que más te pega', nombre: 'Creación de contenido', foto: fotoNoa, i: '<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>' },
+  { tipo: 'El puente', nombre: 'Animación 3D', foto: fotoLaia, i: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>' },
+  { tipo: 'El salto', nombre: 'Ciberseguridad', foto: fotoAitana, i: '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>' },
 ];
 ---
 
@@ -64,7 +66,7 @@ const caminos = [
         <span class="cfa-tu"><i></i>Tú</span>
         <svg class="cfa-ramas"></svg>
         {caminos.map((c, n) => (
-          <div class="cfa-cam"><span class="cfa-cam__n">{n + 1}</span><span class="cfa-cam__tx"><small>{c.tipo}</small><b>{c.nombre}</b></span><Image src={c.foto} alt="" width={120} height={120} class="cfa-cam__f" /></div>
+          <div class="cfa-cam"><span class="cfa-cam__n">{n + 1}</span><span class="cfa-cam__tx"><small>{c.tipo}</small><b>{c.nombre}</b></span>{iconos ? <i class="cfa-cam__f cfa-cam__f--ic"><svg viewBox="0 0 24 24" set:html={c.i} /></i> : <Image src={c.foto} alt="" width={120} height={120} class="cfa-cam__f" />}</div>
         ))}
       </div>
       {!sinPie && <p class="cfa-c-pie">Toca un camino para ver cómo llegar</p>}
@@ -150,6 +152,9 @@ const caminos = [
   .cfa-cam__tx small { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cfa-gris2); }
   .cfa-cam__tx b { font-family: var(--titular); font-weight: 900; font-size: 14.5px; line-height: 1.12; }
   .cfa-cam__f { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+  .cfa-cam__f--ic { display: grid; place-items: center; background: var(--cfa-suave); color: var(--cfa-tinta); }
+  .cfa-cam__f--ic svg { width: 22px; height: 22px; }
+  .cfa-cam:first-of-type .cfa-cam__f--ic { background: var(--acento); }
   .cfa-c-pie { text-align: center; font-size: 12.5px; font-weight: 700; color: var(--cfa-gris2); margin-top: 16px !important; }
   .cfa-nav { margin-top: auto; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--cfa-linea); padding-top: 9px; }
   .cfa-nav span { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; color: var(--cfa-gris2); }

@@ -60,26 +60,63 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
         </button>
         <p class="paso__eti" data-eti-2>Último paso</p>
         <h1 id="p2-titulo" class="paso__titulo" tabindex="-1"><span class="paso__nombre" data-nombre-2></span><span data-resto-2>¿Cuál es tu correo electrónico?</span></h1>
-        <p class="paso__lead">Para que tengas tus resultados siempre a mano y te acompañemos mientras descubres tu camino. Prometido: nada de spam.</p>
+        <p class="paso__lead">Para que tengas tus resultados siempre a mano y te avisemos cuando el test esté listo. Prometido: nada de spam.</p>
 
         <form class="paso__form" novalidate data-form="2">
           <label class="solo-lector" for="in-correo">Tu correo</label>
           <div class="paso__campo">
-            <input id="in-correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="nombre@correo.com" aria-describedby="error-correo" />
+            <input id="in-correo" name="correo" type="email" inputmode="email" autocomplete="email" spellcheck="false" placeholder="nombre@correo.com" aria-describedby="error-correo" />
+          </div>
+          <p id="error-correo" class="paso__error" hidden>Revisa el correo, parece que falta algo. Por ejemplo: nombre@gmail.com</p>
+
+          <fieldset class="paso__edad" aria-describedby="edad-porque error-edad">
+            <legend>¿Tienes 14 años o más?</legend>
+            <p class="paso__porque" id="edad-porque">Si tienes menos, la ley pide el permiso de un adulto.</p>
+            <div class="paso__opciones">
+              <label class="paso__op"><input type="radio" name="edad" value="si" /><span>Sí, 14 o más</span></label>
+              <label class="paso__op"><input type="radio" name="edad" value="no" /><span>No, menos de 14</span></label>
+            </div>
+            <p id="error-edad" class="paso__error" hidden>Elige una de las dos opciones.</p>
+            <div class="paso__tutor" data-tutor hidden>
+              <p>Escribimos a tu madre, padre o tutor para que dé el permiso. Cuéntaselo antes, así no le pilla por sorpresa.</p>
+              <label class="solo-lector" for="in-tutor">Correo de tu madre, padre o tutor</label>
+              <div class="paso__campo">
+                <input id="in-tutor" name="tutor" type="email" inputmode="email" autocomplete="off" spellcheck="false" placeholder="Su correo" aria-describedby="error-tutor" />
+              </div>
+              <p id="error-tutor" class="paso__error" hidden>Escribe su correo para poder pedirle el permiso.</p>
+            </div>
+          </fieldset>
+
+          <div class="paso__checks">
+            <label class="paso__chk"><input type="checkbox" id="in-priv" name="privacidad" aria-describedby="error-priv" /><span>He leído y acepto la <a href={ENLACES.privacidad} target="_blank" rel="noopener">política de privacidad</a>.</span></label>
+            <p id="error-priv" class="paso__error" hidden>Marca esta casilla para seguir.</p>
+            <label class="paso__chk"><input type="checkbox" id="in-nov" name="novedades" /><span>Quiero recibir novedades de NextYou. <small>(Opcional)</small></span></label>
+          </div>
+
+          <details class="paso__info">
+            <summary>¿Qué guardamos y para qué?</summary>
+            <ul>
+              <li><b>Tu nombre o apodo:</b> solo para dirigirnos a ti.</li>
+              <li><b>Tu correo:</b> para enviarte tus resultados y avisarte cuando el test esté listo.</li>
+              <li><b>Tu edad:</b> para saber si necesitamos el permiso de un adulto.</li>
+            </ul>
+            <p>No vendemos tus datos ni los compartimos con universidades ni centros. Puedes pedir que los borremos cuando quieras.</p>
+          </details>
+
+          <div class="paso__envio">
             <button type="submit" class="paso__ir paso__ir--texto">Empezar</button>
           </div>
-          <p id="error-correo" class="paso__error" role="alert" hidden></p>
           <div class="paso__otros">
             <button type="button" class="paso__saltar" data-saltar="2">Prefiero empezar sin dejar mi correo</button>
           </div>
         </form>
 
         <ul class="paso__fichas" role="list" aria-label="Qué hacemos con tu correo">
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Solo para tus resultados y acompañarte</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Solo para tus resultados</li>
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Nunca lo compartimos ni lo vendemos</li>
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Te das de baja con un clic</li>
         </ul>
-        <Fragment set:html="<!-- PENDIENTE CLIENTA: texto legal de privacidad y de menores; enlace a /legal/ -->" />
+        <Fragment set:html="<!-- PENDIENTE CLIENTA: texto legal de privacidad y de menores (el enlace ya lleva a /legal/#privacidad) -->" />
       </section>
 
       <!-- ===== Final: aquí arrancará el test ===== -->
@@ -99,8 +136,11 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
     (function () {
       var $ = function (s, r) { return (r || document).querySelector(s); };
       var pantallas = { 1: $('[data-pantalla="1"]'), 2: $('[data-pantalla="2"]'), 3: $('[data-pantalla="3"]') };
-      var nombre = $('#in-nombre'), correo = $('#in-correo'), error = $('#error-correo');
-      var datos = { nombre: '', correo: '' };
+      var nombre = $('#in-nombre'), correo = $('#in-correo'), tutor = $('#in-tutor'), priv = $('#in-priv'), nov = $('#in-nov');
+      var form2 = $('[data-form="2"]'), cajaTutor = $('[data-tutor]');
+      // Lo que se recoge en las dos pantallas. edad: 'si' (14 o más) | 'no' (menos de 14) | ''
+      var datos = { nombre: '', correo: '', edad: '', tutor: '', privacidad: false, novedades: false };
+      var intentado = false;
 
       function ir(n) {
         Object.keys(pantallas).forEach(function (k) { pantallas[k].hidden = String(k) !== String(n); });
@@ -119,12 +159,16 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
         ir(2);
       }
       function terminar() {
+        // PENDIENTE: enviar `datos` (nombre, correo, edad, correo del tutor, privacidad y novedades) al destino real:
+        // hoy no se guardan en ningún sitio.
         if (DESTINO_TEST !== '#') { location.href = DESTINO_TEST; return; }
         // Mientras no haya test ni destino de datos, se dice tal cual
         $('[data-titulo-3]').textContent = datos.nombre ? '¡Gracias, ' + datos.nombre + '!' : '¡Gracias!';
-        $('[data-mensaje]').textContent = datos.correo
-          ? 'Te escribiremos a ' + datos.correo + ' en cuanto el test esté listo, con tus resultados y todo lo necesario para explorar tu camino.'
-          : 'No hace falta dejar tu correo. En cuanto el test esté listo podrás hacerlo y ver tus resultados en pantalla.';
+        $('[data-mensaje]').textContent = !datos.correo
+          ? 'No hace falta dejar tu correo. En cuanto el test esté listo podrás hacerlo y ver tus resultados en pantalla.'
+          : datos.edad === 'no'
+            ? 'Hemos escrito a tu madre, padre o tutor para pedirle el permiso. Cuando lo acepte, te enviaremos a ' + datos.correo + ' el aviso de que el test está listo.'
+            : 'Te escribiremos a ' + datos.correo + ' en cuanto el test esté listo, con tus resultados y todo lo necesario para explorar tu camino.';
         // El ejemplo de resultados lleva el nombre, para que el saludo salga personalizado
         var ej = $('[data-ejemplo]');
         if (ej && datos.nombre) ej.href = ej.getAttribute('href').split('?')[0] + '?nombre=' + encodeURIComponent(datos.nombre);
@@ -135,18 +179,45 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
       $('[data-form="1"]').addEventListener('submit', function (e) { e.preventDefault(); datos.nombre = nombre.value.trim(); pasarACorreo(); });
       $('[data-saltar="1"]').addEventListener('click', function () { datos.nombre = ''; pasarACorreo(); });
 
-      // Pantalla 2 · correo
-      function mostrarError(t) { error.textContent = t; error.hidden = false; correo.setAttribute('aria-invalid', 'true'); }
-      $('[data-form="2"]').addEventListener('submit', function (e) {
+      // Pantalla 2 · correo, edad y privacidad. Se valida solo al pulsar «Empezar»; después, los errores se actualizan al corregir.
+      var esCorreo = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); };
+      var edad = function () { var r = form2.querySelector('input[name="edad"]:checked'); return r ? r.value : ''; };
+      function marcar(id, hayError, campo) {
+        $('#' + id).hidden = !hayError;
+        if (campo) { if (hayError) campo.setAttribute('aria-invalid', 'true'); else campo.removeAttribute('aria-invalid'); }
+      }
+      function validar(enfocar) {
+        var primero = null, e = edad();
+        var malCorreo = !esCorreo(correo.value.trim());
+        marcar('error-correo', malCorreo, correo); if (malCorreo) primero = correo;
+        marcar('error-edad', !e); if (!e) primero = primero || form2.querySelector('input[name="edad"]');
+        var malTutor = e === 'no' && !esCorreo(tutor.value.trim());
+        marcar('error-tutor', malTutor, tutor); if (malTutor) primero = primero || tutor;
+        marcar('error-priv', !priv.checked, priv); if (!priv.checked) primero = primero || priv;
+        if (enfocar && primero) primero.focus();
+        return !primero;
+      }
+      function actualizar() {
+        cajaTutor.hidden = edad() !== 'no';
+        if (intentado) validar(false);
+      }
+      form2.querySelectorAll('input[name="edad"]').forEach(function (r) { r.addEventListener('change', actualizar); });
+      [correo, tutor].forEach(function (i) { i.addEventListener('input', actualizar); });
+      priv.addEventListener('change', actualizar);
+      form2.addEventListener('submit', function (e) {
         e.preventDefault();
-        var v = correo.value.trim();
-        if (!v) { mostrarError('Si prefieres no dejarlo, puedes empezar igualmente con el enlace de abajo.'); return; }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { mostrarError('Parece que falta algo en el correo. ¿Lo revisamos? (por ejemplo: nombre@correo.com)'); correo.focus(); return; }
-        // PENDIENTE: enviar nombre y correo al destino real (hoy no se guardan en ningún sitio)
-        datos.correo = v; terminar();
+        intentado = true;
+        if (!validar(true)) return;
+        datos.correo = correo.value.trim(); datos.edad = edad();
+        datos.tutor = datos.edad === 'no' ? tutor.value.trim() : '';
+        datos.privacidad = priv.checked; datos.novedades = nov.checked;
+        terminar();
       });
-      correo.addEventListener('input', function () { error.hidden = true; correo.removeAttribute('aria-invalid'); });
-      $('[data-saltar="2"]').addEventListener('click', function () { datos.correo = ''; terminar(); });
+      // Sin correo no se guarda nada de esta pantalla ni hace falta la casilla
+      $('[data-saltar="2"]').addEventListener('click', function () {
+        datos.correo = ''; datos.edad = ''; datos.tutor = ''; datos.privacidad = false; datos.novedades = false;
+        terminar();
+      });
       $('[data-atras]').addEventListener('click', function () { ir(1); });
       // La pantalla ocupa todo el hueco bajo el menú, sin scroll
       var rellenar = function () {
@@ -180,7 +251,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   .paso__pantalla { display: grid; gap: 1.1rem; }
   .paso__pantalla[hidden] { display: none; }
   .paso__eti { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--acento-texto); }
-  .paso__titulo { font-family: var(--titular); font-weight: 900; font-size: var(--t-paso); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; outline: 0; }
+  .paso__titulo { font-family: var(--titular); font-weight: 900; font-size: var(--t-paso); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
   .paso__nombre { color: var(--acento-texto); }
   .paso__lead { max-width: 30rem; color: rgb(246 241 232 / 0.78); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.55; }
 
@@ -190,7 +261,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   .paso__campo input { flex: 1; min-width: 0; min-height: 56px; padding: 0; border: 0; background: none; color: var(--crema); font: inherit; font-family: var(--titular); font-weight: 600; font-size: clamp(1rem, 0.9rem + 0.35vw, 1.1875rem); letter-spacing: -0.01em; caret-color: var(--acento); }
   .paso__campo input::placeholder { color: rgb(246 241 232 / 0.3); }
   .paso__campo input:focus { outline: 0; }
-  .paso__campo input[aria-invalid='true'] { color: var(--acento-texto); }
+  .paso__campo input[aria-invalid='true'] { color: var(--crema); }
   .paso__ir { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border: 0; border-radius: 50%; background: var(--acento); color: var(--acento-txt, #161412); cursor: pointer; transition: transform 220ms cubic-bezier(.2,.7,.2,1), filter 220ms ease; }
   .paso__ir svg { width: 22px; height: 22px; }
   .paso__ir:hover { transform: translateX(4px) scale(1.04); filter: brightness(1.08); }
@@ -199,7 +270,7 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
   .paso__tecla { font-size: 0.8125rem; color: rgb(246 241 232 / 0.5); }
   .paso__tecla kbd { font: inherit; padding: 0.1rem 0.45rem; border: 1px solid rgb(246 241 232 / 0.25); border-radius: 6px; color: rgb(246 241 232 / 0.8); }
   @media (hover: none) { .paso__tecla { display: none; } }
-  .paso__error { font-size: 0.9375rem; line-height: 1.45; color: var(--acento-texto); }
+  .paso__error { font-size: 0.9375rem; line-height: 1.45; font-weight: 600; color: #ff8a7a; }
   .paso__error[hidden] { display: none; }
   .paso__otros { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.25rem; margin-top: 0.25rem; }
   .paso__atras, .paso__saltar { min-height: 44px; padding: 0 0.1rem; border: 0; background: none; color: rgb(246 241 232 / 0.72); font: inherit; font-size: 0.9375rem; cursor: pointer; transition: color 200ms ease; }
@@ -332,4 +403,41 @@ const DESTINO_TEST = '#'; // PENDIENTE: URL del test
     .paso__fichas { margin-top: clamp(0.9rem, 2.4svh, 1.75rem); gap: 0.5rem; }
     .paso__linea { margin-bottom: clamp(1.25rem, 3.4svh, 2.5rem); }
   }
+</style>
+<style is:global>
+  /* Foco del título al cambiar de pantalla: el contorno solo se ve con teclado (:focus-visible) */
+  .paso__titulo:focus:not(:focus-visible) { outline: 0; }
+  .paso__titulo:focus-visible { outline: 2px solid var(--crema); outline-offset: 6px; border-radius: 4px; }
+
+  /* Paso 2: edad, permiso, privacidad y «Qué guardamos» */
+  [data-pantalla="2"] .paso__campo:has(input[aria-invalid='true']) input { border-bottom-color: #ff8a7a; }
+  .paso__edad { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 0.5rem; margin-top: clamp(0.5rem, 1.6svh, 1.25rem); }
+  .paso__edad legend { padding: 0; margin-bottom: 0.25rem; font-weight: 700; font-size: 1rem; color: var(--crema); }
+  .paso__porque { margin: 0; font-size: 0.875rem; color: rgb(246 241 232 / 0.72); }
+  .paso__opciones { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+  .paso__op { position: relative; }
+  .paso__op input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .paso__op span { display: inline-flex; align-items: center; min-height: 46px; padding: 0 1.25rem; border: 1.5px solid rgb(246 241 232 / 0.35); border-radius: 999px; font-weight: 700; font-size: 0.9375rem; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease; }
+  .paso__op span:hover { border-color: var(--crema); }
+  .paso__op input:checked + span { background: var(--acento); border-color: var(--acento); color: var(--acento-txt, #161412); }
+  .paso__op input:focus-visible + span { outline: 2px solid var(--crema); outline-offset: 3px; }
+  .paso__tutor { margin-top: 0.5rem; padding: 1rem; border: 1px solid rgb(246 241 232 / 0.16); border-radius: 16px; background: rgb(246 241 232 / 0.05); display: grid; gap: 0.5rem; }
+  .paso__tutor[hidden] { display: none; }
+  .paso__tutor > p:first-child { margin: 0; font-size: 0.9375rem; color: rgb(246 241 232 / 0.82); }
+  .paso__checks { display: grid; gap: 0.75rem; margin-top: clamp(0.5rem, 1.6svh, 1.25rem); }
+  .paso__checks .paso__error { margin-top: -0.4rem; padding-left: 2.25rem; }
+  .paso__chk { display: grid; grid-template-columns: 24px 1fr; gap: 0.75rem; align-items: start; min-height: 44px; font-size: 0.9375rem; line-height: 1.45; color: rgb(246 241 232 / 0.85); cursor: pointer; }
+  .paso__chk input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--acento); cursor: pointer; }
+  .paso__chk input:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
+  .paso__chk a { color: var(--crema); font-weight: 700; text-underline-offset: 0.2em; }
+  .paso__chk small { color: rgb(246 241 232 / 0.65); font-size: inherit; }
+  .paso__info { font-size: 0.9375rem; color: rgb(246 241 232 / 0.82); }
+  .paso__info summary { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; cursor: pointer; font-weight: 700; color: var(--crema); list-style: none; }
+  .paso__info summary::-webkit-details-marker { display: none; }
+  .paso__info summary::after { content: '+'; color: var(--acento-texto); font-size: 1.125rem; line-height: 1; }
+  .paso__info[open] summary::after { content: '–'; }
+  .paso__info summary:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; border-radius: 4px; }
+  .paso__info ul { margin: 0 0 0.5rem; padding-left: 1.125rem; display: grid; gap: 0.25rem; }
+  .paso__info p { margin: 0; }
+  .paso__envio { display: flex; justify-content: flex-end; margin-top: clamp(0.25rem, 1svh, 0.75rem); }
 </style>
