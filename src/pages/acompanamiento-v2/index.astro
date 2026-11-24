@@ -1,0 +1,428 @@
+---
+// Referencia: exploracion/acompanamiento-v2-propuesta.html (nextyou-landing). Textos, orden de secciones, estilos y comportamiento tal cual.
+//
+// PENDIENTES DE SARA:
+//  - Perfiles y fotos reales de los coaches (hoy de ejemplo).
+//  - Enlaces de reserva (hoy #) y de «Escríbenos».
+//  - Política de cancelación y devolución.
+//  - Revisión por una psicóloga de las preguntas y de los códigos de estudios.
+//  - Lo marcado «Por validar» / «Propuesta» en la página está pendiente de decidir.
+import { Image } from 'astro:assets';
+import V5 from '../../layouts/V5.astro';
+import imgAvLaura from '../../assets/acompanamiento-v2/av-laura.jpg';
+import imgAvMarc from '../../assets/acompanamiento-v2/av-marc.jpg';
+import imgAvNuria from '../../assets/acompanamiento-v2/av-nuria.jpg';
+import imgAvAlex from '../../assets/acompanamiento-v2/av-alex.jpg';
+import imgSesionCoach from '../../assets/acompanamiento-v2/sesion-coach.jpg';
+import imgSesionEstudiante from '../../assets/acompanamiento-v2/sesion-estudiante.jpg';
+import imgFotoLaura from '../../assets/acompanamiento-v2/foto-laura.jpg';
+import imgFotoMarc from '../../assets/acompanamiento-v2/foto-marc.jpg';
+import imgFotoNuria from '../../assets/acompanamiento-v2/foto-nuria.jpg';
+import imgFotoAlex from '../../assets/acompanamiento-v2/foto-alex.jpg';
+import imgFamilia from '../../assets/acompanamiento-v2/familia.jpg';
+
+const faq = {
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "¿Tengo que hacer el test antes?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sí. El coach parte de tus 3 caminos, así no empezáis de cero. El test es gratis."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Elijo yo al coach?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sí, según tus horarios: al reservar ves qué coaches tienen hueco en los días y horas que te van bien."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Mis padres se enteran de lo que hablo?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Participan cuando lo acordáis al principio. Lo que cuentas en tus sesiones es confidencial, salvo que estés en peligro."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Qué plan me conviene?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Una duda concreta: «Resolver dudas». Varias opciones que comparar: «Comparar caminos». Quieres que te acompañen hasta la preinscripción: «Acompañamiento completo»."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Por qué pagar si hay orientador en el instituto?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "El orientador atiende a muchos alumnos a la vez. Aquí el tiempo es solo para tu hijo o hija y acaba con un plan concreto. Es un complemento, no un sustituto."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Y si no puedo ir a una sesión?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Avisas con antelación y buscáis otro día."
+   }
+  }
+ ]
+};
+---
+
+<V5
+  titulo="Coach para decidir qué estudiar · NextYou"
+  descripcion="Un coach te acompaña por videollamada a comparar tus 3 caminos y decidir qué estudiar. Una sesión o packs de 4 y 6 sesiones, con tu familia al principio."
+  actual="bachillerato"
+  soloBachillerato
+  ruta="home-v3/"
+  robots="noindex, follow"
+>
+  <main id="contenido" class="av2">
+<div class="w">
+
+
+<div class="hero">
+<div><h1>Sesiones con un coach para decidir qué estudiar</h1>
+<p class="lede">Después del test, una persona te ayuda a entender tus 3 caminos y a elegir por dónde empezar.</p>
+<ul class="trust"><li>100 % online</li><li>Adaptado a tu situación</li><li>En tu horario</li><li>Coaches que pasaron por lo mismo <span class="pv">Por validar</span></li></ul>
+<div class="team"><div class="avs"><Image src={imgAvLaura} alt="" width={96} height={96} class="av" loading="eager" /><Image src={imgAvMarc} alt="" width={96} height={96} class="av" loading="eager" /><Image src={imgAvNuria} alt="" width={96} height={96} class="av" loading="eager" /><Image src={imgAvAlex} alt="" width={96} height={96} class="av" loading="eager" /></div><p><b>Laura, Marc, Nuria y Álex</b><br>te acompañan. <span class="pv">Perfiles de ejemplo</span></p></div></div>
+<figure class="session" aria-label="Ejemplo de una sesión">
+<div class="vid"><Image src={imgSesionCoach} alt="Una coach sonríe a la cámara durante una videollamada" width={720} height={440} loading="eager" /><span class="live">En sesión</span><span class="who">Tu coach</span><Image src={imgSesionEstudiante} alt="Un estudiante en la misma videollamada" width={220} height={160} class="pip" loading="eager" /></div>
+<p class="msg y">Me salen Animación 3D y Ciberseguridad. ¿Por cuál tiro?</p>
+<p class="msg k">Hoy no tienes que decidirlo todo. Vamos a ver qué te atrae de cada una y buscamos un primer paso que puedas probar.</p>
+<figcaption class="cap">Así puede ser una sesión · ejemplo</figcaption></figure>
+</div>
+
+<section id="planes" aria-labelledby="t-planes" style="padding-top:24px">
+<div class="head"><div><p class="ey">Planes</p><h2 id="t-planes">Elige cuánto acompañamiento necesitas</h2></div><p>Cambia el tiempo que tenéis y cuánto te acompañamos entre sesiones. El test y tus 3 caminos siguen siendo gratis.</p></div>
+<div class="plans">
+<article class="plan" aria-labelledby="p1"><p class="kind">1 sesión · 45 min</p><h3 id="p1">Resolver dudas</h3><p class="goal">Ya hiciste el test y te quedan dudas sobre tus caminos.</p>
+<p class="pr"><b>45 €</b><span>IVA incl.</span></p><p class="per">Pago único</p>
+<ul class="inc"><li>Por qué encaja cada camino contigo</li><li>Dónde se estudia y cuánto tiempo lleva</li><li>A qué trabajo puede llevarte</li></ul>
+<p class="out"><small>Te llevas</small>Tus 3 caminos entendidos y tu siguiente paso, por escrito.</p>
+<a class="btn" href="#" aria-label="Reservar el plan Resolver dudas, 45 euros">Reservar sesión</a></article>
+
+<article class="plan rec" aria-labelledby="p2"><span class="tag">Para comparar con calma</span><p class="kind">4 sesiones</p><h3 id="p2">Comparar caminos</h3><p class="goal">Dudas entre varias opciones y quieres compararlas con alguien.</p>
+<p class="pr"><b>105 €</b><span>IVA incl.</span></p><p class="per">Unos 26 € por sesión</p>
+<p class="inch">Todo lo de «Resolver dudas» y además: <span class="pv">Propuesta</span></p>
+<ul class="inc"><li>Una sesión con tu familia</li><li>Comparativa personalizada de tus caminos</li><li>Primeros pasos de tu plan de acceso a la universidad</li><li>Dudas por email entre sesiones</li></ul>
+<p class="out"><small>Te llevas</small>Una comparativa hecha para ti y un primer plan de acceso.</p>
+<a class="btn" href="#" aria-label="Empezar el plan Comparar caminos, 105 euros">Empezar</a></article>
+
+<article class="plan" aria-labelledby="p3"><p class="kind">6 sesiones · hasta la preinscripción</p><h3 id="p3">Acompañamiento completo</h3><p class="goal">El acompañamiento de «Comparar caminos», ampliado.</p>
+<p class="pr"><b>200 €</b><span>IVA incl.</span></p><p class="per">Unos 33 € por sesión</p>
+<p class="inch">Todo lo de «Comparar caminos» y además: <span class="pv">Propuesta</span></p>
+<ul class="inc"><li class="plus">WhatsApp directo con tu coach</li><li>2 sesiones más para cerrar tu plan y tu plan B</li><li>Sesión final con tu familia: se lo cuentas tú</li><li>Te acompaña hasta la preinscripción</li></ul>
+<p class="out"><small>Te llevas</small>Tu decisión, las fechas de inscripción y un plan B.</p>
+<a class="btn" href="#" aria-label="Empezar el plan Acompañamiento completo, 200 euros">Empezar</a></article>
+</div>
+<details class="diff"><summary>Ver las diferencias en una tabla</summary><div class="tw"><table>
+<thead><tr><th></th><th scope="col">Resolver dudas</th><th scope="col" class="r">Comparar caminos</th><th scope="col">Acompañamiento completo</th></tr></thead>
+<tbody>
+<tr><th scope="row">Precio</th><td>45 €</td><td class="r">105 €</td><td>200 €</td></tr>
+<tr><th scope="row">Sesiones</th><td>1</td><td class="r">4</td><td>6</td></tr>
+<tr><th scope="row">Con tu familia</th><td>—</td><td class="r">1 sesión</td><td>Al principio y al final</td></tr>
+<tr><th scope="row">Entre sesiones</th><td>—</td><td class="r">Email</td><td>WhatsApp con tu coach</td></tr>
+<tr><th scope="row">Te llevas</th><td>Caminos entendidos y siguiente paso</td><td class="r">Comparativa y primer plan de acceso</td><td>Decisión, fechas y plan B</td></tr>
+</tbody></table></div></details>
+</section>
+
+<section id="como" aria-labelledby="t-como">
+<div class="head"><div><p class="ey">Cómo funciona</p><h2 id="t-como">De la reserva a tu primera sesión</h2></div><p>Si contratas, esto es lo que pasa después.</p></div>
+<ol class="steps">
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg></span><h3>Eliges tu plan</h3><p>Una sesión o un pack, según lo que necesites.</p></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5"/><path d="M12 16.5h.01"/></svg></span><h3>Respondes unas preguntas</h3><p>Para entender tu situación: tu momento, qué esperas, tus horarios y si participa tu familia.</p></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><h3>Eliges coach según tu horario</h3><p>Ves qué coaches tienen hueco en los días y horas que te van bien.</p></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><h3>Recibes tu plan de reuniones</h3><p>Fechas, horas y el enlace de cada videollamada.</p></li>
+</ol></section>
+
+<section aria-labelledby="t-fit"><div class="fit">
+<div><p class="ey">Nos adaptamos a ti</p><h2 id="t-fit">Antes de empezar, te escuchamos</h2>
+<ul class="points">
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span><span><b>Tu test</b>Tu coach ya ve qué te atrae y cómo te gusta trabajar. No empezáis de cero.</span></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><b>Tu momento</b>Por ejemplo, cuánto te falta para la selectividad.</span></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5"/><path d="M12 16.5h.01"/></svg></span><span><b>Lo que esperas</b>De las sesiones y de tu coach.</span></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span><b>Tus horarios</b>Las sesiones se ajustan a tu semana.</span></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 14.5c2.8 0 5 2.2 5 5"/></svg></span><span><b>Tu familia</b>Decidís juntos si participa y cuándo.</span></li>
+<li class="soft"><span><b>También podríamos preguntar</b>Idioma y presupuesto. <span class="pv">Por validar</span></span></li>
+</ul></div>
+<figure class="form" aria-label="Ejemplo de las preguntas que te haremos" style="margin:0">
+<div class="fh"><span>Personaliza tu acompañamiento</span><span>1 de 6</span></div><div class="prog"><i></i></div>
+<div class="fq"><p>De tus 3 caminos, ¿cuál te tira más?</p><div class="opts"><span class="on">El que más te pega</span><span>El puente</span><span>El salto</span><span>Ninguno todavía</span></div></div>
+<div class="fq"><p>¿Te reconoces en «cómo trabajas»?</p><div class="opts"><span>Sí, bastante</span><span class="on">En parte</span><span>No mucho</span></div></div>
+<div class="fq"><p>¿Cuánto te falta para la selectividad?</p><div class="opts"><span>Más de un año</span><span class="on">Este curso</span><span>Ya la hice</span><span>No voy a hacerla</span></div></div>
+<div class="fq"><p>¿Participarán tus padres?</p><div class="opts"><span>Sí</span><span class="on">Solo al principio</span><span>No</span></div></div>
+<figcaption class="note">Ejemplo de las preguntas · tu coach llega a la primera sesión con esto y con tus respuestas del test</figcaption></figure>
+</div></section>
+
+<section id="coaches" aria-labelledby="t-co">
+<div class="head"><div><p class="ey">Las personas</p><h2 id="t-co">Quién te va a acompañar</h2></div><p>Personas que acompañan, no un servicio automático. <span class="pv">Perfiles, fotos y vídeos reales pendientes</span></p></div>
+<ul class="coaches"><li class="coach"><div class="ph"><Image src={imgFotoLaura} alt="Foto de Laura" width={480} height={480} loading="lazy" /><button type="button" class="play" aria-label="Ver la presentación de Laura, 1 minuto"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg>1 min</button></div><div class="cb"><h3>Laura</h3><p class="role">Pedagoga · FP y salidas técnicas</p></div></li><li class="coach"><div class="ph"><Image src={imgFotoMarc} alt="Foto de Marc" width={480} height={480} loading="lazy" /><button type="button" class="play" aria-label="Ver la presentación de Marc, 1 minuto"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg>1 min</button></div><div class="cb"><h3>Marc</h3><p class="role">Educador social · Dudas y miedo a equivocarse</p></div></li><li class="coach"><div class="ph"><Image src={imgFotoNuria} alt="Foto de Nuria" width={480} height={480} loading="lazy" /><button type="button" class="play" aria-label="Ver la presentación de Nuria, 1 minuto"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg>1 min</button></div><div class="cb"><h3>Nuria</h3><p class="role">Orientadora · Universidad y notas de corte</p></div></li><li class="coach"><div class="ph"><Image src={imgFotoAlex} alt="Foto de Álex" width={480} height={480} loading="lazy" /><button type="button" class="play" aria-label="Ver la presentación de Álex, 1 minuto"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg>1 min</button></div><div class="cb"><h3>Álex</h3><p class="role">Coach · Estudios creativos y cambios de camino</p></div></li></ul>
+<p class="match"><span><b>Eliges coach según tus horarios.</b> Al reservar ves quién tiene hueco en los días y horas que te van bien.</span></p>
+</section>
+
+<section id="familias" aria-labelledby="t-fam">
+<div class="head"><div><p class="ey">Para madres, padres y tutores</p><h2 id="t-fam">Lo que tenéis que saber</h2></div><p><span class="pv">Políticas por confirmar</span></p></div>
+<figure class="famimg"><Image src={imgFamilia} alt="Una chica joven mira el portátil mientras dos adultos le ayudan" width={1400} height={820} loading="lazy" /></figure>
+<ul class="fam">
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 14.5c2.8 0 5 2.2 5 5"/></svg></span><h3>Estáis desde el principio</h3><p>Si vuestro hijo o hija tiene menos de 14 años, la primera sesión es con vosotros.</p></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><h3>Sus sesiones son suyas</h3><p>Confidenciales, salvo que esté en peligro.</p></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span><h3>Datos, no opiniones</h3><p>Todo acaba con algo por escrito.</p></li>
+<li><span class="mi"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Nadie cobra por recomendar</h3><p>Cero comisiones de universidades ni centros.</p></li>
+</ul></section>
+
+<section id="faq" aria-labelledby="t-faq"><div class="fqs">
+<div><h2 id="t-faq">Preguntas frecuentes</h2>
+<div class="contact"><b>¿Prefieres hablarlo antes?</b><p>Escríbenos y te respondemos personalmente.</p><a class="btn o" href="#">Escríbenos</a></div></div>
+<div class="faq"><details open><summary>¿Tengo que hacer el test antes?</summary><p>Sí. El coach parte de tus 3 caminos, así no empezáis de cero. El test es gratis.</p></details><details><summary>¿Elijo yo al coach?</summary><p>Sí, según tus horarios: al reservar ves qué coaches tienen hueco en los días y horas que te van bien.</p></details><details><summary>¿Mis padres se enteran de lo que hablo?</summary><p>Participan cuando lo acordáis al principio. Lo que cuentas en tus sesiones es confidencial, salvo que estés en peligro.</p></details><details><summary>¿Qué plan me conviene?</summary><p>Una duda concreta: «Resolver dudas». Varias opciones que comparar: «Comparar caminos». Quieres que te acompañen hasta la preinscripción: «Acompañamiento completo».</p></details><details><summary>¿Por qué pagar si hay orientador en el instituto?</summary><p>El orientador atiende a muchos alumnos a la vez. Aquí el tiempo es solo para tu hijo o hija y acaba con un plan concreto. Es un complemento, no un sustituto.</p></details><details><summary>¿Y si no puedo ir a una sesión?</summary><p>Avisas con antelación y buscáis otro día.</p></details></div></div></section>
+
+<div class="end"><h2>Empieza por tus 3 caminos</h2><p>El test es gratis. Cuando los tengas, decides si quieres a alguien a tu lado.</p>
+<div class="ctas" style="justify-content:center"><a class="btn" href="#">Hacer el test gratis</a><a class="tl" href="#planes">Ver planes</a></div></div>
+
+</div>
+<div class="stick" id="stick" aria-hidden="true"><p><b>Desde 45 €</b> · online</p><a class="btn" href="#planes" tabindex="-1">Ver planes</a></div>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faq)} />
+</V5>
+
+<style is:global>
+.av2{color-scheme:light;--bg:#f6f1e8;--bg2:#efe8dc;--ink:#161412;--g:#4a4540;--g3:#6b645c;--l:#16141214;--l2:#16141226;--a:#c8f53b;--w:#fffdf9}
+.av2 *{box-sizing:border-box}
+.av2{margin:0;background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.av2 .w{max-width:1100px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.av2 .bar{background:var(--ink);color:var(--bg);text-align:center;font-size:13px;font-weight:600;padding:8px 16px}
+.av2 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--bg);font-weight:700;border-radius:99px;padding:14px 26px;text-decoration:none;font-size:16px;min-height:50px;border:1.5px solid var(--ink);transition:transform .15s,background .15s}
+.av2 .btn:hover{transform:translateY(-1px)}
+.av2 .btn.o{background:transparent;color:var(--ink);border-color:var(--l2)}
+.av2 .btn.o:hover{border-color:var(--ink)}
+.av2 .tl{color:var(--ink);font-weight:700;text-underline-offset:4px;text-decoration-thickness:1.5px;display:inline-flex;align-items:center;min-height:48px}
+.av2 a:focus-visible, .av2 button:focus-visible, .av2 summary:focus-visible, .av2 [tabindex]:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.av2 summary:focus{outline:none}
+.av2 h1{font-size:clamp(38px,4.6vw,58px);line-height:1.04;letter-spacing:-.035em;margin:0 0 18px;max-width:15ch;text-wrap:balance;font-weight:800}
+.av2 h2{font-size:clamp(30px,3.4vw,44px);line-height:1.08;letter-spacing:-.03em;margin:0;text-wrap:balance;font-weight:800}
+.av2 .lede{color:var(--g);font-size:19px;max-width:40ch;margin:0 0 26px}
+.av2 section{padding:80px 0}
+.av2 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;margin-bottom:34px;flex-wrap:wrap}
+.av2 .head p{margin:0;color:var(--g);font-size:17px;max-width:44ch}
+.av2 .ey{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--g3);margin:0 0 10px}
+.av2 .mi{width:44px;height:44px;border-radius:14px;background:var(--bg2);display:grid;place-items:center;flex:none}
+.av2 .mi svg, .av2 .wa svg{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.av2 .hero{padding:44px 0 56px;display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:center}
+.av2 .ctas{display:flex;gap:10px 22px;flex-wrap:wrap;align-items:center}
+.av2 .team{display:flex;align-items:center;gap:14px;margin-top:30px}
+.av2 .avs{display:flex}
+.av2 .av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;border:3px solid var(--bg);margin-left:-10px;color:var(--ink)}
+.av2 .avs .av:first-child{margin-left:0}
+.av2 .team p{margin:0;font-size:15.5px;color:var(--g)}
+.av2 .team b{color:var(--ink)}
+.av2 .session{background:var(--w);border:1px solid var(--l);border-radius:26px;padding:22px;box-shadow:0 40px 70px -50px #16141273}
+.av2 .session .top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.av2 .session .top .av{margin:0;border:0;width:40px;height:40px}
+.av2 .session .top b{display:block;font-size:15.5px}
+.av2 .session .top span{font-size:14px;color:var(--g3)}
+.av2 .live{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--g);display:flex;align-items:center;gap:6px}
+.av2 .live:before{content:"";width:8px;height:8px;border-radius:50%;background:#3cb043}
+.av2 .msg{margin:0 0 10px;padding:12px 16px;border-radius:18px;max-width:88%;font-size:15.5px}
+.av2 .msg.y{background:var(--bg2)}
+.av2 .msg.k{background:var(--ink);color:var(--bg);margin-left:auto}
+.av2 .session .vid{position:relative;border-radius:18px;overflow:hidden;margin-bottom:16px;aspect-ratio:18/11;background:var(--bg2)}
+.av2 .session .vid>img:first-child{width:100%;height:100%;object-fit:cover;display:block}
+.av2 .session .vid .live{position:absolute;top:12px;left:12px;background:#161412b3;color:#fff;padding:5px 10px;border-radius:99px;margin:0}
+.av2 .session .vid .who{position:absolute;bottom:12px;left:12px;background:#161412b3;color:#fff;font-size:13px;font-weight:700;padding:5px 10px;border-radius:99px}
+.av2 .session .vid .pip{position:absolute;right:12px;bottom:12px;width:28%;height:auto;aspect-ratio:11/8;object-fit:cover;border-radius:12px;border:2px solid #fff;box-shadow:0 8px 20px -8px #16141299}
+.av2 .session .cap{margin:14px 0 0;font-size:13.5px;color:var(--g3);text-align:center}
+.av2 .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:26px 0 0;padding:0;list-style:none;max-width:520px}
+.av2 .quick a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:16px;background:var(--w);border:1px solid var(--l);text-decoration:none;color:var(--ink);min-height:44px}
+.av2 .quick a:hover{border-color:var(--ink)}
+.av2 .quick span{font-size:13.5px;color:var(--g3)}
+.av2 .quick b{font-size:20px}
+.av2 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+.av2 .plan{background:var(--w);border:1px solid var(--l);border-radius:24px;padding:28px;display:flex;flex-direction:column;position:relative}
+.av2 .plan.rec{border:1.5px solid var(--ink);box-shadow:0 30px 60px -44px #16141299}
+.av2 .tag{position:absolute;top:-12px;left:24px;background:var(--a);color:var(--ink);font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:99px}
+.av2 .plan .kind{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin:0 0 6px}
+.av2 .plan h3{font-size:23px;margin:0 0 6px;letter-spacing:-.01em}
+.av2 .plan .goal{margin:0 0 20px;color:var(--g);font-size:16px;min-height:50px}
+.av2 .pr{display:flex;align-items:baseline;gap:8px;margin:0}
+.av2 .pr b{font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.av2 .pr span{color:var(--g3);font-size:15px}
+.av2 .per{margin:6px 0 18px;color:var(--g3);font-size:15px}
+.av2 .meta{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px;padding:0;list-style:none}
+.av2 .meta li{font-size:14px;font-weight:600;padding:5px 11px;border-radius:99px;background:var(--bg2);display:flex;align-items:center;gap:6px}
+.av2 .meta svg{width:15px;height:15px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.av2 .inc{list-style:none;margin:0 0 20px;padding:0;flex:1}
+.av2 .inc li{position:relative;padding:8px 0 8px 28px;font-size:16px;border-top:1px solid var(--l)}
+.av2 .inc li:before{content:"";position:absolute;left:3px;top:15px;width:11px;height:6px;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg)}
+.av2 .inc li.plus{font-weight:700}
+.av2 .out{margin:0 0 22px;padding:14px 16px;border-radius:16px;background:var(--bg);font-size:15.5px}
+.av2 .out small{display:block;font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin-bottom:2px}
+.av2 .plan .btn{width:100%}
+.av2 .plan:not(.rec) .btn{background:transparent;color:var(--ink);border-color:var(--l2)}
+.av2 .plan:not(.rec) .btn:hover{border-color:var(--ink)}
+.av2 .fine{margin:18px 0 0;color:var(--g3);font-size:15px;text-align:center}
+.av2 .diff{margin-top:20px}
+.av2 .diff summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;min-height:44px}
+.av2 .diff summary::-webkit-details-marker{display:none}
+.av2 .diff summary:after{content:"+";font-size:20px}
+.av2 .diff[open] summary:after{content:"–"}
+.av2 .tw{overflow-x:auto;margin-top:8px}
+.av2 .diff table{width:100%;border-collapse:collapse;font-size:15.5px;min-width:620px;background:var(--w);border-radius:18px;overflow:hidden}
+.av2 .diff th, .av2 .diff td{padding:12px 14px;border-top:1px solid var(--l);text-align:left}
+.av2 .diff thead th{border-top:0;font-size:14px;color:var(--g3);font-weight:700}
+.av2 .diff tbody th{font-weight:600;color:var(--g)}
+.av2 .diff .r{background:#16141208}
+.av2 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:0;padding:0;list-style:none;counter-reset:s}
+.av2 .steps li{counter-increment:s;background:var(--w);border:1px solid var(--l);border-radius:22px;padding:24px;position:relative}
+.av2 .steps li:after{content:counter(s);position:absolute;top:20px;right:22px;font-size:14px;font-weight:700;color:var(--g3)}
+.av2 .steps h3{margin:16px 0 6px;font-size:19px}
+.av2 .steps p{margin:0;color:var(--g);font-size:16px}
+.av2 .fit{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
+.av2 .fit ul.points{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}
+.av2 .points li{display:flex;gap:14px;align-items:flex-start;font-size:16.5px;color:var(--g)}
+.av2 .points b{display:block;color:var(--ink)}
+.av2 .form{background:var(--w);border:1px solid var(--l);border-radius:26px;padding:26px;box-shadow:0 40px 70px -54px #16141273}
+.av2 .form .fh{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--g3);margin-bottom:6px}
+.av2 .form .prog{height:4px;border-radius:4px;background:var(--bg2);margin-bottom:20px}
+.av2 .form .prog i{display:block;width:17%;height:100%;border-radius:4px;background:var(--ink)}
+.av2 .fq{margin:0 0 18px}
+.av2 .fq:last-of-type{margin-bottom:0}
+.av2 .fq p{margin:0 0 10px;font-weight:700;font-size:16.5px}
+.av2 .opts{display:flex;flex-wrap:wrap;gap:8px}
+.av2 .opts span{font-size:15px;padding:8px 14px;border-radius:99px;border:1px solid var(--l2);background:var(--w)}
+.av2 .opts span.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.av2 .form .note{margin:18px 0 0;font-size:13.5px;color:var(--g3);text-align:center}
+.av2 .coaches{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0;padding:0;list-style:none}
+.av2 .coach{background:var(--w);border:1px solid var(--l);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.av2 .coach .ph{aspect-ratio:1/1;position:relative;display:grid;place-items:center}
+.av2 .coach .ph span{font-size:72px;font-weight:800;color:#16141226}
+.av2 .play{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:6px;background:var(--w);color:var(--ink);border:0;border-radius:99px;padding:8px 14px;font:700 14px 'Archivo',sans-serif;min-height:40px;cursor:pointer}
+.av2 .cb{padding:18px 18px 20px}
+.av2 .cb h3{margin:0;font-size:20px}
+.av2 .role{margin:2px 0 10px;color:var(--g3);font-size:15px}
+.av2 .quote{margin:0;font-size:16px;color:var(--g)}
+.av2 .match{margin:22px 0 0;display:flex;gap:12px;align-items:center;padding:16px 20px;border-radius:18px;background:var(--bg2);font-size:16px;color:var(--g)}
+.av2 .match b{color:var(--ink)}
+.av2 img.av{object-fit:cover;padding:0;background:var(--bg2)}
+.av2 .coach .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.av2 .famimg{margin:0 0 18px;border-radius:22px;overflow:hidden;aspect-ratio:5/2;background:var(--bg2)}
+.av2 .famimg img{width:100%;height:100%;object-fit:cover;object-position:center 55%;display:block}
+@media (max-width:640px){
+.av2 .famimg{aspect-ratio:4/3}
+}
+.av2 .fam{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0;padding:0;list-style:none}
+.av2 .fam li{padding:22px;border-radius:22px;border:1px solid var(--l);background:var(--w)}
+.av2 .fam h3{margin:14px 0 4px;font-size:18px}
+.av2 .fam p{margin:0;color:var(--g);font-size:16px}
+.av2 .fqs{display:grid;grid-template-columns:1fr 1.4fr;gap:44px;align-items:start}
+.av2 .faq details{border-top:1px solid var(--l2)}
+.av2 .faq details:last-child{border-bottom:1px solid var(--l2)}
+.av2 .faq summary{cursor:pointer;font-weight:700;font-size:17.5px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;min-height:56px}
+.av2 .faq summary::-webkit-details-marker{display:none}
+.av2 .faq summary:after{content:"+";font-size:24px;line-height:1;flex:none;transition:transform .2s}
+.av2 .faq details[open] summary:after{transform:rotate(45deg)}
+.av2 .faq details p{margin:0 0 18px;color:var(--g);max-width:58ch}
+.av2 .contact{margin-top:24px;padding:22px;border-radius:22px;background:var(--w);border:1px solid var(--l)}
+.av2 .contact p{margin:0 0 14px;color:var(--g)}
+.av2 .contact b{display:block;color:var(--ink);font-size:18px}
+.av2 .end{background:var(--ink);color:var(--bg);border-radius:30px;padding:56px;text-align:center;margin-bottom:64px}
+.av2 .end p{color:#d9d2c6;margin:12px auto 26px;max-width:42ch;font-size:18px}
+.av2 .end .btn{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+.av2 .end .tl{color:var(--bg)}
+.av2 .stick{position:fixed;left:0;right:0;bottom:0;z-index:10;display:none;align-items:center;justify-content:space-between;gap:12px;background:var(--w);border-top:1px solid var(--l2);padding:12px max(16px,env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-bottom,0px));transform:translateY(110%);transition:transform .25s;box-shadow:0 -10px 30px -20px #16141266}
+.av2 .stick.on{transform:none}
+.av2 .stick p{margin:0;font-size:15px;color:var(--g)}
+.av2 .stick b{color:var(--ink)}
+.av2 .stick .btn{min-height:44px;padding:10px 18px;font-size:15px}
+html.av2-js .av2 .rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+html.av2-js .av2 .rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+.av2 *{transition:none!important}
+html.av2-js .av2 .rv{opacity:1;transform:none}
+}
+@media(max-width:960px){
+.av2 .hero, .av2 .fit, .av2 .fqs{grid-template-columns:1fr}
+.av2 .hero{gap:32px;padding-top:24px}
+.av2 .plans{grid-template-columns:1fr;gap:26px}
+.av2 .plan.rec{order:-1}
+.av2 .plan .goal{min-height:0}
+.av2 .steps, .av2 .fam{grid-template-columns:1fr 1fr}
+.av2 .coaches{grid-template-columns:1fr 1fr}
+.av2 .stick{display:flex}
+.av2 section{padding:56px 0}
+.av2 .end{padding:40px 24px}
+}
+@media(max-width:600px){
+.av2 .w{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.av2{font-size:16.5px}
+.av2 .steps, .av2 .fam{grid-template-columns:1fr}
+.av2 .coaches{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:78%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+.av2 .coaches::-webkit-scrollbar{display:none}
+.av2 .coach{scroll-snap-align:start}
+.av2 .session{margin-top:28px}
+}
+.av2{font-size:16px}
+.av2 .lede{font-size:18px}
+.av2 .head p{font-size:16px;color:var(--g3)}
+.av2 .plan .goal{font-size:15px;color:var(--g3);min-height:44px}
+.av2 .inc li{font-size:15px}
+.av2 .per, .av2 .pr span{font-size:14px}
+.av2 .out{font-size:15px}
+.av2 .steps p, .av2 .fam p, .av2 .points li{font-size:15px;color:var(--g3)}
+.av2 .role{font-size:14px}
+.av2 .faq details p{font-size:16px}
+.av2 .trust{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 24px;padding:0;list-style:none;font-size:14.5px;color:var(--g)}
+.av2 .trust li{display:flex;align-items:center;gap:7px}
+.av2 .trust li:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.av2 .pv{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--g3);border:1px dashed #16141259;border-radius:6px;padding:1px 7px;margin-left:4px;vertical-align:middle;white-space:nowrap;background:transparent}
+.av2 .quick em{font-style:normal;font-size:11.5px;color:var(--g3)}
+.av2 .inch{margin:0 0 4px;font-size:14px;font-weight:700;color:var(--g)}
+.av2 .inc li.maybe{color:var(--g3)}
+.av2 .alt{display:grid;gap:8px;margin:6px 0 18px;flex:1}
+.av2 .alt p{margin:0;padding:12px 14px;border:1px dashed #16141240;border-radius:14px;font-size:14.5px;color:var(--g3)}
+.av2 .alt b{display:block;color:var(--ink);font-size:15px}
+.av2 .points li.soft{padding-left:58px}
+.av2{--t1:.875rem;--t2:1rem;--t3:clamp(1.125rem,1.05rem + .35vw,1.25rem);--t4:clamp(1.375rem,1.2rem + .75vw,1.75rem);--tsec:1.875rem;--t6:clamp(2.5rem,1.4rem + 4.4vw,4.75rem);--micro:.75rem;--gtx:#574e46}
+@media (min-width:768px){
+.av2{--t2:1.125rem;--tsec:3.25rem}
+}
+.av2{font-size:var(--t2);line-height:1.55}
+.av2 h1, .av2 h2, .av2 .plan h3, .av2 .cb h3, .av2 .steps h3, .av2 .fam h3, .av2 .pr b, .av2 .end h2{font-stretch:105%}
+.av2 h1{font-size:var(--t6);font-weight:800;letter-spacing:-.03em;line-height:1.02;max-width:14ch}
+.av2 h2{font-size:var(--tsec);font-weight:800;letter-spacing:-.02em;line-height:1.04}
+.av2 .ey, .av2 .head p.ey, .av2 .plan .kind, .av2 .out small, .av2 .diff thead th{font-size:var(--micro);font-weight:700;letter-spacing:.16em;line-height:1.4;text-transform:uppercase;color:var(--gtx)}
+.av2 .lede{font-size:var(--t3);line-height:1.6}
+.av2 .head p{font-size:1.0625rem;line-height:1.5}
+.av2 .plan h3{font-size:var(--t4);font-weight:800;letter-spacing:-.015em;line-height:1.2}
+.av2 .cb h3, .av2 .steps h3, .av2 .fam h3{font-size:var(--t3);font-weight:800;line-height:1.3}
+.av2 .plan .goal, .av2 .inc li, .av2 .steps p, .av2 .fam p, .av2 .points li, .av2 .faq details p, .av2 .match, .av2 .msg, .av2 .quote, .av2 .out, .av2 .fq p, .av2 .opts span, .av2 .diff table{font-size:1rem}
+.av2 .per, .av2 .pr span, .av2 .role, .av2 .inch, .av2 .fine, .av2 .session .cap, .av2 .trust, .av2 .team p, .av2 .form .note, .av2 .form .fh, .av2 .meta li, .av2 .alt p, .av2 .alt b, .av2 .stick p, .av2 .session .top span{font-size:var(--t1)}
+.av2 .btn{font-size:1rem;min-height:56px;padding:.75rem 1.75rem}
+.av2 .stick .btn{font-size:var(--t1);min-height:44px;padding:.5rem 1.25rem}
+.av2 .faq summary{font-size:var(--t2)}
+.av2 .contact b{font-size:var(--t3)}
+.av2 .end p{font-size:var(--t3)}
+@media (max-width:640px){
+.av2 .session{margin:28px 0 8px}
+}
+
+</style>
+
+<script is:inline>
+
+(function(){if(!('IntersectionObserver'in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;document.documentElement.classList.add('av2-js');
+var els=document.querySelectorAll('section .head, .plans>article, .steps li, .fit>*, .coach, .fam li, .faq, .end');
+els.forEach(function(e,i){e.classList.add('rv');e.style.transitionDelay=((i%4)*70)+'ms'});
+var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{rootMargin:'0px 0px -8% 0px'});els.forEach(function(e){io.observe(e)});setTimeout(function(){els.forEach(function(e){e.classList.add('in')})},2500);})();
+(function(){var s=document.getElementById('stick'),h=document.querySelector('.hero'),p=document.getElementById('planes'),f=document.querySelector('.pie');if(!('IntersectionObserver'in window))return;var v={h:true,p:false,f:false};
+function u(){s.classList.toggle('on',!v.h&&!v.p&&!v.f)}var o=new IntersectionObserver(function(e){e.forEach(function(x){if(x.target===h)v.h=x.isIntersecting;if(x.target===p)v.p=x.isIntersecting;if(x.target===f)v.f=x.isIntersecting});u()});[h,p,f].forEach(function(e){o.observe(e)});})();
+
+</script>
