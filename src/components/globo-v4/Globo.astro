@@ -1,0 +1,35 @@
+---
+// Globo «¿Y si quieres estudiar fuera?»: continuación de «La uni no es el único camino» (solo /home-v4/).
+// Referencia: exploracion/home-v4-globo-y-sara/globo.html. Necesita d3-geo; el mapa está en world-lite2.json.
+import './globo.css';
+---
+
+<div class="gpv"><section class="mod stack globo gF gH gI" id="globoI"><div class="tx"><h3>¿Y si quieres estudiar fuera?</h3><p>Si en el test marcas que te gustaría estudiar fuera de España, tus caminos también te enseñan opciones en otros países.</p></div>
+<div class="band gband"><div class="gfoot" aria-hidden="true"></div><p class="hint" id="hintI">Arrastra para girar el globo</p><svg class="mp globe gi" id="gsvgI" viewBox="0 0 1400 380" preserveAspectRatio="xMidYMin slice" role="img" aria-label="Puedes estudiar en España o en otros países de Europa y del mundo: el globo muestra caminos que salen de varias ciudades españolas hacia ciudades de otros países.">
+<defs><clipPath id="glFI"><circle cx="700" cy="1230" r="1200"/></clipPath>
+<radialGradient id="atmFI" cx="700" cy="1230" r="1250" gradientUnits="userSpaceOnUse"><stop offset=".935" stop-color="#f6f1e8" stop-opacity="0"/><stop offset=".95" stop-color="#f6f1e8" stop-opacity=".14"/><stop offset=".975" stop-color="#f6f1e8" stop-opacity=".04"/><stop offset="1" stop-color="#f6f1e8" stop-opacity="0"/></radialGradient>
+<radialGradient id="seaFI" cx="560" cy="60" r="1500" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2c2824"/><stop offset=".45" stop-color="#1c1916"/><stop offset="1" stop-color="#0d0c0b"/></radialGradient>
+<radialGradient id="shadeFI" cx="700" cy="1230" r="1200" gradientUnits="userSpaceOnUse"><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient>
+<radialGradient id="lightFI" cx="580" cy="70" r="600" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f6f1e8" stop-opacity=".09"/><stop offset="1" stop-color="#f6f1e8" stop-opacity="0"/></radialGradient>
+<linearGradient id="gfadeFI" x1="0" y1="0" x2="0" y2="1"><stop offset=".9" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="gmFI" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1800" height="580"><rect x="-200" y="-200" width="1800" height="580" fill="url(#gfadeFI)"/></mask></defs>
+<g mask="url(#gmFI)"><circle cx="700" cy="1230" r="1250" fill="url(#atmFI)"/><circle cx="700" cy="1230" r="1200" fill="url(#seaFI)"/>
+<g clip-path="url(#glFI)"><path class="grat" id="gGratI"/><path class="eu" id="gEuI"/><path class="es" id="gEsI"/><circle cx="700" cy="1230" r="1200" fill="url(#shadeFI)"/><circle cx="700" cy="1230" r="1200" fill="url(#lightFI)"/></g>
+<circle class="limb" cx="700" cy="1230" r="1200"/></g>
+<g class="rt" id="gRtI"></g><g id="gPinsI"></g><g id="gTuI" class="tu" opacity="0"><circle r="22"/><text y="6">Tú</text></g></svg></div></section></div>
+
+<script>
+  // El script del globo y el mapa (d3-geo + world-lite2.json) se descargan solo cuando la sección se acerca a la pantalla
+  const mod = document.getElementById('globoI');
+  if (mod) {
+    const io = new IntersectionObserver(
+      (entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        import('./globo.js');
+      },
+      { rootMargin: '300px' },
+    );
+    io.observe(mod);
+  }
+</script>

@@ -3,6 +3,8 @@
 import { Image, Picture, getImage } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
 import LogoV3 from '../../components/LogoV3.astro';
+import Globo from '../../components/globo-v4/Globo.astro';
+import '../../components/sara-v4.css';
 import { SITIO, BASE, ENLACES, CTA_PRINCIPAL } from '../../config';
 import caveat from '../../assets/fonts/caveat.woff2?url';
 import { hero, losDeDentro, familias, uniNoUnico, queEsV5 } from '../../data/home';
@@ -414,6 +416,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         </div>
       </section>
 
+      <Globo />
+
 
 
       <!-- ===================== Hablemos · formulario de muestra (no envía nada) =====================
@@ -474,15 +478,22 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 
       <!-- ===================== Sara · fondo oscuro (comentario #15). Texto provisional suyo. ===================== -->
       <section id="quien-hay-detras" class="sara" aria-labelledby="sara-titulo">
-        <div class="estrecho sara__rejilla sara__rejilla--una">
+        <div class="estrecho sara__rejilla sarav4">
+          <!-- PENDIENTE: foto real de Sara (retrato sobrio, fondo liso, formato 4:5). Cuando llegue, sustituir el hueco por
+               <img src={…} alt="Sara, fundadora de NextYou" /> dentro de .sarav4__foto -->
+          <figure class="sarav4__foto">
+            <div class="sarav4__hueco" role="img" aria-label="Aquí irá la foto de Sara">
+              <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><circle cx="32" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Aquí irá la foto de Sara</span>
+            </div>
+          </figure>
           <div class="sara__texto" data-aparece>
             <p class="antetitulo">{sara.etiqueta}</p>
-            <h2 id="sara-titulo" class="titular titular--sara">{sara.titulo}</h2>
+            <h2 id="sara-titulo" class="titular titular--sara" set:html={cursiva(sara.titulo, sara.resaltado)} />
             <p>{sara.texto}</p>
-            <p class="firma">{sara.firma}</p>
+            <p class="firma firma--v4">{sara.firma} <LogoV3 clase="firma__logo" /></p>
             <Fragment set:html="<!-- PENDIENTE: botón «Leer su historia» cuando exista la página de Sara -->" />
           </div>
-          <Fragment set:html="<!-- PENDIENTE: foto real de Sara (retrato sobrio, fondo liso, formato 4:5) con su pie «Sara · Founder de NextYou». Hasta entonces no se muestra nada (sin hueco ni texto de marcador) -->" />
         </div>
       </section>
     </main>
@@ -3578,11 +3589,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
     .v7unico .unico3 .tarjeta:nth-child(2) { margin-top: 44px; }
   }
 
-  /* v4 · Sara: una sola columna centrada (máx. 720 px), sin hueco para la foto */
-  .sara__rejilla.sara__rejilla--una { grid-template-columns: 1fr !important; max-width: 720px; margin-inline: auto; justify-items: center; text-align: center; }
-  .sara__rejilla--una .sara__texto { max-width: 720px; width: 100%; display: grid; justify-items: center; text-align: center; }
-  .sara__rejilla--una .sara__texto > * { text-align: center; margin-inline: auto; max-width: 100%; justify-self: center; }
-  .sara__rejilla--una .titular--sara { margin-inline: auto; }
 
   /* v4 · visor como reproductor: foto oscurecida, play en el centro y aviso discreto encima (sin clip) */
   .visor__media--sin-video::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.6)); pointer-events: none; }

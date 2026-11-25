@@ -49,8 +49,9 @@ export const uniBotonV4 = { texto: 'Descubre otros caminos además de la uni' };
 export const saraV4 = {
   ...sara,
   titulo: 'Tardé 10 años en llegar a un trabajo que ni sabía que existía',
-  firma: 'Sara, Founder de NextYou',
-  cargo: 'Founder de NextYou',
+  resaltado: '10 años',
+  // Va seguida del logo de NextYou
+  firma: 'Sara, Founder de',
 };
 
 // Menú y formulario «Hablemos»

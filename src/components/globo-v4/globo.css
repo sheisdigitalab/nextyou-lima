@@ -1,0 +1,74 @@
+/* Globo «¿Y si quieres estudiar fuera?» (solo /home-v4/). Copia de exploracion/home-v4-globo-y-sara/globo.css
+   con las reglas que usa #globoI; descartadas las de otros globos. Todo bajo .gpv, salvo el ajuste de espacio entre secciones. */
+.gpv{color-scheme:light;--bg:#f6f1e8;--ink:#161412;--crema:#f6f1e8;--a:#c8f53b;--g:#4a4540;--gtx:#574e46}
+.gpv .mod{position:relative;overflow:hidden;background:var(--ink);color:var(--crema);border-radius:18px;padding:clamp(44px,6vw,72px) clamp(20px,5vw,64px);min-height:380px}
+.gpv .mod .tx{position:relative;z-index:2;max-width:380px}
+.gpv .mod h3{font-stretch:105%;font-weight:800;letter-spacing:-.02em;line-height:1.05;font-size:clamp(1.75rem,1rem + 2vw,2.6rem);margin:0;text-wrap:balance}
+.gpv .mod .tx p:not(.ey){color:#d9d2c6;margin:14px 0 0}
+.gpv .mp{width:100%;height:100%;display:block}
+.gpv .mp .eu{fill:#2b2723;stroke:var(--ink);stroke-width:.8}
+.gpv .mp .es{fill:var(--crema)}
+.gpv .mp .rt path{fill:none;stroke:#f6f1e899;stroke-width:1}
+.gpv .mp .pin circle{fill:var(--a)}
+.gpv .mp .pin rect{fill:#161412e6;stroke:#f6f1e840;stroke-width:1}
+.gpv .mp .pin text{fill:var(--crema);font:500 10.5px 'Archivo',sans-serif;text-anchor:middle}
+.gpv .mp .pin.home text{font-weight:700}
+.gpv .stack{text-align:center;padding-bottom:0}
+.gpv .stack .tx{margin:0 auto;max-width:560px}
+.gpv .band{height:300px;margin:32px calc(-1*clamp(20px,5vw,64px)) 0}
+@media (max-width:760px){
+  .gpv .mod{min-height:0;padding-bottom:0}
+  .gpv .band{height:200px}
+}
+.gpv .globo .gband{height:440px;margin-top:20px}
+.gpv .mp.globe{overflow:visible}
+.gpv .mp.globe .limb{fill:none;stroke:#f6f1e833;stroke-width:1}
+.gpv .mp.globe .grat{fill:none;stroke:#f6f1e80f;stroke-width:.6}
+.gpv .mp.globe .eu{fill:#36312c;stroke:#1a1715;stroke-width:.6}
+.gpv .mp.globe .es{fill:var(--crema)}
+@media (max-width:760px){
+  .gpv .globo .gband{height:300px}
+  .gpv .globo .gband .mp{width:200%;margin-left:-55%}
+}
+.gpv .gF .gband{height:380px}
+.gpv .mp.globe .pin.orig circle{fill:var(--ink);stroke:var(--crema);stroke-width:1.5}
+.gpv .gH .gband{height:380px}
+@media (max-width:760px){
+  .gpv .gH .gband{height:280px}
+  .gpv .gH .gband .mp{width:220%;margin-left:-58%}
+}
+.gpv .mp.globe .pin circle{fill:var(--a)}
+@media (max-width:760px){
+  .gpv .gF .gband{height:280px}
+  .gpv .gF .gband .mp{width:220%;margin-left:-58%}
+}
+.gpv #globoI .gband{position:relative;cursor:grab;user-select:none}
+.gpv #globoI .gband.drag{cursor:grabbing}
+.gpv .hint{position:absolute;right:16px;bottom:16px;z-index:3;margin:0;font-size:.8125rem;color:#b8b0a3;background:#161412cc;border:1px solid #f6f1e826;border-radius:99px;padding:6px 12px;transition:opacity .4s}
+.gpv .hint.off{opacity:0}
+.gpv .mp.gi .pin.orig circle{fill:var(--crema);stroke:none}
+.gpv .mp.gi .pin.orig .glow{fill:#f6f1e840;opacity:0}
+.gpv .mp.gi .tu circle{fill:var(--crema);stroke:#161412;stroke-width:3}
+.mp.gi .tu{pointer-events:none}
+.gpv .mp.gi .tu text{fill:var(--ink);font:800 15px 'Archivo',sans-serif;text-anchor:middle}
+@media (max-width:760px){
+  .gpv .mp.gi .tu circle{r:34px}
+  .gpv .mp.gi .tu text{font-size:24px}
+  .gpv .hint{left:50%;right:auto;transform:translateX(-50%);bottom:12px;white-space:nowrap}
+}
+.gpv{background:#161412;font-family:Archivo,system-ui,sans-serif}
+.gpv .mod{margin:0!important;border-radius:0!important;max-width:none!important}
+#la-uni-no-es-lo-unico.v7uni{padding-bottom:40px!important}
+.gpv #globoI{padding-top:24px!important}
+.gpv #globoI .tx p:not(.ey){margin-top:12px}
+.gpv .gband .gfoot{position:absolute;left:0;right:0;bottom:-1px;height:110px;background:linear-gradient(rgba(22,20,18,0),#161412 85%);pointer-events:none;z-index:2}
+.gpv .hint{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:14px!important;white-space:nowrap}
+.gpv .gband:focus-visible{outline:2px solid #c8f53b;outline-offset:-6px;border-radius:12px}
+#quien-hay-detras.sara{padding-top:120px!important}
+@media (max-width:760px){
+  #la-uni-no-es-lo-unico.v7uni{padding-bottom:24px!important}
+  .gpv #globoI{padding-top:16px!important}
+  #quien-hay-detras.sara{padding-top:56px!important}
+}
+.gpv #globoI .limb{stroke:none}
+.gpv #globoI .rt path{stroke:#f6f1e8;stroke-opacity:.85;stroke-width:1.6;stroke-linecap:round}
