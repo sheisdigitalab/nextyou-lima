@@ -92,7 +92,7 @@ const UNIVERSIDAD = '#universidad';
 const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>${palabra}</em>`);
 ---
 
-<V5 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato" soloBachillerato ruta="home-v4/" cta={{ texto: hablemosV4.menu, href: '#hablemos' }} lemaPie={pieV4} altSocial={hablemosV4.altSocial}>
+<V5 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato" soloBachillerato ruta="home-v4/" cta={{ texto: hablemosV4.menu, href: '#hablemos' }} lemaPie={pieV4} altSocial={hablemosV4.altSocial} sinAvisoTest>
     <main id="contenido">
       <!-- ===================== Portada =====================
            Nada más entrar se entiende qué es: título (h1), una frase y el botón del test.
@@ -135,12 +135,12 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <h2 id="unico-titulo" class="titular titular--unico" set:html={cursiva(noEresElUnico.titulo, noEresElUnico.resaltado)} />
             <p class="cabecera__sub">{noEresElUnico.preguntas}</p>
           </header>
-          <ul data-aparece class="unico__lista" role="list" aria-label="Testimonios" tabindex="0">
+          <ul data-aparece class="unico__lista unico3" role="list" aria-label="Testimonios" tabindex="0">
             {
-              noEresElUnico.personas.map((p0) => ({ ...p0, ...(unicoV7Cambios[p0.nombre] ?? {}), universidad: false })).map((p) => (
+              ['Nil', 'Alba', 'Jan'].map((n) => noEresElUnico.personas.find((p0) => p0.nombre === n)).filter(Boolean).map((p0) => ({ ...p0, ...(unicoV7Cambios[p0.nombre] ?? {}), universidad: false })).map((p) => (
                 <li class:list={['tarjeta', { 'tarjeta--uni': p.universidad }]} data-placeholder="true">
                   <Fragment set:html="<!-- PLACEHOLDER: sustituir por persona real -->" />
-                  <Image src={p.foto} alt={p.alt} width={480} height={420} quality={70} class="tarjeta__foto" />
+                  <Image src={p.foto} alt={p.alt} width={480} height={600} quality={70} class="tarjeta__foto" />
                   <div class="tarjeta__texto">
                     <p class="tarjeta__cita">«{p.cita}»</p>
                     <p class="tarjeta__firma">— {p.nombre}, {p.edad}</p>
@@ -445,7 +445,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           <div class="visor__media">
             <img class="visor__img" alt="" />
             <video class="visor__video" controls playsinline preload="metadata" hidden></video>
-            <p class="visor__aviso">Aquí irá el vídeo · <span data-visor="duracion"></span></p>
+            <!-- PENDIENTE: sustituir la foto por el vídeo de cada profesional (campo video). Mientras no haya clip, el visor se ve como un reproductor: foto oscurecida, play y aviso -->
+            <span class="visor__play" aria-hidden="true"><svg width="28" height="32" viewBox="0 0 12 14"><path d="M1.5 1.2l9 5.8-9 5.8z" fill="currentColor" /></svg></span>
+            <p class="visor__aviso">Aquí irá el vídeo<span data-visor="duracion"></span></p>
           </div>
           <div class="visor__texto">
             <p id="visor-nombre" class="visor__nombre" data-visor="nombre"></p>
@@ -472,7 +474,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
 
       <!-- ===================== Sara · fondo oscuro (comentario #15). Texto provisional suyo. ===================== -->
       <section id="quien-hay-detras" class="sara" aria-labelledby="sara-titulo">
-        <div class="estrecho sara__rejilla">
+        <div class="estrecho sara__rejilla sara__rejilla--una">
           <div class="sara__texto" data-aparece>
             <p class="antetitulo">{sara.etiqueta}</p>
             <h2 id="sara-titulo" class="titular titular--sara">{sara.titulo}</h2>
@@ -480,14 +482,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <p class="firma">{sara.firma}</p>
             <Fragment set:html="<!-- PENDIENTE: botón «Leer su historia» cuando exista la página de Sara -->" />
           </div>
-          <Fragment set:html="<!-- PENDIENTE: foto real de Sara (retrato sobrio, fondo liso, formato 4:5). Ahora hay un hueco neutro -->" />
-          <div class="sara__polaroid" data-placeholder="true">
-            <div class="sara__hueco" role="img" aria-label="Foto de Sara, pendiente">
-              <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
-              <span>Foto de Sara</span>
-            </div>
-            <p class="sara__pie"><strong>Sara</strong> · {sara.cargo}</p>
-          </div>
+          <Fragment set:html="<!-- PENDIENTE: foto real de Sara (retrato sobrio, fondo liso, formato 4:5) con su pie «Sara · Founder de NextYou». Hasta entonces no se muestra nada (sin hueco ni texto de marcador) -->" />
         </div>
       </section>
     </main>
@@ -526,7 +521,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       if (visor) {
         const img = visor.querySelector<HTMLImageElement>('.visor__img')!;
         const video = visor.querySelector<HTMLVideoElement>('.visor__video')!;
-        const aviso = visor.querySelector<HTMLElement>('.visor__aviso')!;
+        const aviso = visor.querySelector<HTMLElement>('.visor__aviso');
+        const play = visor.querySelector<HTMLElement>('.visor__play');
         const campo = (k: string) => visor.querySelector<HTMLElement>(`[data-visor="${k}"]`)!;
         const tarjetas = [...document.querySelectorAll<HTMLButtonElement>('.reel__abrir[data-indice]')];
         let actual = -1;
@@ -536,12 +532,14 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           campo('nombre').textContent = d.nombre ?? '';
           campo('profesion').textContent = d.profesion ?? '';
           campo('cita').textContent = d.cita ?? '';
-          campo('duracion').textContent = d.duracion ?? '';
+          const dur = visor.querySelector<HTMLElement>('[data-visor="duracion"]'); if (dur) dur.textContent = d.duracion ? ` · ${d.duracion}` : '';
           img.src = d.img ?? '';
           const hayVideo = Boolean(d.video);
           video.hidden = !hayVideo;
           img.hidden = hayVideo;
-          aviso.hidden = hayVideo;
+          if (aviso) aviso.hidden = hayVideo;
+          if (play) play.hidden = hayVideo;
+          visor.querySelector('.visor__media')!.classList.toggle('visor__media--sin-video', !hayVideo);
           // Ficha solo para profesionales y mientras no haya vídeo
           const ficha = !hayVideo && Boolean(d.camino);
           campo('ficha').hidden = !ficha;
@@ -3565,4 +3563,30 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   .hablemos__error { color: var(--crema); margin: 0 0 1rem; font-size: 0.95rem; }
   .hablemos__gracias { font-size: var(--t-seccion); line-height: 1.15; margin: 0.5rem 2rem 0.5rem 0; font-weight: 700; outline: none; }
   .hablemos__form[hidden], .hablemos__gracias[hidden], .hablemos__error[hidden] { display: none; }
+
+  /* v4 · «No eres el único»: 3 fotos 4:5, rectas, sin cinta ni inclinación; frase y nombre debajo. Móvil: carrusel con scroll-snap */
+  .v7unico .unico__lista.unico3 { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; grid-template-columns: none; gap: 1rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); margin-inline: calc(-1 * var(--margen)); padding-inline: var(--margen); padding-block: 0; }
+  .v7unico .unico3 .tarjeta { background: none !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; rotate: none !important; translate: none !important; border: 0 !important; scroll-snap-align: start; color: var(--crema) !important; }
+  .v7unico .unico3 .tarjeta::before, .v7unico .unico3 .tarjeta::after { display: none !important; content: none !important; }
+  .v7unico .unico3 .tarjeta:hover { rotate: none !important; translate: none !important; box-shadow: none !important; }
+  .v7unico .unico3 .tarjeta__foto { width: 100%; aspect-ratio: 4 / 5 !important; object-fit: cover; border-radius: 0 !important; }
+  .v7unico .unico3 .tarjeta__texto { padding: 1rem 0 0 !important; gap: 0.5rem; background: none !important; }
+  .v7unico .unico3 .tarjeta__cita { color: var(--crema) !important; }
+  .v7unico .unico3 .tarjeta__firma { color: rgb(246 241 232 / 0.72) !important; }
+  @media (min-width: 48rem) {
+    .v7unico .unico__lista.unico3 { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.25rem, 2.5vw, 2.5rem); overflow: visible; scroll-snap-type: none; margin-inline: 0; padding-inline: 0; align-items: start; }
+    .v7unico .unico3 .tarjeta:nth-child(2) { margin-top: 44px; }
+  }
+
+  /* v4 · Sara: una sola columna centrada (máx. 720 px), sin hueco para la foto */
+  .sara__rejilla.sara__rejilla--una { grid-template-columns: 1fr !important; max-width: 720px; margin-inline: auto; justify-items: center; text-align: center; }
+  .sara__rejilla--una .sara__texto { max-width: 720px; width: 100%; display: grid; justify-items: center; text-align: center; }
+  .sara__rejilla--una .sara__texto > * { text-align: center; margin-inline: auto; max-width: 100%; justify-self: center; }
+  .sara__rejilla--una .titular--sara { margin-inline: auto; }
+
+  /* v4 · visor como reproductor: foto oscurecida, play en el centro y aviso discreto encima (sin clip) */
+  .visor__media--sin-video::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.6)); pointer-events: none; }
+  .visor__play { position: absolute; z-index: 2; top: 50%; left: 50%; translate: -50% -50%; display: grid; place-items: center; width: 4.5rem; height: 4.5rem; padding-left: 0.2rem; border-radius: 50%; background: rgb(22 20 18 / 0.55); border: 1.5px solid rgb(246 241 232 / 0.85); color: var(--crema); backdrop-filter: blur(4px); }
+  .visor__play[hidden], .visor__aviso[hidden] { display: none; }
+  .visor__aviso { z-index: 2; bottom: 1.1rem; max-width: calc(100% - 2rem); overflow: hidden; text-overflow: ellipsis; background: rgb(22 20 18 / 0.6); border: 1px solid rgb(246 241 232 / 0.25); color: rgb(246 241 232 / 0.9); font-size: var(--t1); font-weight: 600; letter-spacing: 0.01em; backdrop-filter: blur(4px); }
 </style>

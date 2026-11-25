@@ -29,8 +29,10 @@ interface Props {
   lemaPie?: { antes: string; explora: string; despues: string };
   // Texto alternativo de la imagen social (por defecto, el lema de siempre)
   altSocial?: string;
+  // Los botones del test van siempre a su destino, sin abrir el aviso «El test llega muy pronto» (por defecto, el aviso se mantiene)
+  sinAvisoTest?: boolean;
 }
-const { titulo, descripcion, actual, pagina, ruta = 'v5/', soloBachillerato = false, paletaFija, robots = 'noindex, nofollow', cta = { texto: 'Test gratis', href: CTA_PRINCIPAL.href }, lemaPie = { antes: 'Tu futuro no se adivina, ', explora: 'se explora', despues: '.' }, altSocial = 'NextYou. Tu futuro no se adivina, se explora.' } = Astro.props;
+const { titulo, descripcion, actual, pagina, ruta = 'v5/', soloBachillerato = false, paletaFija, robots = 'noindex, nofollow', cta = { texto: 'Test gratis', href: CTA_PRINCIPAL.href }, lemaPie = { antes: 'Tu futuro no se adivina, ', explora: 'se explora', despues: '.' }, altSocial = 'NextYou. Tu futuro no se adivina, se explora.', sinAvisoTest = false } = Astro.props;
 
 // Tarjeta al compartir el enlace: foto de la portada recortada a 1200×630.
 const ogImagen = new URL(`${BASE}og.jpg`, Astro.site).href;
@@ -150,7 +152,7 @@ const menu = soloBachillerato
     <slot name="antes-del-pie" />
 
     {/* Aviso de los botones del test mientras no exista (fase 2). PENDIENTE: destino real del botón. */}
-    <dialog class="aviso" aria-labelledby="aviso-titulo">
+    {!sinAvisoTest && (<dialog class="aviso" aria-labelledby="aviso-titulo">
       <div class="aviso__caja">
         <button type="button" class="aviso__cerrar" aria-label="Cerrar">
           <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
@@ -174,7 +176,7 @@ const menu = soloBachillerato
           <button type="submit" class="boton">Apuntarme</button>
         </form>
       </div>
-    </dialog>
+    </dialog>)}
 
     {/* ===================== Pie ===================== */}
     <footer class="pie">
