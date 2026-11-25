@@ -17,11 +17,12 @@ var es={type:'FeatureCollection',features:W.features.filter(function(f){return f
 var rest={type:'FeatureCollection',features:W.features.filter(function(f){return f.id!=='724'})};
 var grat=geoGraticule().step([15,15])();
 var O={'Madrid':[-3.70,40.42],'Barcelona':[2.17,41.39],'Sevilla':[-5.98,37.39],'Valencia':[-0.38,39.47],'Bilbao':[-2.93,43.26]};
-var D=[['Lisboa',-9.14,38.72,'Sevilla',1],['Dublín',-6.26,53.35,'Bilbao',1],['París',2.35,48.86,'Madrid',1],['Berlín',13.4,52.52,'Barcelona',1],['Milán',9.19,45.46,'Barcelona',0],['Estocolmo',18.07,59.33,'Madrid',0],['Nueva York',-74.0,40.71,'Madrid',1],['Dubái',55.27,25.2,'Valencia',1]];
+var D=[['Lisboa',-9.14,38.72,'Sevilla',0],['Dublín',-6.26,53.35,'Bilbao',1],['París',2.35,48.86,'Madrid',1],['Berlín',13.4,52.52,'Barcelona',1],['Milán',9.19,45.46,'Barcelona',0],['Estocolmo',18.07,59.33,'Madrid',0],['Nueva York',-74.0,40.71,'Madrid',1],['Dubái',55.27,25.2,'Valencia',1]];
 var mobile=matchMedia('(max-width:760px)').matches;
 var ns='http://www.w3.org/2000/svg',pinsG=$('gPins'),rtG=$('gRt'),tu=$('gTu');
-var LS=mobile?20:11;var svgI=$('gsvg');var vbL=0;function upVb(){var r=svgI.getBoundingClientRect(),c=svgI.closest('.gband').getBoundingClientRect(),vb=svgI.viewBox.baseVal,s=Math.max(r.width/vb.width,r.height/vb.height);var x0=r.left+(r.width-vb.width*s)/2;vbL=vb.x+(Math.max(c.left,r.left)-x0)/s;}upVb();addEventListener('resize',upVb);
+var LS=mobile?20:11;var svgI=$('gsvg');var vbL=0,esc=1;function upVb(){var r=svgI.getBoundingClientRect(),c=svgI.closest('.gband').getBoundingClientRect(),vb=svgI.viewBox.baseVal,s=Math.max(r.width/vb.width,r.height/vb.height);esc=s;var x0=r.left+(r.width-vb.width*s)/2;vbL=vb.x+(Math.max(c.left,r.left)-x0)/s;}upVb();addEventListener('resize',upVb);
 var origins=Object.keys(O).map(function(n){var g=document.createElementNS(ns,'g');g.setAttribute('class','pin orig');g.innerHTML='<circle class="glow" r="9"/><circle r="'+(mobile?5:3)+'"/>';pinsG.appendChild(g);return {g:g,c:O[n]};});
+// El último valor de cada destino dice si su etiqueta se ve en móvil (Lisboa no: taparía el oeste de España; queda su punto)
 var dests=D.map(function(d){var g=document.createElementNS(ns,'g');g.setAttribute('class','pin');var show=!mobile||d[4];var tw=d[0].length*LS*0.6+LS*1.4,th=LS*2;
  g.innerHTML='<circle r="'+(mobile?6:3.5)+'"/>'+(show?'<g class="lb"><rect width="'+tw+'" height="'+th+'" rx="'+th/2+'"/><text x="'+tw/2+'" y="'+th*0.69+'" style="font-size:'+LS+'px">'+d[0]+'</text></g>':'');pinsG.appendChild(g);return {g:g,d:d,tw:tw,th:th};});
 var routes=D.map(function(d){var p=document.createElementNS(ns,'path');rtG.appendChild(p);return {el:p,geo:{type:'LineString',coordinates:[O[d[3]],[d[1],d[2]]]}};});
@@ -33,7 +34,7 @@ function draw(){
  $('gEu').setAttribute('d',path(rest));$('gEs').setAttribute('d',path(es));$('gGrat').setAttribute('d',path(grat));
  origins.forEach(function(o){var xy=proj(o.c),v=vis(o.c)&&inView(xy);o.g.style.display=v?'':'none';if(v){o.g.querySelectorAll('circle').forEach(function(c){c.setAttribute('cx',xy[0]);c.setAttribute('cy',xy[1]);});o.g.querySelector('.glow').style.opacity=reveal*0.9;}});
  dests.forEach(function(p){var ll=[p.d[1],p.d[2]],xy=proj(ll),v=vis(ll)&&inView(xy);p.g.style.display=v?'':'none';if(v){var c=p.g.querySelector('circle');c.setAttribute('cx',xy[0]);c.setAttribute('cy',xy[1]);var lb=p.g.querySelector('.lb');if(lb){var lx=(p.d[0]==='Lisboa'||p.d[0]==='Dublín')?xy[0]-p.tw-8:xy[0]+8;if(lx<vbL+6)lx=xy[0]+8;lb.setAttribute('transform','translate('+lx+','+(xy[1]-p.th/2)+')');}}});
- routes.forEach(function(r,i){var d=path(r.geo)||'';r.el.setAttribute('d',d);if(!d)return;var L=r.el.getTotalLength(),pr=Math.max(0,Math.min(1,reveal*1.5-i*0.06));r.el.style.strokeDasharray=L+' '+L;r.el.style.strokeDashoffset=String(L*(1-pr));});
+ routes.forEach(function(r,i){var d=path(r.geo)||'';r.el.setAttribute('d',d);if(!d)return;var L=r.el.getTotalLength(),pr=Math.max(0,Math.min(1,reveal*1.5-i*0.06));/* con non-scaling-stroke los guiones se miden en píxeles de pantalla: se escalan y, terminada la animación, se quitan para que la línea no se corte */var P=L*esc;r.el.style.strokeDasharray=pr>=1?'none':P+' '+P;r.el.style.strokeDashoffset=pr>=1?'0':String(P*(1-pr));});
  var m=proj([-3.4,40.0]);if(vis([-3.4,40.0])&&inView(m)){tu.setAttribute('transform','translate('+Math.round(m[0])+','+Math.round(m[1]-(mobile?60:40))+')');tu.style.display='';}else tu.style.display='none';
  tu.setAttribute('opacity',Math.min(1,reveal*1.4));
 }

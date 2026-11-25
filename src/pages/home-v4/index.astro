@@ -10,8 +10,8 @@ import caveat from '../../assets/fonts/caveat.woff2?url';
 import { hero, losDeDentro, familias, uniNoUnico, queEsV5 } from '../../data/home';
 import { queEsV7, comoV7, pasosV7, unicoV7Cambios, hugoV7 } from '../../data/v7';
 import { queV5 as q, bifurcacion, historiasUni, testDemo } from '../../data/v4';
-import { queEsLima, uniNoUnicoLima } from '../../data/lima-v3';
-import { heroV4, pieV4, unicoV4Home as noEresElUnico, comoAppV4 as comoAppV7, historiasV4, uniBotonV4, saraV4 as sara, hablemosV4 } from '../../data/home-v4';
+import { queEsLima } from '../../data/lima-v3';
+import { heroV4, pieV4, unicoV4Home as noEresElUnico, comoAppV4 as comoAppV7, historiasV4, uniBotonV4, uniV4 as uniNoUnicoLima, saraV4 as sara, hablemosV4 } from '../../data/home-v4';
 import { universidad as uni } from '../../data/universidad';
 import { familiasPagina } from '../../data/familias';
 import { masDentro } from '../../data/mas-dentro';
@@ -408,15 +408,16 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 15.03 C 50 15.03, 50 50, 100 50" class="camino8__l" /><path d="M0 50 L 100 50" class="camino8__l" /><path d="M0 84.97 C 50 84.97, 50 50, 100 50" class="camino8__l" /></svg></div>
           <p class="camino8__rotulo camino8__rotulo--2">para llegar a:</p>
           <ul class="camino8__profs" role="list" aria-label="Profesión a la que llegas">
-            <li><span class="camino8__ic" aria-hidden="true" set:html={iconosCromo.animacion} /><b>Animación 3D</b></li>
+            <li><span class="camino8__ic" aria-hidden="true"><span class="cubo3d"><span class="cubo3d__c"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span></span><b>Animación 3D</b></li>
           </ul>
-        </div>
-        <div class="ancho uni-no__accion" data-aparece>
-          <a class="cfa__boton" href={`${BASE}empezar/`}><span class="cfa__t cfa__t--f">{uniBotonV4.texto}</span> <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
-      <Globo />
+      <Globo>
+        <div class="ancho uni-no__accion" data-aparece>
+          <a class="cfa__boton" href={`${BASE}empezar/`}><span class="cfa__t cfa__t--f">{uniBotonV4.texto}</span> <span aria-hidden="true">→</span></a>
+        </div>
+      </Globo>
 
 
 
@@ -3555,7 +3556,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   :root:root .cfa__boton { font-size: 1rem; min-height: 52px; }
   @media (max-width: 30rem) { :root:root .cfa__boton { font-size: 0.9375rem; white-space: nowrap; padding-inline: 1.25rem; justify-content: center; } }
 
-  /* v4 · botón bajo el esquema de «La uni no es el único camino» */
+  /* v4 · botón bajo el globo, cierra «La uni no es el único camino» */
   .uni-no__accion { display: flex; justify-content: center; margin-top: clamp(2rem, 4vw, 3rem); }
   .uni-no__accion .cfa__boton, .hablemos .cfa__boton { --cfa-tinta: #161412; color: #161412; justify-content: center; align-items: center; text-align: center; max-width: 100%; white-space: normal; border: 0; cursor: pointer; }
   .uni-no__accion .cfa__boton .cfa__t, .hablemos .cfa__boton .cfa__t { white-space: normal; color: #161412; }

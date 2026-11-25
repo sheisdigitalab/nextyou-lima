@@ -1,7 +1,7 @@
 // Textos propios de la versión 4 de la portada (/home-v4/). Parten de los de la v3 y solo cambian lo indicado:
 // así los datos que usa la v3 no se tocan y las dos versiones se pueden comparar.
 import { sara } from './home';
-import { unicoLima, comoAppLima } from './lima-v3';
+import { unicoLima, comoAppLima, uniNoUnicoLima } from './lima-v3';
 
 // Portada: titular («explorar tu futuro» va a rotulador) y lema del pie
 export const heroV4 = {
@@ -42,7 +42,13 @@ export const historiasV4 = {
   sub: 'Cómo entraron, en qué se equivocaron y cómo es su día a día.',
 };
 
-// «La uni no es el único camino»: botón bajo el esquema
+// «La uni no es el único camino»: texto de la FP más corto
+export const uniV4 = {
+  ...uniNoUnicoLima,
+  rutas: uniNoUnicoLima.rutas.map((r) => (r.t === 'FP' ? { ...r, x: 'Grado medio + superior de Animación 3D' } : r)),
+};
+
+// «La uni no es el único camino»: botón bajo el globo, cerrando la sección
 export const uniBotonV4 = { texto: 'Descubre otros caminos además de la uni' };
 
 // Sara

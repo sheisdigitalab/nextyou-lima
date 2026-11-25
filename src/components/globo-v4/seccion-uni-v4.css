@@ -1,0 +1,39 @@
+/* Cambios v4 en «La uni no es el único camino» + globo. Solo para /home-v4/ */
+
+
+#la-uni-no-es-lo-unico.v7uni{padding-bottom:0!important}
+.gpv section#globoI.mod{padding-top:128px!important}
+/* sin fondo propio (ya lo pone .gpv): con él aparecía un filo alrededor del botón en móvil */
+.gpv .uni-no__accion{display:flex;justify-content:center;padding:8px 16px 0}
+#quien-hay-detras.sara{padding-top:128px!important}
+.uni-no__lead{font-size:1.125rem!important;line-height:1.6!important}
+.camino8__rotulo{color:#f6f1e8b3!important}
+.camino8__lista small{color:#f6f1e8!important;font-weight:700}
+.camino8__lista em{font-size:.875rem!important;line-height:1.4!important}
+.camino8__ic{border-color:#f6f1e866!important;color:#f6f1e8!important}
+/* con el id delante para ganar a las reglas lima de móvil y tablet de la página */
+#la-uni-no-es-lo-unico .camino8 .camino8__profs li{border-color:#f6f1e840!important}
+/* móvil y tablet: el trazo y el punto sobre «Tres caminos…», también en crema */
+#la-uni-no-es-lo-unico .camino8 .camino8__rotulo--1::before{background:#f6f1e866!important}
+#la-uni-no-es-lo-unico .camino8 .camino8__rotulo--1::after{border-color:#f6f1e866!important}
+@media (min-width:1000px){#la-uni-no-es-lo-unico .camino8.ancho{grid-template-columns:11.5rem minmax(4rem,1fr) minmax(0,25rem) minmax(4rem,1fr) 12rem!important}
+#la-uni-no-es-lo-unico .camino8__tu{justify-self:start!important}
+#la-uni-no-es-lo-unico .camino8__izq{margin-left:calc(-11.5rem + 7rem)!important}}
+@media (max-width:760px){.gpv section#globoI.mod{padding-top:72px!important}#quien-hay-detras.sara{padding-top:80px!important}.uni-no__lead{font-size:1.0625rem!important}}
+
+
+.cubo3d{--s:22px;width:var(--s);height:var(--s);perspective:220px;display:block}
+.cubo3d__c{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(-24deg) rotateY(35deg);animation:cubo3d 9s linear infinite}
+.cubo3d i{display:block;position:absolute;inset:0;margin:0;padding:0;border:1.5px solid currentColor;border-radius:2px;background:rgba(246,241,232,.04)}
+.cubo3d .f1{transform:translateZ(calc(var(--s)/2))}.cubo3d .f2{transform:rotateY(180deg) translateZ(calc(var(--s)/2))}
+.cubo3d .f3{transform:rotateY(90deg) translateZ(calc(var(--s)/2))}.cubo3d .f4{transform:rotateY(-90deg) translateZ(calc(var(--s)/2))}
+.cubo3d .f5{transform:rotateX(90deg) translateZ(calc(var(--s)/2))}.cubo3d .f6{transform:rotateX(-90deg) translateZ(calc(var(--s)/2))}
+@keyframes cubo3d{from{transform:rotateX(-24deg) rotateY(35deg)}to{transform:rotateX(-24deg) rotateY(395deg)}}
+@media (prefers-reduced-motion:reduce){.cubo3d__c{animation:none}}
+@media (max-width:999px){.cubo3d{--s:19px}}
+
+/* Globo: caminos más finos */
+.gpv #globoI .rt path{stroke:#f6f1e8;stroke-opacity:.8;stroke-width:1.1px;stroke-linecap:round;vector-effect:non-scaling-stroke}
+
+/* Pantallas anchas: la franja mantiene la proporción del viewBox (1400×380), con tope de 560px, para que España y Lisboa se vean enteras */
+@media (min-width:761px){.gpv section#globoI .gband{height:min(560px, max(380px, calc(100vw * 380 / 1400)))}}

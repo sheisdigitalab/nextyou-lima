@@ -58,17 +58,8 @@
 }
 .gpv{background:#161412;font-family:Archivo,system-ui,sans-serif}
 .gpv .mod{margin:0!important;border-radius:0!important;max-width:none!important}
-#la-uni-no-es-lo-unico.v7uni{padding-bottom:40px!important}
-.gpv #globoI{padding-top:24px!important}
 .gpv #globoI .tx p:not(.ey){margin-top:12px}
 .gpv .gband .gfoot{position:absolute;left:0;right:0;bottom:-1px;height:110px;background:linear-gradient(rgba(22,20,18,0),#161412 85%);pointer-events:none;z-index:2}
 .gpv .hint{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:14px!important;white-space:nowrap}
 .gpv .gband:focus-visible{outline:2px solid #c8f53b;outline-offset:-6px;border-radius:12px}
-#quien-hay-detras.sara{padding-top:120px!important}
-@media (max-width:760px){
-  #la-uni-no-es-lo-unico.v7uni{padding-bottom:24px!important}
-  .gpv #globoI{padding-top:16px!important}
-  #quien-hay-detras.sara{padding-top:56px!important}
-}
 .gpv #globoI .limb{stroke:none}
-.gpv #globoI .rt path{stroke:#f6f1e8;stroke-opacity:.85;stroke-width:1.6;stroke-linecap:round}
