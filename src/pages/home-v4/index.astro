@@ -5,10 +5,11 @@ import V5 from '../../layouts/V5.astro';
 import LogoV3 from '../../components/LogoV3.astro';
 import { SITIO, BASE, ENLACES, CTA_PRINCIPAL } from '../../config';
 import caveat from '../../assets/fonts/caveat.woff2?url';
-import { hero, losDeDentro, familias, sara, uniNoUnico, queEsV5 } from '../../data/home';
+import { hero, losDeDentro, familias, uniNoUnico, queEsV5 } from '../../data/home';
 import { queEsV7, comoV7, pasosV7, unicoV7Cambios, hugoV7 } from '../../data/v7';
 import { queV5 as q, bifurcacion, historiasUni, testDemo } from '../../data/v4';
-import { unicoLima as noEresElUnico, comoAppLima as comoAppV7, queEsLima, uniNoUnicoLima } from '../../data/lima-v3';
+import { queEsLima, uniNoUnicoLima } from '../../data/lima-v3';
+import { heroV4, pieV4, unicoV4Home as noEresElUnico, comoAppV4 as comoAppV7, historiasV4, uniBotonV4, saraV4 as sara, hablemosV4 } from '../../data/home-v4';
 import { universidad as uni } from '../../data/universidad';
 import { familiasPagina } from '../../data/familias';
 import { masDentro } from '../../data/mas-dentro';
@@ -91,7 +92,7 @@ const UNIVERSIDAD = '#universidad';
 const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>${palabra}</em>`);
 ---
 
-<V5 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato" soloBachillerato ruta="home-v4/">
+<V5 titulo={SITIO.titulo} descripcion={SITIO.descripcion} actual="bachillerato" soloBachillerato ruta="home-v4/" cta={{ texto: hablemosV4.menu, href: '#hablemos' }} lemaPie={pieV4} altSocial={hablemosV4.altSocial}>
     <main id="contenido">
       <!-- ===================== Portada =====================
            Nada más entrar se entiende qué es: título (h1), una frase y el botón del test.
@@ -118,7 +119,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         </div>
         <div class="v7hero__texto ancho">
           <h1 id="hero-titulo" class="v7hero__titulo">
-            <span class="v7hero__lema">Tu futuro no se adivina, <span class="v7hero__explora">se explora</span>.</span>
+            <span class="v7hero__lema">{heroV4.antes}<span class="v7hero__explora">{heroV4.explora}</span>{heroV4.despues}</span>
           </h1>
           <p class="v7hero__sub">¿No sabes qué estudiar ni a qué dedicarte? Descubre qué te interesa y qué profesiones podrían encajar contigo.</p>
         </div>
@@ -306,7 +307,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <h3>{comoAppV7.coach.titulo}</h3>
             <p class="cfa__p">{comoAppV7.coach.texto}</p>
             <ul class="cfa__lista" role="list">{comoAppV7.coach.puntos.map((t) => <li>{t}</li>)}</ul>
-            <p class="cfa__micro cfa__nota-coach">El test, los caminos y las historias son gratis.</p>
             <a class="cfa__boton cfa__boton--borde cfa__boton--coach" href={ENLACES.acompanamiento}><span class="cfa__t cfa__t--f">Ver servicios de acompañamiento</span> <span aria-hidden="true">→</span></a>
           </div>
           <div class="cfa__call" aria-hidden="true" data-placeholder="true">
@@ -325,9 +325,9 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
       <section id="los-de-dentro" class="seccion dentro" aria-labelledby="dentro-titulo">
         <div class="ancho">
           <header class="cabecera" data-aparece>
-            <p class="antetitulo">Su camino, contado por ellos</p>
-            <h2 id="dentro-titulo" class="titular titular--dentro">Profesionales que te cuentan <u>cómo llegaron</u> a su trabajo</h2>
-            <p class="cabecera__sub">Sin discursos. Te cuentan cómo entraron, en qué se equivocaron y cómo es su día a día.</p>
+            <p class="antetitulo">{historiasV4.antetitulo}</p>
+            <h2 id="dentro-titulo" class="titular titular--dentro">{historiasV4.tituloAntes}<u>{historiasV4.tituloU}</u>{historiasV4.tituloDespues}</h2>
+            <p class="cabecera__sub">{historiasV4.sub}</p>
           </header>
           <div class="dentro__nav" data-solo-carrusel>
             <button type="button" class="flecha" data-mover="-1" aria-label="Anterior" disabled>←</button>
@@ -409,9 +409,32 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
             <li><span class="camino8__ic" aria-hidden="true" set:html={iconosCromo.animacion} /><b>Animación 3D</b></li>
           </ul>
         </div>
+        <div class="ancho uni-no__accion" data-aparece>
+          <a class="cfa__boton" href={`${BASE}empezar/`}><span class="cfa__t cfa__t--f">{uniBotonV4.texto}</span> <span aria-hidden="true">→</span></a>
+        </div>
       </section>
 
 
+
+      <!-- ===================== Hablemos · formulario de muestra (no envía nada) =====================
+           PENDIENTE CLIENTA: a qué email o herramienta llegan los mensajes (ahora no se envían a ningún sitio) -->
+      <dialog class="hablemos" id="hablemos" aria-labelledby="hablemos-titulo">
+        <div class="hablemos__caja">
+          <button type="button" class="visor__cerrar" data-hablemos-cerrar aria-label="Cerrar">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </button>
+          <form class="hablemos__form" data-hablemos-form novalidate>
+            <h2 id="hablemos-titulo" class="hablemos__titulo">{hablemosV4.titulo}</h2>
+            <p class="hablemos__intro">{hablemosV4.intro}</p>
+            <label class="hablemos__campo"><span>Nombre</span><input type="text" name="nombre" autocomplete="name" required /></label>
+            <label class="hablemos__campo"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+            <label class="hablemos__campo"><span>Mensaje</span><textarea name="mensaje" rows="4" required></textarea></label>
+            <p class="hablemos__error" data-hablemos-error role="alert" hidden>Rellena tu nombre, un email válido y el mensaje.</p>
+            <button type="submit" class="cfa__boton"><span class="cfa__t cfa__t--f">Enviar</span> <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="hablemos__gracias" data-hablemos-gracias role="status" tabindex="-1" hidden>{hablemosV4.gracias}</p>
+        </div>
+      </dialog>
 
       <!-- Vídeo en grande. Mientras no haya clip, se ve la foto con un aviso. -->
       <dialog class="visor" aria-labelledby="visor-nombre">
@@ -478,6 +501,25 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   </Fragment>
 </V5>
 
+<script>
+  // «Hablemos»: abre el formulario de muestra desde el menú. No envía nada.
+  (() => {
+    const dlg = document.querySelector<HTMLDialogElement>('#hablemos');
+    if (!dlg) return;
+    const form = dlg.querySelector<HTMLFormElement>('[data-hablemos-form]')!;
+    const gracias = dlg.querySelector<HTMLElement>('[data-hablemos-gracias]')!;
+    const error = dlg.querySelector<HTMLElement>('[data-hablemos-error]')!;
+    const abrir = () => { form.hidden = false; gracias.hidden = true; error.hidden = true; if (!dlg.open) dlg.showModal(); (form.querySelector('input') as HTMLElement | null)?.focus(); };
+    document.querySelectorAll<HTMLAnchorElement>('a[href="#hablemos"]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); abrir(); }));
+    dlg.querySelector('[data-hablemos-cerrar]')?.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) { error.hidden = false; (form.querySelector(':invalid') as HTMLElement | null)?.focus(); return; }
+      form.hidden = true; error.hidden = true; form.reset(); gracias.hidden = false; gracias.focus();
+    });
+  })();
+</script>
 <script>
       // Visor de «Los de dentro»: vídeo si lo hay; si no, foto y ficha. Flechas para pasar de profesional.
       const visor = document.querySelector<HTMLDialogElement>('.visor');
@@ -3503,4 +3545,24 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   /* Botones de «Cómo funciona»: mismo tamaño de letra que el resto de botones; en móvil, los largos caben en una línea */
   :root:root .cfa__boton { font-size: 1rem; min-height: 52px; }
   @media (max-width: 30rem) { :root:root .cfa__boton { font-size: 0.9375rem; white-space: nowrap; padding-inline: 1.25rem; justify-content: center; } }
+
+  /* v4 · botón bajo el esquema de «La uni no es el único camino» */
+  .uni-no__accion { display: flex; justify-content: center; margin-top: clamp(2rem, 4vw, 3rem); }
+  .uni-no__accion .cfa__boton, .hablemos .cfa__boton { --cfa-tinta: #161412; color: #161412; justify-content: center; align-items: center; text-align: center; max-width: 100%; white-space: normal; border: 0; cursor: pointer; }
+  .uni-no__accion .cfa__boton .cfa__t, .hablemos .cfa__boton .cfa__t { white-space: normal; color: #161412; }
+  @media (max-width: 30rem) { .uni-no__accion .cfa__boton { padding-inline: 1.1rem; font-size: 0.9rem; } }
+  /* v4 · «Hablemos»: formulario de muestra en un modal */
+  .hablemos { padding: 0; border: 0; background: none; color: var(--crema); max-width: none; max-height: none; width: 100%; height: 100%; }
+  .hablemos::backdrop { background: rgb(0 0 0 / 0.85); backdrop-filter: blur(6px); }
+  .hablemos[open] { display: grid; place-items: center; padding: 1rem; }
+  .hablemos__caja { position: relative; width: min(30rem, 100%); max-height: 100%; overflow: auto; background: var(--negro); border: 1px solid var(--linea); border-radius: 1.25rem; padding: clamp(1.5rem, 4vw, 2.25rem); }
+  .hablemos__caja .visor__cerrar { position: absolute; top: 0.75rem; right: 0.75rem; }
+  .hablemos__titulo { font-size: var(--t-seccion); line-height: 1.06; margin: 0 2.5rem 0.5rem 0; }
+  .hablemos__intro { margin: 0 0 1.25rem; opacity: 0.8; }
+  .hablemos__campo { display: grid; gap: 0.35rem; margin-bottom: 1rem; font-weight: 600; font-size: 0.95rem; }
+  .hablemos__campo input, .hablemos__campo textarea { font: inherit; font-weight: 400; color: var(--crema); background: rgb(246 241 232 / 0.06); border: 1px solid rgb(246 241 232 / 0.35); border-radius: 0.75rem; padding: 0.75rem 0.9rem; width: 100%; }
+  .hablemos__campo input:focus-visible, .hablemos__campo textarea:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+  .hablemos__error { color: var(--crema); margin: 0 0 1rem; font-size: 0.95rem; }
+  .hablemos__gracias { font-size: var(--t-seccion); line-height: 1.15; margin: 0.5rem 2rem 0.5rem 0; font-weight: 700; outline: none; }
+  .hablemos__form[hidden], .hablemos__gracias[hidden], .hablemos__error[hidden] { display: none; }
 </style>

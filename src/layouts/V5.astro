@@ -25,8 +25,12 @@ interface Props {
   robots?: string;
   // Botón principal del menú (por defecto, «Test gratis»)
   cta?: { texto: string; href: string };
+  // Lema del pie (por defecto, «Tu futuro no se adivina, se explora.»)
+  lemaPie?: { antes: string; explora: string; despues: string };
+  // Texto alternativo de la imagen social (por defecto, el lema de siempre)
+  altSocial?: string;
 }
-const { titulo, descripcion, actual, pagina, ruta = 'v5/', soloBachillerato = false, paletaFija, robots = 'noindex, nofollow', cta = { texto: 'Test gratis', href: CTA_PRINCIPAL.href } } = Astro.props;
+const { titulo, descripcion, actual, pagina, ruta = 'v5/', soloBachillerato = false, paletaFija, robots = 'noindex, nofollow', cta = { texto: 'Test gratis', href: CTA_PRINCIPAL.href }, lemaPie = { antes: 'Tu futuro no se adivina, ', explora: 'se explora', despues: '.' }, altSocial = 'NextYou. Tu futuro no se adivina, se explora.' } = Astro.props;
 
 // Tarjeta al compartir el enlace: foto de la portada recortada a 1200×630.
 const ogImagen = new URL(`${BASE}og.jpg`, Astro.site).href;
@@ -86,9 +90,9 @@ const menu = soloBachillerato
     <meta property="og:image" content={ogImagen} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="NextYou. Tu futuro no se adivina, se explora." />
+    <meta property="og:image:alt" content={altSocial} />
     <meta name="twitter:image" content={ogImagen} />
-    <meta name="twitter:image:alt" content="NextYou. Tu futuro no se adivina, se explora." />
+    <meta name="twitter:image:alt" content={altSocial} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
     <link rel="icon" href={`${BASE}marca/favicon-32.png`} type="image/png" sizes="32x32" />
@@ -200,7 +204,7 @@ const menu = soloBachillerato
             </ul>
           </nav>
         </div>
-        <p class="pie__lema">Tu futuro no se adivina, <span class="pie__explora">se explora</span>.</p>
+        <p class="pie__lema">{lemaPie.antes}<span class="pie__explora">{lemaPie.explora}</span>{lemaPie.despues}</p>
         <div class="pie__base">
           <p>© {new Date().getFullYear()} NextYou. Todos los derechos reservados.</p>
           <a href="#contenido" class="pie__subir">Volver arriba <span aria-hidden="true">↑</span></a>
