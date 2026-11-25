@@ -9,10 +9,6 @@
 //  - Lo marcado «Por validar» / «Propuesta» en la página está pendiente de decidir.
 import { Image } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
-import imgAvLaura from '../../assets/acompanamiento-v2/av-laura.jpg';
-import imgAvMarc from '../../assets/acompanamiento-v2/av-marc.jpg';
-import imgAvNuria from '../../assets/acompanamiento-v2/av-nuria.jpg';
-import imgAvAlex from '../../assets/acompanamiento-v2/av-alex.jpg';
 import imgSesionCoach from '../../assets/acompanamiento-v2/sesion-coach.jpg';
 import imgSesionEstudiante from '../../assets/acompanamiento-v2/sesion-estudiante.jpg';
 import imgFotoLaura from '../../assets/acompanamiento-v2/foto-laura.jpg';
@@ -92,10 +88,10 @@ const faq = {
 <div class="hero">
 <div><h1>Sesiones con un coach para decidir qué estudiar</h1>
 <p class="lede">Después del test, una persona te ayuda a entender tus 3 caminos y a elegir por dónde empezar.</p>
-<ul class="trust"><li>100 % online</li><li>Adaptado a tu situación</li><li>En tu horario</li><li>Coaches que pasaron por lo mismo <span class="pv">Por validar</span></li></ul>
-<div class="team"><div class="avs"><Image src={imgAvLaura} alt="" width={96} height={96} class="av" loading="eager" /><Image src={imgAvMarc} alt="" width={96} height={96} class="av" loading="eager" /><Image src={imgAvNuria} alt="" width={96} height={96} class="av" loading="eager" /><Image src={imgAvAlex} alt="" width={96} height={96} class="av" loading="eager" /></div><p><b>Laura, Marc, Nuria y Álex</b><br>te acompañan. <span class="pv">Perfiles de ejemplo</span></p></div></div>
+<ul class="trust"><li>100 % online</li><li>Adaptado a tu situación</li><li>En tu horario</li></ul>
+</div>
 <figure class="session" aria-label="Ejemplo de una sesión">
-<div class="vid"><Image src={imgSesionCoach} alt="Una coach sonríe a la cámara durante una videollamada" width={720} height={440} loading="eager" /><span class="live">En sesión</span><span class="who">Tu coach</span><Image src={imgSesionEstudiante} alt="Un estudiante en la misma videollamada" width={220} height={160} class="pip" loading="eager" /></div>
+<div class="vid"><Image src={imgSesionCoach} alt="Una coach sonríe a la cámara durante una videollamada" width={720} height={440} loading="eager" /><span class="live">En sesión</span><Image src={imgSesionEstudiante} alt="Un estudiante en la misma videollamada" width={220} height={160} class="pip" loading="eager" /></div>
 <p class="msg y">Me salen Animación 3D y Ciberseguridad. ¿Por cuál tiro?</p>
 <p class="msg k">Hoy no tienes que decidirlo todo. Vamos a ver qué te atrae de cada una y buscamos un primer paso que puedas probar.</p>
 <figcaption class="cap">Así puede ser una sesión · ejemplo</figcaption></figure>
@@ -397,6 +393,10 @@ html.av2-js .av2 .rv{opacity:1;transform:none}
 .av2{font-size:var(--t2);line-height:1.55}
 .av2 h1, .av2 h2, .av2 .plan h3, .av2 .cb h3, .av2 .steps h3, .av2 .fam h3, .av2 .pr b, .av2 .end h2{font-stretch:105%}
 .av2 h1{font-size:var(--t6);font-weight:800;letter-spacing:-.03em;line-height:1.02;max-width:14ch}
+.av2 h1{font-size:clamp(2.5rem,1.6rem + 2.6vw,3.5rem);max-width:none}
+.av2 .hero .lede{margin-bottom:22px}
+.av2 .trust{margin-bottom:0}
+.av2 .session .vid .who{display:none}
 .av2 h2{font-size:var(--tsec);font-weight:800;letter-spacing:-.02em;line-height:1.04}
 .av2 .ey, .av2 .head p.ey, .av2 .plan .kind, .av2 .out small, .av2 .diff thead th{font-size:var(--micro);font-weight:700;letter-spacing:.16em;line-height:1.4;text-transform:uppercase;color:var(--gtx)}
 .av2 .lede{font-size:var(--t3);line-height:1.6}
