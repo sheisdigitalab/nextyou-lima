@@ -1,0 +1,16 @@
+/* Ritmo vertical de /home-v5/: 160px entre bloques del mismo fondo (112 en móvil); «Cómo funciona», 128px arriba y abajo (88 en móvil).
+   .seccion.v7unico: gana al relleno general de la página, pero respeta el ajuste de tablet apaisada que ya tenía. */
+.seccion.v7unico{padding-top:160px!important;padding-bottom:80px!important}
+#que-es{padding-top:80px!important;padding-bottom:160px!important}
+#como-funciona{padding-top:128px!important;padding-bottom:128px!important}
+#los-de-dentro{padding-top:160px!important;padding-bottom:80px!important}
+#la-uni-no-es-lo-unico{padding-top:80px!important;padding-bottom:80px!important}
+#quien-hay-detras{padding-top:80px!important;padding-bottom:160px!important}
+@media (max-width:767px){
+.seccion.v7unico{padding-top:96px!important;padding-bottom:56px!important}
+#que-es{padding-top:56px!important;padding-bottom:96px!important}
+#como-funciona{padding-top:88px!important;padding-bottom:88px!important}
+#los-de-dentro{padding-top:96px!important;padding-bottom:56px!important}
+#la-uni-no-es-lo-unico{padding-top:56px!important;padding-bottom:56px!important}
+#quien-hay-detras{padding-top:56px!important;padding-bottom:96px!important}
+}
