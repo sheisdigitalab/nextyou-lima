@@ -21,6 +21,7 @@ html body section#como-funciona.cfa--escena{padding-bottom:0!important}
 @media (max-width:767px){.cfa--escena .cfa__prem{padding-top:88px!important;padding-bottom:88px!important}}
 html body section#como-funciona{padding-bottom:0!important}
 html body section#como-funciona .cfa__prem{padding-bottom:16px!important}
-/* Móvil y tablet vertical (cada paso lleva su móvil debajo): del móvil del paso 03 a la banda negra, 128px (88 en móvil) */
+/* Móvil y tablet vertical (cada paso lleva su móvil debajo): en tablet, 128px del móvil del paso 03 a la banda negra;
+   en móvil, 112px desde la tarjeta flotante de Laia (cuelga 84px bajo el móvil; con los 28px del hueco: 168 + 28 - 84 = 112) */
 #como-funciona:not(.cfa--escena) .cfa__hueco .cfa-app--3{margin-bottom:100px}
-@media (max-width:767px){#como-funciona:not(.cfa--escena) .cfa__hueco .cfa-app--3{margin-bottom:60px}}
+@media (max-width:767px){#como-funciona:not(.cfa--escena) .cfa__hueco .cfa-app--3{margin-bottom:168px}}
