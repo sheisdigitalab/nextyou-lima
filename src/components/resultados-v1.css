@@ -1,0 +1,169 @@
+/* /resultados/ (tema negro): menos lima, más aire y «Cómo llegar» en tarjetas con panel lateral.
+   Todo va bajo .res--negro o con clases propias (.clc, .cld): /resultados-crema/ no cambia. */
+
+/* ===== Menos lima, solo en toques: el «3», el camino elegido y su rama, la comunidad marcada, la «i», «Bueno saber» y el botón principal ===== */
+main.res.res--negro { --acento-texto: rgb(246 241 232 / 0.72); --cl-verde: var(--crema); }
+/* Iconos en lima («Así eres» y «En qué consiste») */
+main.res.res--negro .perfil__ic { border-color: color-mix(in srgb, var(--acento) 55%, transparent); color: var(--acento); }
+main.res.res--negro .mp__dato::before { border-color: color-mix(in srgb, var(--acento) 55%, transparent); }
+main.res.res--negro .mp__dato--que::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18'/%3E%3C/svg%3E"); }
+main.res.res--negro .mp__dato--trabajo::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12V4h8l10 10-8 8z'/%3E%3Ccircle cx='7.5' cy='8.5' r='1'/%3E%3C/svg%3E"); }
+main.res.res--negro .mp__dato--dia::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E"); }
+main.res.res--negro .mp__dato--porque::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f53b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E"); }
+main.res.res--negro .mp__dest[aria-selected='true'] .mp__nombre { color: var(--crema); }
+main.res.res--negro .mp__fb[aria-pressed='true'] { border-color: rgb(var(--tinta) / 0.6); background: rgb(var(--tinta) / 0.07); }
+main.res.res--negro .mp__fn { border-color: rgb(var(--tinta) / 0.4); }
+main.res.res--negro .mp__fb[aria-pressed='true'] .mp__fn { border-color: var(--acento); background: var(--acento); color: #161412; }
+main.res.res--negro .rc__lista li::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6f1e8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E"); }
+
+/* ===== Más aire ===== */
+main.res.res--negro { overflow-x: clip; } /* el carrusel de «Así eres» se salía 2px a 360px */
+main.res.res--negro .res__caja { gap: 2.5rem; }
+main.res.res--negro .mp__panel { gap: 3.5rem; }
+@media (min-width: 64rem) { main.res.res--negro .mp__panel { gap: 4.5rem; } }
+
+/* ===== Título y comunidades en el mismo eje ===== */
+.clh { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2rem; margin-bottom: 1.25rem; }
+main.res.res--negro .clh .donde__op { gap: 0.5rem; }
+main.res.res--negro .clh .donde__b { min-height: 40px; padding: 0 1rem; border-color: rgb(var(--tinta) / 0.25); background: none; color: rgb(var(--tinta) / 0.86); font-size: 0.875rem; font-weight: 600; }
+main.res.res--negro .clh .donde__b:hover { border-color: rgb(var(--tinta) / 0.65); }
+main.res.res--negro .clh .donde__b[aria-pressed='true'],
+main.res.res--negro[data-ccaa='cat'] .clh .donde__b[data-ccaa='cat'],
+main.res.res--negro[data-ccaa='mad'] .clh .donde__b[data-ccaa='mad'],
+main.res.res--negro[data-ccaa='val'] .clh .donde__b[data-ccaa='val'],
+main.res.res--negro[data-ccaa='and'] .clh .donde__b[data-ccaa='and'],
+main.res.res--negro[data-ccaa='otra'] .clh .donde__b[data-ccaa='otra'],
+main.res.res--negro[data-ccaa='int'] .clh .donde__b[data-ccaa='int'] { background: var(--acento); border-color: var(--acento); color: #161412; }
+@media (max-width: 47.99rem) {
+  main.res.res--negro .clh .donde__op { gap: 0.4rem; }
+  main.res.res--negro .clh .donde__b { min-height: 44px; padding: 0 0.7rem; }
+}
+
+/* ===== Tarjetas ===== */
+.clc__lista { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 1rem; }
+.clc__card { position: relative; flex: 1 1 calc(50% - 0.5rem); min-width: 0; display: flex; flex-direction: column; padding: 1.75rem; border: 1px solid rgb(var(--tinta) / 0.14); border-radius: 1.25rem; background: rgb(var(--tinta) / 0.035); cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
+.clc__card:hover { border-color: rgb(var(--tinta) / 0.35); background: rgb(var(--tinta) / 0.065); }
+.clc__cab { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; padding-right: 3rem; }
+.clc__tit { margin: 0; font-size: 1.25rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; color: var(--acento); }
+.clc__dur { padding: 0.2rem 0.7rem; border: 1px solid rgb(var(--tinta) / 0.25); border-radius: 999px; font-size: 0.875rem; font-weight: 600; line-height: 1.35; color: rgb(var(--tinta) / 0.86); white-space: nowrap; }
+.clc__of { margin: 0.6rem 0 0; font-size: 0.9375rem; line-height: 1.45; color: var(--gris); }
+.clc__cuerpo { display: flex; flex-direction: column; flex: 1; }
+.clc__tipos { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.clc__tipos li { padding: 0.2rem 0.7rem; border-radius: 999px; background: rgb(var(--tinta) / 0.11); font-size: 0.875rem; font-weight: 600; line-height: 1.35; color: var(--crema); }
+.clc__datos { margin: 1.5rem 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 1.25rem; border-top: 1px solid rgb(var(--tinta) / 0.14); }
+.clc__datos dd small { display: block; margin-top: 0.25rem; font-size: 0.875rem; font-weight: 400; line-height: 1.35; color: var(--gris); }
+.clc__datos > div { display: grid; align-content: start; gap: 0.35rem; }
+.clc__datos > div + div { padding-left: 1.25rem; border-left: 1px solid rgb(var(--tinta) / 0.14); }
+.clc__datos > div:first-child { padding-right: 1.25rem; }
+.clc__datos dt { font-size: 0.875rem; line-height: 1.3; color: var(--gris); }
+.clc__datos dd { margin: 0; font-size: 1.0625rem; font-weight: 700; line-height: 1.35; color: var(--crema); }
+/* El «+» en blanco (también abre al tocar cualquier punto de la tarjeta) */
+.clc__mas { position: absolute; top: 1.25rem; right: 1.25rem; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; color: #fff; cursor: pointer; }
+.clc__card:hover .clc__mas { background: rgb(var(--tinta) / 0.1); }
+.clc__mas:focus-visible { outline: 3px solid var(--crema); outline-offset: 2px; }
+/* Tablet: una tarjeta por fila, para que precio y nota no se aprieten */
+@media (max-width: 63.99rem) { .clc__card { flex-basis: 100%; } }
+/* Móvil: precio y nota uno debajo del otro, separados por una línea */
+@media (max-width: 47.99rem) {
+  .clc__card { flex-basis: 100%; padding: 1.5rem 1.15rem; }
+  .clc__cab { gap: 0.4rem 0.5rem; padding-right: 2.5rem; }
+  .clc__tit { font-size: 1.125rem; }
+  .clc__dur { padding: 0.15rem 0.55rem; }
+  .clc__mas { top: 0.85rem; right: 0.5rem; }
+  .clc__datos { grid-template-columns: 1fr; }
+  .clc__datos > div:first-child { padding-right: 0; }
+  .clc__datos > div + div { margin-top: 1.1rem; padding: 1.1rem 0 0; border-left: 0; border-top: 1px solid rgb(var(--tinta) / 0.14); }
+}
+
+/* Avisos y vías que se ocultan según dónde vives */
+.clc__aviso { display: none; margin: 0 0 1rem; padding: 1rem 1.25rem; border: 1px dashed rgb(var(--tinta) / 0.35); border-radius: 0.9rem; font-size: 0.9375rem; line-height: 1.5; color: var(--crema); }
+.res[data-ccaa='otra'] .clc__aviso--otra,
+.res[data-ccaa='int'] .clc__aviso--int { display: block; }
+.res[data-ccaa='otra'] .clc__card--comunidad,
+.res[data-ccaa='int'] .clc__card--comunidad,
+.res[data-ccaa='int'] .clc__card--espana { display: none; }
+
+.clc__pie { margin: 1.75rem 0 0; font-size: 0.875rem; line-height: 1.45; color: var(--gris); }
+
+/* La «i» de la nota de corte: icono de línea junto a «Nota para entrar», con zona de toque amplia */
+.clc__q { position: relative; display: inline-grid; place-items: center; width: 1.25rem; height: 1.25rem; margin-left: 0.3rem; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--gris); line-height: 1; vertical-align: -0.3em; cursor: help; transition: color 150ms ease, background-color 150ms ease; }
+.clc__q svg { width: 1.125rem; height: 1.125rem; }
+.clc__q::after { content: ''; position: absolute; inset: -0.8rem; }
+.clc__q:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
+.clc__q[aria-expanded='true'] { background: color-mix(in srgb, var(--acento) 16%, transparent); color: var(--acento); }
+/* La explicación flota encima, sin mover nada */
+.clc__datos > div { position: relative; }
+.clc__exp { position: absolute; z-index: 3; right: 0; bottom: calc(100% + 0.5rem); width: 17rem; max-width: calc(100% + 2rem); padding: 0.75rem 0.9rem; border-radius: 0.75rem; background: #f6f1e8; color: #161412; box-shadow: 0 10px 30px rgb(0 0 0 / 0.45); font-size: 0.875rem; font-weight: 400; line-height: 1.45; text-align: left; cursor: auto; opacity: 0; visibility: hidden; translate: 0 4px; transition: opacity 150ms ease, translate 150ms ease, visibility 150ms; }
+.clc__exp::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 0.9rem; } /* puente: el ratón puede pasar de la «i» al texto */
+.clc__exp b { font-weight: 800; }
+.clc__q:focus-visible + .clc__exp,
+.clc__q[aria-expanded='true'] + .clc__exp { opacity: 1; visibility: visible; translate: 0 0; }
+@media (hover: hover) {
+  .clc__q:hover { background: color-mix(in srgb, var(--acento) 16%, transparent); color: var(--acento); }
+  .clc__q:hover + .clc__exp,
+  .clc__exp:hover { opacity: 1; visibility: visible; translate: 0 0; }
+}
+@media (max-width: 47.99rem) { .clc__exp { left: 0; right: auto; max-width: 100%; } }
+/* La misma «i» dentro del panel crema, en oscuro */
+dialog.cld .clc__q { color: #574e46; }
+dialog.cld .clc__q:focus-visible { outline-color: #161412; }
+dialog.cld .clc__q:hover,
+dialog.cld .clc__q[aria-expanded='true'] { background: rgb(22 20 18 / 0.08); color: #161412; }
+dialog.cld .cl__d { position: relative; }
+dialog.cld .cl__d .clc__exp { left: 0; right: auto; bottom: calc(100% - 0.4rem); max-width: 100%; background: #161412; color: #f6f1e8; }
+dialog.cld .cl__d .clc__exp b { font-size: inherit; }
+
+/* ===== Panel lateral ===== */
+dialog.cld { position: fixed; inset: 0 0 0 auto; width: min(38rem, 100%); max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 0; border: 0; background: #f6f1e8; color: #161412; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; translate: 100% 0; transition: translate 350ms cubic-bezier(0.2, 0.8, 0.2, 1), overlay 350ms allow-discrete, display 350ms allow-discrete; }
+dialog.cld[open] { translate: 0 0; }
+@starting-style { dialog.cld[open] { translate: 100% 0; } }
+dialog.cld::backdrop { background: rgb(0 0 0 / 0.65); }
+html:has(dialog.cld[open]) { overflow: hidden; }
+.cld__cab { position: sticky; top: 0; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.75rem 2rem 1.25rem; border-bottom: 1px solid rgb(22 20 18 / 0.14); background: #f6f1e8; }
+.cld__linea { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.cld__tit { margin: 0; font-family: var(--titular); font-size: 1.625rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+.cld__dur { padding: 0.2rem 0.7rem; border: 1px solid rgb(22 20 18 / 0.25); border-radius: 999px; font-size: 0.875rem; font-weight: 600; line-height: 1.35; white-space: nowrap; }
+.cld__of { margin: 0.5rem 0 0; font-size: 0.9375rem; line-height: 1.45; color: #574e46; }
+.cld__x { flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgb(22 20 18 / 0.25); border-radius: 50%; background: none; color: #161412; cursor: pointer; }
+.cld__x:hover { background: rgb(22 20 18 / 0.06); border-color: #161412; }
+.cld__x:focus-visible { outline: 3px solid #161412; outline-offset: 2px; }
+dialog.cld .cld__in { gap: 1.5rem; margin: 0; padding: 1.5rem 2rem 2.5rem; border: 0; border-radius: 0; background: none; }
+dialog.cld .cl__qa,
+dialog.cld .cl__ex { grid-template-columns: 1fr; }
+dialog.cld .cl__centros b { flex-basis: 100%; }
+/* «Bueno saber»: arriba del todo, con un fondo lima muy suave */
+.cld__tip { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.9rem 1rem; border-radius: 0.9rem; background: color-mix(in srgb, var(--acento) 20%, #f6f1e8); color: #2f2a24; }
+.cld__bombilla { flex: none; display: grid; place-items: center; height: 1.4rem; color: #161412; }
+.cld__bombilla svg { width: 1.15rem; height: 1.15rem; }
+.cld__tip b { display: block; font-size: 0.9375rem; font-weight: 700; line-height: 1.4; color: #161412; }
+.cld__tip p { margin: 0.15rem 0 0; font-size: 0.9375rem; line-height: 1.5; }
+/* «Cuándo te apuntas» e «Y después», en caja como el resto de datos */
+dialog.cld .cl__when { padding: 14px 16px; border: 1px solid rgb(22 20 18 / 0.14); border-radius: 14px; background: #fff; }
+dialog.cld .cl__when b { display: block; margin-bottom: 0.2rem; }
+dialog.cld .cl__when + .cl__when { margin-top: -0.5rem; }
+/* Estrellas de ejemplo en las universidades */
+.cld__demo { margin: 0; font-size: 0.875rem; line-height: 1.45; color: #574e46; }
+.cld__val { flex-basis: 100%; margin-top: 0.35rem; border-top: 1px solid rgb(22 20 18 / 0.1); }
+.cld__val summary { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; min-height: 44px; padding-top: 0.35rem; font-size: 0.875rem; line-height: 1.3; cursor: pointer; }
+.cld__val summary::-webkit-details-marker { display: none; }
+.cld__val summary::after { content: '+'; margin-left: auto; font-size: 1.25rem; line-height: 1; }
+.cld__val[open] summary::after { content: '−'; }
+.cld__val summary:focus-visible { outline: 3px solid #161412; outline-offset: 2px; border-radius: 0.4rem; }
+.cld__val summary b { flex: none; font-weight: 800; }
+dialog.cld .cld__val summary b { flex-basis: auto; }
+.cld__cuantas { color: #574e46; text-decoration: underline; text-underline-offset: 0.2em; }
+.cld__val ul { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+dialog.cld .cld__val li { display: grid; gap: 0.3rem; justify-items: start; padding: 0.8rem 0.9rem; border: 0; border-radius: 0.7rem; background: #f6f1e8; }
+.cld__val p { margin: 0; font-size: 0.9375rem; line-height: 1.45; }
+.cld__val small { font-size: 0.875rem; color: #574e46; }
+.cld__estrellas { font-size: 1rem; letter-spacing: 0.08em; line-height: 1; color: transparent; background: linear-gradient(90deg, #161412 var(--v), rgb(22 20 18 / 0.18) var(--v)); -webkit-background-clip: text; background-clip: text; }
+/* Centros: públicos y privados por separado */
+.cld__h { margin: 0.5rem 0 0; font-family: var(--titular); font-size: 1.25rem; font-weight: 800; line-height: 1.25; }
+.cld__grupo { display: grid; gap: 0.6rem; }
+.cld__grupo + .cld__grupo { margin-top: 0.6rem; }
+.cld__grupo h5 { margin: 0.35rem 0 0; font-size: 0.875rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #574e46; }
+@media (max-width: 40rem) {
+  .cld__cab { padding: 1.25rem 1.25rem 1rem; }
+  dialog.cld .cld__in { padding: 1.25rem 1.25rem 2rem; }
+}
+@media (prefers-reduced-motion: reduce) { dialog.cld, .clc__card { transition: none; } }

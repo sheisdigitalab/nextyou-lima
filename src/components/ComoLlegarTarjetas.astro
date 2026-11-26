@@ -1,0 +1,285 @@
+---
+// «Cómo llegar» en tarjetas (solo /resultados/, tema negro): cada tarjeta enseña lo esencial (vía, duración, precio, nota
+// y si hay centros públicos o privados) y el «+» abre un panel lateral con el resto.
+// /resultados-crema/ sigue con ComoLlegarV2 y las filas desplegables.
+// Sirve para los dos formatos de datos: como-llegar-v2.ts (contenido y animación) y como-llegar.ts (ciberseguridad),
+// que aquí se convierten a una misma forma. Los estilos están en resultados-v1.css.
+import { type CaminoV2, NOTA_CORTE_V2, PIE_V2 } from '../data/como-llegar-v2';
+import { ESTADOS, TEXTOS, datosDe, dondeDe, type Via } from '../data/como-llegar';
+import IconoInfo from './IconoInfo.astro';
+
+interface Props {
+  id: string;
+  camino?: CaminoV2;
+  vias?: Via[];
+}
+const { id, camino, vias } = Astro.props;
+const COMUNIDADES = ['cat', 'mad', 'val', 'and'] as const;
+// PENDIENTE CLIENTA: todavía no hay datos para estudiar fuera
+const AVISO_INT = 'Todavía no tenemos centros ni precios para estudiar fuera de España.';
+const TIPOS = ['Pública', 'Privada'];
+// ESTRELLAS INVENTADAS, solo para enseñar el diseño: se ven en local y NO se publican (son centros reales).
+// PENDIENTE CLIENTA: decidir de dónde salen las valoraciones reales.
+const ESTRELLAS_EJEMPLO = import.meta.env.DEV;
+const semilla = (nombre: string) => [...nombre].reduce((s, c) => s + c.charCodeAt(0), 0);
+const estrellas = (nombre: string) => [3.6, 3.8, 3.9, 4.1, 4.3, 4.4, 4.6][semilla(nombre) % 7];
+const cuantas = (nombre: string) => 24 + (semilla(nombre) % 150);
+// Huecos de opinión: no se escribe ninguna opinión sobre centros reales
+const OPINIONES = [
+  { v: 5, t: 'Aquí irá la opinión de un alumno sobre las clases y las prácticas.' },
+  { v: 4, t: 'Aquí irá otra opinión: ambiente, profesorado y salidas.' },
+];
+
+interface Dato { t: string; valor: string; nota?: string; total?: string }
+interface Centro { nombre: string; lugar?: string; tipo?: string; tags: string[]; sub?: string }
+interface Region { est?: string; qa: Dato[]; cuando: { b: string; t: string }[]; dondeTitulo?: string; centros: Centro[]; avisos: string[]; buenos: string[] }
+// donde: 'comunidad' = se oculta en «Otra» e «Internacional» · 'espana' = solo se oculta en «Internacional»
+interface Ficha { titulo: string; oficial: string; duracion: string; que: string; ex: { h: string; items: string[] }[]; donde?: 'comunidad' | 'espana'; regiones: Region[] }
+
+const fichas: Ficha[] = camino
+  ? camino.vias.map((v) => ({
+      titulo: v.titulo, oficial: v.oficial, duracion: v.duracion, que: v.que, ex: v.ex,
+      donde: v.porComunidad ? 'comunidad' : undefined,
+      regiones: (v.porComunidad ? COMUNIDADES.map((c) => [c, v.porComunidad![c]] as const) : [[undefined, v.igual!] as const]).map(([est, r]) => ({
+        est, qa: r.qa, cuando: r.cuando, dondeTitulo: r.dondeTitulo, avisos: [], buenos: r.bueno ? [r.bueno] : [],
+        centros: (r.centros ?? []).map((z) => ({
+          nombre: z.nombre, lugar: z.lugar, sub: z.sub,
+          tipo: z.etiquetas.find((e) => TIPOS.includes(e.t))?.t,
+          tags: z.etiquetas.filter((e) => !TIPOS.includes(e.t)).map((e) => e.t),
+        })),
+      })),
+    }))
+  : vias!.map((v) => ({
+      titulo: v.titulo, oficial: v.oficial, duracion: v.duracion, que: v.frase, ex: [],
+      donde: v.depende ? 'espana' : undefined,
+      regiones: (v.depende ? ESTADOS : ['' as const]).map((e) => {
+        const { nota, cuesta } = datosDe(v, e);
+        const d = dondeDe(v, e);
+        return {
+          est: v.depende ? e : undefined,
+          qa: [{ t: 'Qué necesitas', ...v.necesitas }, { t: 'Nota para entrar', ...nota }, { t: 'Cuánto cuesta', ...cuesta }],
+          cuando: [],
+          dondeTitulo: d?.titulo,
+          centros: (d?.centros ?? []).map((z) => ({ nombre: z.nombre, lugar: z.lugar, tipo: z.tipo, tags: z.etiquetas ?? [] })),
+          avisos: [d?.aviso, d?.resto].filter((x): x is string => !!x),
+          buenos: [d?.bueno, v.bueno].filter((x): x is string => !!x),
+        };
+      }),
+    }));
+
+const dato = (r: Region, t: string) => r.qa.find((x) => x.t === t);
+const hay = (r: Region, tipo: string) => r.centros.some((z) => z.tipo === tipo);
+// La «i» sale donde se habla de nota de corte (no en «No hay» ni en «Prueba propia»)
+const conInfo = (valor = '') => /\d|nota de corte|depende del centro/i.test(valor);
+const explica = camino ? { b: NOTA_CORTE_V2.b, t: NOTA_CORTE_V2.t } : { b: TEXTOS.notaDeCorte.pregunta, t: TEXTOS.notaDeCorte.respuesta };
+// En el panel, los centros van separados en públicos y privados
+const grupos = (centros: Centro[]) => {
+  const g = [
+    { h: 'Centros públicos', lista: centros.filter((z) => z.tipo === 'Pública') },
+    { h: 'Centros privados', lista: centros.filter((z) => z.tipo === 'Privada') },
+    { h: 'Otros centros', lista: centros.filter((z) => !z.tipo) },
+  ].filter((x) => x.lista.length);
+  return g.length === 1 && g[0].h === 'Otros centros' ? [{ h: '', lista: g[0].lista }] : g;
+};
+---
+
+<div class="clc">
+  {camino && <p class="clc__aviso clc__aviso--otra" role="note">{camino.avisoOtra}</p>}
+  <p class="clc__aviso clc__aviso--int" role="note">{AVISO_INT}</p>
+
+  <ul class="clc__lista" role="list">
+    {
+      fichas.map((f, k) => (
+        <li class={`clc__card${f.donde ? ` clc__card--${f.donde}` : ''}`} data-abre={`cld-${id}-${k}`}>
+          <div class="clc__cab">
+            <h4 class="clc__tit">{f.titulo}</h4>
+            <span class="clc__dur">{f.duracion}</span>
+          </div>
+          <p class="clc__of">{f.oficial}</p>
+          {f.regiones.map((r, j) => {
+            const cuesta = dato(r, 'Cuánto cuesta');
+            const nota = dato(r, 'Nota para entrar');
+            const qid = `clq-${id}-${k}-${j}`;
+            return (
+              <div class="cl__est" data-est={r.est}>
+                <div class="clc__cuerpo">
+                  {(hay(r, 'Pública') || hay(r, 'Privada')) && (
+                    <ul class="clc__tipos" role="list" aria-label="Tipo de centro">
+                      {hay(r, 'Pública') && <li>Pública</li>}
+                      {hay(r, 'Privada') && <li>Privada</li>}
+                    </ul>
+                  )}
+                  <dl class="clc__datos">
+                    <div>
+                      <dt>Cuánto cuesta</dt>
+                      <dd>{cuesta?.valor}{cuesta?.nota && /públic|privad/i.test(cuesta.nota) && <small>{cuesta.nota}</small>}</dd>
+                    </div>
+                    <div>
+                      <dt>
+                        Nota para entrar
+                        {conInfo(nota?.valor) && <button type="button" class="clc__q" aria-expanded="false" aria-describedby={qid} aria-label="Qué es la nota de corte"><IconoInfo /></button>}
+                        {conInfo(nota?.valor) && <span class="clc__exp" id={qid} role="tooltip"><b>{explica.b}</b> {explica.t}</span>}
+                      </dt>
+                      <dd>{nota?.valor}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            );
+          })}
+          <button type="button" class="clc__mas" aria-haspopup="dialog" aria-label={`Ver más sobre ${f.titulo}`}>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="clc__pie">{camino ? PIE_V2 : TEXTOS.pie}</p>
+
+  {
+    fichas.map((f, k) => (
+      <dialog class="cld" id={`cld-${id}-${k}`} aria-labelledby={`cld-${id}-${k}-t`}>
+        <header class="cld__cab">
+          <div>
+            <div class="cld__linea">
+              <h4 class="cld__tit" id={`cld-${id}-${k}-t`}>{f.titulo}</h4>
+              <span class="cld__dur">{f.duracion}</span>
+            </div>
+            <p class="cld__of">{f.oficial}</p>
+          </div>
+          <button type="button" class="cld__x" data-cierra aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </header>
+
+        <div class="cl__in cld__in">
+          <p class="cl__que">{f.que}</p>
+
+          {f.regiones.map((r) => r.buenos.length > 0 && (
+            <div class="cl__est" data-est={r.est}>
+              <aside class="cld__tip">
+                <span class="cld__bombilla" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z" /></svg>
+                </span>
+                <div>
+                  <b>Bueno saber</b>
+                  {r.buenos.map((t) => <p>{t}</p>)}
+                </div>
+              </aside>
+            </div>
+          ))}
+
+          <div class="cl__qa">
+            {f.regiones.map((r, j) => (
+              <div class="cl__est" data-est={r.est}>
+                {r.qa.map((q) => {
+                  const info = q.t === 'Nota para entrar' && conInfo(q.valor);
+                  const qid = `cldq-${id}-${k}-${j}`;
+                  return (
+                    <div class="cl__d">
+                      <small>
+                        {q.t}
+                        {info && <button type="button" class="clc__q" aria-expanded="false" aria-describedby={qid} aria-label="Qué es la nota de corte"><IconoInfo /></button>}
+                        {info && <span class="clc__exp" id={qid} role="tooltip"><b>{explica.b}</b> {explica.t}</span>}
+                      </small>
+                      <b>{q.valor}</b>
+                      {q.nota && <em>{q.nota}</em>}
+                      {q.total && <strong class="cl__tot">{q.total}</strong>}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
+          {f.ex.length > 0 && (
+            <div class="cl__ex">
+              {f.ex.map((e) => <div><h4>{e.h}</h4><ul>{e.items.map((x) => <li>{x}</li>)}</ul></div>)}
+            </div>
+          )}
+
+          {f.regiones.map((r) => (
+            <div class="cl__est cl__est--lugar cl__est--v2" data-est={r.est}>
+              {r.cuando.map((w) => <p class="cl__when"><b>{w.b}</b> {w.t}</p>)}
+              {(r.centros.length > 0 || r.avisos.length > 0) && (
+                <div class="cl__donde">
+                  {r.dondeTitulo && <h4 class="cld__h">{r.dondeTitulo}</h4>}
+                  {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && r.centros.length > 0 && <p class="cld__demo">Estrellas y valoraciones de ejemplo: todavía no son reales.</p>}
+                  {grupos(r.centros).map((g) => (
+                    <div class="cld__grupo">
+                      {g.h && <h5>{g.h}</h5>}
+                      <ul class="cl__centros" role="list">
+                        {g.lista.map((z) => (
+                          <li>
+                            <b>{z.nombre}</b>
+                            {z.lugar && <span class="cl__lugar">{z.lugar}</span>}
+                            {z.tags.map((x) => <span class="cl__tag cl__tag--dat">{x}</span>)}
+                            {z.sub && <span class="cl__sub">{z.sub}</span>}
+                            {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && (
+                              <details class="cld__val">
+                                <summary>
+                                  <span class="cld__estrellas" style={`--v: ${estrellas(z.nombre) * 20}%`} aria-hidden="true">★★★★★</span>
+                                  <b>{String(estrellas(z.nombre)).replace('.', ',')}</b>
+                                  <span class="cld__cuantas">{cuantas(z.nombre)} valoraciones (ejemplo)</span>
+                                </summary>
+                                <ul role="list">
+                                  {OPINIONES.map((o) => (
+                                    <li>
+                                      <span class="cld__estrellas" style={`--v: ${o.v * 20}%`} role="img" aria-label={`${o.v} de 5`}>★★★★★</span>
+                                      <p>{o.t}</p>
+                                      <small>Alumno o alumna · ejemplo</small>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </details>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                  {r.avisos.map((t) => <p class="cl__aviso">{t}</p>)}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </dialog>
+    ))
+  }
+</div>
+
+<script>
+  // La tarjeta entera (o su «+») abre el panel lateral; se cierra con la ×, con Esc o tocando fuera
+  document.querySelectorAll<HTMLElement>('[data-abre]').forEach((c) =>
+    c.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('.clc__q, .clc__exp')) return;
+      const d = document.getElementById(c.dataset.abre!) as HTMLDialogElement | null;
+      if (!d) return;
+      d.showModal();
+      d.scrollTop = 0;
+    })
+  );
+  document.querySelectorAll<HTMLDialogElement>('dialog.cld').forEach((d) => {
+    d.querySelector('[data-cierra]')?.addEventListener('click', () => d.close());
+    // Un clic en el fondo oscuro llega al propio <dialog>, fuera de su caja
+    d.addEventListener('click', (e) => {
+      if (e.target === d && e.clientX < d.getBoundingClientRect().left) d.close();
+    });
+  });
+  // La explicación de la «i» sale al pasar el ratón o con el teclado (solo CSS); al tocarla (móvil) se queda abierta
+  document.querySelectorAll<HTMLButtonElement>('.clc__q').forEach((b) => {
+    const cerrar = () => b.setAttribute('aria-expanded', 'false');
+    b.addEventListener('click', () => {
+      b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'));
+      b.focus(); // Safari no enfoca los botones al tocarlos: así se cierra al tocar fuera
+    });
+    b.addEventListener('blur', cerrar);
+    b.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || b.getAttribute('aria-expanded') !== 'true') return;
+      e.preventDefault();
+      cerrar();
+    });
+  });
+</script>

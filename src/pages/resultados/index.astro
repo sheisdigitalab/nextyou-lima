@@ -16,6 +16,8 @@ import { comoAppLima } from '../../data/lima-v3';
 import { caminos, perfil, acompanamiento as coach } from '../../data/resultados';
 import { clipsPorCamino } from '../../data/clips-resultados';
 import ComoLlegarV2 from '../../components/ComoLlegarV2.astro';
+import ComoLlegarTarjetas from '../../components/ComoLlegarTarjetas.astro';
+import '../../components/resultados-v1.css';
 import { comoLlegarV2 } from '../../data/como-llegar-v2';
 import { comoLlegar, COMUNIDADES, ESTADOS, TEXTOS, datosDe, dondeDe, type Centro, type Dato } from '../../data/como-llegar';
 
@@ -23,6 +25,9 @@ import { comoLlegar, COMUNIDADES, ESTADOS, TEXTOS, datosDe, dondeDe, type Centro
 // Tema de la página: 'negro' (la de siempre) o 'crema' (/resultados-crema/, mismo diseño sobre fondo crema)
 const tema: 'negro' | 'crema' = Astro.props.tema ?? 'negro';
 const coachVariante: 'C' | 'B' = 'C';
+// Versión 1 (la negra): «Cómo llegar» en tarjetas con panel lateral, comunidades solo ahí (más «Internacional») y menos lima
+const v1 = tema === 'negro';
+const dondeV1 = [...COMUNIDADES, { id: 'int', nombre: 'Internacional' }];
 // Fila «Envíame mis caminos» / «Compartir»: solo diseño, sin funcionalidad ni datos (pon false para quitarla)
 const mostrarGuardar = false;
 const MAX_MESES = 48; // la línea más larga (4 años) ocupa todo el ancho
@@ -61,6 +66,7 @@ const iconos = {
     <script is:inline>
       (function () {
         var main = document.currentScript.parentElement, validas = ['cat', 'mad', 'val', 'and', 'otra'], v = '';
+        if (main.classList.contains('res--negro')) validas.push('int');
         try { v = (new URLSearchParams(location.search).get('ccaa') || '').toLowerCase(); } catch (e) {}
         if (validas.indexOf(v) < 0) { try { v = localStorage.getItem('nextyou-ccaa') || ''; } catch (e) { v = ''; } }
         main.setAttribute('data-ccaa', validas.indexOf(v) < 0 ? 'cat' : v);
@@ -89,13 +95,17 @@ const iconos = {
         </ul>
       </section>
 
-      {/* ¿Dónde vives? Uno solo para las tres fichas: cambia centros, notas y precios de «Cómo llegar» */}
-      <section class="donde" aria-labelledby="donde-tit">
-        <p id="donde-tit" class="donde__tit">¿Dónde vives?</p>
-        <div class="donde__op" role="group" aria-labelledby="donde-tit">
-          {COMUNIDADES.map((c) => <button type="button" class="donde__b" data-ccaa={c.id} aria-pressed="false">{c.nombre}</button>)}
-        </div>
-      </section>
+      {/* ¿Dónde vives? Uno solo para las tres fichas: cambia centros, notas y precios de «Cómo llegar» (en la v1 va solo dentro de «Cómo llegar») */}
+      {
+        !v1 && (
+          <section class="donde" aria-labelledby="donde-tit">
+            <p id="donde-tit" class="donde__tit">¿Dónde vives?</p>
+            <div class="donde__op" role="group" aria-labelledby="donde-tit">
+              {COMUNIDADES.map((c) => <button type="button" class="donde__b" data-ccaa={c.id} aria-pressed="false">{c.nombre}</button>)}
+            </div>
+          </section>
+        )
+      }
 
       <p class="res__toca">Toca cada uno para ver de qué va y cómo llegar.</p>
 
@@ -167,9 +177,20 @@ const iconos = {
             </div>
 
             <div class="mp__bloque">
-              <h3 class="mp__h3">Cómo llegar <small>Hay varias vías</small></h3>
               {
-                c.id !== 'ciberseguridad' && (
+                v1 ? (
+                  <div class="clh">
+                    <h3 class="mp__h3">Cómo llegar</h3>
+                    <div class="donde__op" role="group" aria-label="¿Dónde vives?">
+                      {dondeV1.map((z) => <button type="button" class="donde__b" data-ccaa={z.id} aria-pressed="false">{z.nombre}</button>)}
+                    </div>
+                  </div>
+                ) : (
+                  <h3 class="mp__h3">Cómo llegar <small>Hay varias vías</small></h3>
+                )
+              }
+              {
+                !v1 && c.id !== 'ciberseguridad' && (
                   <div class="donde donde--cl" role="group" aria-label="¿Dónde vives?">
                     <p class="donde__tit" aria-hidden="true">¿Dónde vives?</p>
                     <div class="donde__op">
@@ -179,7 +200,9 @@ const iconos = {
                 )
               }
               {
-                c.id === 'ciberseguridad' ? (
+                v1 ? (
+                  c.id === 'ciberseguridad' ? <ComoLlegarTarjetas id={c.id} vias={comoLlegar[c.id]} /> : <ComoLlegarTarjetas id={c.id} camino={comoLlegarV2[c.id]} />
+                ) : c.id === 'ciberseguridad' ? (
                   <>
                   <div class="cl">
                     {
