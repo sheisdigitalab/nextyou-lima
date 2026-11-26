@@ -18,9 +18,9 @@ const COMUNIDADES = ['cat', 'mad', 'val', 'and'] as const;
 // PENDIENTE CLIENTA: todavía no hay datos para estudiar fuera
 const AVISO_INT = 'Todavía no tenemos centros ni precios para estudiar fuera de España.';
 const TIPOS = ['Pública', 'Privada'];
-// ESTRELLAS INVENTADAS, solo para enseñar el diseño: se ven en local y NO se publican (son centros reales).
-// PENDIENTE CLIENTA: decidir de dónde salen las valoraciones reales.
-const ESTRELLAS_EJEMPLO = import.meta.env.DEV;
+// ESTRELLAS INVENTADAS, solo para enseñar el diseño: van siempre con la etiqueta «ejemplo» porque son centros reales.
+// PENDIENTE CLIENTA: decidir de dónde salen las valoraciones reales. Quitarlas (false) antes de lanzar la web.
+const ESTRELLAS_EJEMPLO = true;
 const semilla = (nombre: string) => [...nombre].reduce((s, c) => s + c.charCodeAt(0), 0);
 const estrellas = (nombre: string) => [3.6, 3.8, 3.9, 4.1, 4.3, 4.4, 4.6][semilla(nombre) % 7];
 const cuantas = (nombre: string) => 24 + (semilla(nombre) % 150);
