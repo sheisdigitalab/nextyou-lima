@@ -3,7 +3,10 @@
 import { Image, Picture, getImage } from 'astro:assets';
 import V5 from '../../layouts/V5.astro';
 import LogoV3 from '../../components/LogoV3.astro';
-import Globo from '../../components/globo-v4/Globo.astro';
+import BannerGlobo from '../../components/banner-globo/BannerGlobo.astro';
+import '../../components/uni-v4.css';
+import '../../components/ritmo-v4.css';
+import '../../components/como-funciona-v4.css';
 import '../../components/sara-v4.css';
 import { SITIO, BASE, ENLACES, CTA_PRINCIPAL } from '../../config';
 import caveat from '../../assets/fonts/caveat.woff2?url';
@@ -405,19 +408,16 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           <ol class="camino8__lista" role="list" aria-label="Tres caminos para llegar a la animación 3D">
             {uniNoUnicoLima.rutas.map((r, k) => <li style={`--k: ${k}`}><span><b>{r.t}</b><small>{r.d}</small>{r.x && <em>{r.x}</em>}</span></li>)}
           </ol>
-          <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 15.03 C 50 15.03, 50 50, 100 50" class="camino8__l" /><path d="M0 50 L 100 50" class="camino8__l" /><path d="M0 84.97 C 50 84.97, 50 50, 100 50" class="camino8__l" /></svg></div>
+          <div class="camino8__der" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="gMeta" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0"><stop offset="0" stop-color="#f6f1e8" stop-opacity=".55" /><stop offset=".45" stop-color="#f6f1e8" stop-opacity=".55" /><stop offset="1" stop-color="#c8f53b" /></linearGradient></defs><path d="M0 15.03 C 50 15.03, 50 50, 100 50" class="camino8__l" style="stroke: url(#gMeta)" /><path d="M0 50 L 100 50" class="camino8__l" style="stroke: url(#gMeta)" /><path d="M0 84.97 C 50 84.97, 50 50, 100 50" class="camino8__l" style="stroke: url(#gMeta)" /></svg></div>
           <p class="camino8__rotulo camino8__rotulo--2">para llegar a:</p>
           <ul class="camino8__profs" role="list" aria-label="Profesión a la que llegas">
             <li><span class="camino8__ic" aria-hidden="true"><span class="cubo3d"><span class="cubo3d__c"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span></span><b>Animación 3D</b></li>
           </ul>
         </div>
+        <div class="uni-cta"><a href={`${BASE}empezar/`}>{uniBotonV4.texto} <span aria-hidden="true">→</span></a></div>
       </section>
 
-      <Globo>
-        <div class="ancho uni-no__accion" data-aparece>
-          <a class="cfa__boton" href={`${BASE}empezar/`}><span class="cfa__t cfa__t--f">{uniBotonV4.texto}</span> <span aria-hidden="true">→</span></a>
-        </div>
-      </Globo>
+      <BannerGlobo />
 
 
 
@@ -1296,10 +1296,7 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         setTimeout(() => { ella.textContent = FRASES[c % FRASES.length]; frase.classList.remove('cfa-cambia'); c++; }, 400);
       };
 
-      // Paso 4 (premium): al llegar, toda la pantalla se vuelve negra y aparece el bloque del coach
-      const prem = sec.querySelector<HTMLElement>('[data-cfa-prem]')!;
-      // El negro entra cuando el recuadro de entre el 03 y el 04 sube a unos 280 px del borde superior (unos 120 px de scroll tras leerlo):
-      // así el tramo crema vacío es corto y el recuadro ya se ha apagado antes de que el fondo se oscurezca (retardo en el CSS)
+      // En la v4 la sección no se funde a negro: el bloque 04 (coach) es su propia banda oscura (como-funciona-v4.css)
       const caja = sec.querySelector<HTMLElement>('.cfa__final');
       // Efecto de entrada del título «NextYou no es solo un test»: el logo se dibuja de izquierda a derecha y las palabras suben una a una
       if (caja && !reduce && 'IntersectionObserver' in window) {
@@ -1310,19 +1307,6 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
           caja.classList.add('wow-on');
         }, { threshold: 0.6 }).observe(caja);
       }
-      let obsNegro: IntersectionObserver | undefined;
-      const armarNegro = () => {
-        obsNegro?.disconnect();
-        const dist = caja ? prem.getBoundingClientRect().top - caja.getBoundingClientRect().top : 0;
-        const linea = Math.min(innerHeight * 0.98, Math.max(0, innerHeight * 0.96 + dist));
-        obsNegro = new IntersectionObserver((es) => { sec.classList.toggle('cfa--negro', es[0].isIntersecting); }, { rootMargin: `0px 0px ${-(innerHeight - linea)}px 0px` });
-        obsNegro.observe(prem);
-      };
-      armarNegro();
-      addEventListener('resize', armarNegro);
-      addEventListener('load', armarNegro);
-      if (caja && 'ResizeObserver' in window) new ResizeObserver(armarNegro).observe(caja);
-
       if (reduce) {
         segs.forEach((s, k) => s.classList.toggle('cfa-on', k < 3)); ops[0].classList.add('cfa-sel'); cta.classList.remove('cfa-off');
         insight.classList.add('cfa-pop');
@@ -3557,10 +3541,8 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
   @media (max-width: 30rem) { :root:root .cfa__boton { font-size: 0.9375rem; white-space: nowrap; padding-inline: 1.25rem; justify-content: center; } }
 
   /* v4 · botón bajo el globo, cierra «La uni no es el único camino» */
-  .uni-no__accion { display: flex; justify-content: center; margin-top: clamp(2rem, 4vw, 3rem); }
-  .uni-no__accion .cfa__boton, .hablemos .cfa__boton { --cfa-tinta: #161412; color: #161412; justify-content: center; align-items: center; text-align: center; max-width: 100%; white-space: normal; border: 0; cursor: pointer; }
-  .uni-no__accion .cfa__boton .cfa__t, .hablemos .cfa__boton .cfa__t { white-space: normal; color: #161412; }
-  @media (max-width: 30rem) { .uni-no__accion .cfa__boton { padding-inline: 1.1rem; font-size: 0.9rem; } }
+  .hablemos .cfa__boton { --cfa-tinta: #161412; color: #161412; justify-content: center; align-items: center; text-align: center; max-width: 100%; white-space: normal; border: 0; cursor: pointer; }
+  .hablemos .cfa__boton .cfa__t { white-space: normal; color: #161412; }
   /* v4 · «Hablemos»: formulario de muestra en un modal */
   .hablemos { padding: 0; border: 0; background: none; color: var(--crema); max-width: none; max-height: none; width: 100%; height: 100%; }
   .hablemos::backdrop { background: rgb(0 0 0 / 0.85); backdrop-filter: blur(6px); }

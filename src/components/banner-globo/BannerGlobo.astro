@@ -1,0 +1,30 @@
+---
+// Banner «¿Y si quieres estudiar fuera?», justo después de «La uni no es el único camino» (solo /home-v4/).
+// Referencia: exploracion/home-v4-banner/. El mapa son los puntos de dots-globo.json; usa d3-geo.
+import './banner-globo.css';
+---
+
+<div class="bn-wrap"><section class="bn sinfundido" aria-labelledby="t-fuera">
+ <div class="bn-globo-slot"><div class="ng-globo" id="globo" role="img" aria-label="Globo terráqueo con caminos que salen de España hacia ciudades de otros países."><canvas id="cv"></canvas><div id="pins"></div><p class="ng-hint" id="hint">Arrastra para girar el globo</p></div></div>
+ <div class="bn-tx">
+  <p class="bn-eti">También fuera de España</p>
+  <h3 id="t-fuera">¿Y si quieres estudiar fuera?</h3>
+  <p>Si en el test marcas que te gustaría estudiar fuera de España, tus caminos también te enseñan opciones en otros países.</p>
+ </div>
+</section></div>
+
+<script>
+  // El script del globo (d3-geo + los puntos) se descarga solo cuando la sección se acerca a la pantalla
+  const globo = document.getElementById('globo');
+  if (globo) {
+    const io = new IntersectionObserver(
+      (entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        import('./banner-globo.js');
+      },
+      { rootMargin: '300px' },
+    );
+    io.observe(globo);
+  }
+</script>

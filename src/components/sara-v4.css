@@ -1,15 +1,17 @@
 /* Estilos de «Por qué existe esto» en v4 */
 
-.sarav4{grid-template-columns:minmax(0,5fr) minmax(0,7fr)!important;gap:clamp(40px,6vw,96px)!important;align-items:center;max-width:1080px;margin-inline:auto;text-align:left}
+.sarav4{grid-template-columns:minmax(0,7fr) minmax(0,5fr)!important;gap:clamp(40px,6vw,96px)!important;align-items:center;max-width:1080px;margin-inline:auto;text-align:left}
 .sarav4 .sara__texto{justify-items:start;text-align:left}
-.sarav4__foto{margin:0;width:100%;max-width:400px;justify-self:end}
+/* escritorio: texto a la izquierda y foto a la derecha; hasta 1000px se apila (en el HTML la foto va primero: queda arriba) */
+.sarav4__foto{order:2;margin:0;width:100%;max-width:400px;justify-self:start}
 .sarav4__hueco{aspect-ratio:4/5;background:#24201c;border:1px solid #f6f1e81a;color:#f6f1e866;display:grid;place-content:center;justify-items:center;gap:14px;font-size:.875rem}
 .sarav4__foto img{aspect-ratio:4/5;width:100%;object-fit:cover;display:block}
-@media (max-width:760px){.sarav4{grid-template-columns:1fr!important;gap:32px!important;text-align:center}
+@media (max-width:1000px){.sarav4{grid-template-columns:1fr!important;gap:32px!important;text-align:center}
 .sarav4 .sara__texto{justify-items:center;text-align:center}
-.sarav4__foto{max-width:260px;justify-self:center}}
+.sarav4__foto{order:0;max-width:320px;justify-self:center!important}}
+@media (max-width:760px){.sarav4__foto{max-width:260px}}
 
-.sara .firma--v4{font-family:Archivo,system-ui,sans-serif!important;font-size:1.125rem!important;font-weight:600;letter-spacing:0;color:#f6f1e8!important;display:flex;align-items:center;gap:.4em;flex-wrap:wrap;line-height:1.2}.firma--v4 .firma__logo{height:1.15em;width:auto;display:inline-block;position:relative;top:.06em}@media (max-width:760px){.sara .firma--v4{justify-content:center}}
+.sara .firma--v4{font-family:Archivo,system-ui,sans-serif!important;font-size:1.125rem!important;font-weight:600;letter-spacing:0;color:#f6f1e8!important;display:flex;align-items:center;gap:.4em;flex-wrap:wrap;line-height:1.2}.firma--v4 .firma__logo{height:1.15em;width:auto;display:inline-block;position:relative;top:.06em}@media (max-width:1000px){.sara .firma--v4{justify-content:center}}
 
 /* «10 años» siempre en la misma línea */
 .sarav4 .titular--sara em{white-space:nowrap}

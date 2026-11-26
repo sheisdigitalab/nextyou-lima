@@ -1,0 +1,26 @@
+/* «Cómo funciona» en v4 (la v3 no se toca)
+   1. El paso 01 arranca arriba (64px bajo la intro) para que se vea al llegar; 02 y 03 mantienen el efecto original (texto centrado junto al móvil fijo).
+   2. El paso 03 tiene la misma altura que los demás, para que se active y el móvil muestre su pantalla (vídeo de Laia).
+   3. Se quita el fundido de toda la sección a negro (clase cfa--negro): el bloque 04 es su propia banda negra a todo el ancho.
+      En el JS, desactiva el IntersectionObserver que pone cfa--negro solo en v4 (o deja de añadir la clase); estas reglas lo neutralizan igualmente.
+   4. 128px de crema entre el móvil y la banda negra (88 en móvil); sin franja crema entre el 04 y «Los de dentro». */
+/* «Cómo funciona»: efecto original de pasos + móvil; el paso 01 arranca arriba */
+.cfa--escena .cfa__flujo{margin-top:64px!important}
+.cfa--escena .cfa__paso{min-height:calc(100vh - 73px)!important}
+.cfa--escena .cfa__paso:first-child{justify-content:flex-start!important;padding-top:64px!important}
+.cfa--escena .cfa__paso:last-child{min-height:calc(100vh - 73px)!important;justify-content:center!important;padding:0!important}
+.cfa--escena .cfa__flujo{padding-bottom:128px!important}
+@media (max-width:767px){.cfa--escena .cfa__flujo{padding-bottom:88px!important}}
+/* El bloque 04 es su propia banda negra: sin fundido de toda la sección, sin hueco vacío y sin que el paso 03 se pise con el 04 */
+.cfa--escena,.cfa--escena.cfa--negro{background-color:#f6f1e8!important;padding-bottom:0!important}
+html body section#como-funciona.cfa--escena{padding-bottom:0!important}
+.cfa--escena.cfa--negro .cfa__cab,.cfa--escena.cfa--negro .cfa__flujo{opacity:1!important}
+.cfa--escena .cfa__prem{position:relative;background:#161412;box-shadow:0 0 0 100vmax #161412;clip-path:inset(0 -100vmax);padding-top:128px!important;padding-bottom:128px!important;margin-top:0!important}
+.cfa--escena .cfa__coach,.cfa--escena .cfa__pie{opacity:1!important;translate:0!important}
+.cfa--escena .cfa__final{opacity:1!important}
+@media (max-width:767px){.cfa--escena .cfa__prem{padding-top:88px!important;padding-bottom:88px!important}}
+html body section#como-funciona{padding-bottom:0!important}
+html body section#como-funciona .cfa__prem{padding-bottom:16px!important}
+/* Móvil y tablet vertical (cada paso lleva su móvil debajo): del móvil del paso 03 a la banda negra, 128px (88 en móvil) */
+#como-funciona:not(.cfa--escena) .cfa__hueco .cfa-app--3{margin-bottom:100px}
+@media (max-width:767px){#como-funciona:not(.cfa--escena) .cfa__hueco .cfa-app--3{margin-bottom:60px}}
