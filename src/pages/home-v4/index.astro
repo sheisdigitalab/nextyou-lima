@@ -1296,7 +1296,18 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         setTimeout(() => { ella.textContent = FRASES[c % FRASES.length]; frase.classList.remove('cfa-cambia'); c++; }, 400);
       };
 
-      // En la v4 la sección no se funde a negro: el bloque 04 (coach) es su propia banda oscura (como-funciona-v4.css)
+      // Paso 4 (ordenador): el bloque del coach se funde sobre el paso 03 y aparece ya centrado, sin pantalla negra vacía
+      // (como-funciona-v4.css). En móvil, con animaciones reducidas o en ventanas muy bajas se queda como banda oscura.
+      const prem = sec.querySelector<HTMLElement>('[data-cfa-prem]')!;
+      const fundir = () => {
+        const apto = mq.matches && !reduce && innerHeight >= 660;
+        sec.classList.toggle('cfa--fundido', apto);
+        sec.classList.toggle('cfa--acomp', apto && prem.getBoundingClientRect().top <= 2);
+      };
+      fundir();
+      addEventListener('scroll', fundir, { passive: true });
+      addEventListener('resize', fundir);
+
       const caja = sec.querySelector<HTMLElement>('.cfa__final');
       // Efecto de entrada del título «NextYou no es solo un test»: el logo se dibuja de izquierda a derecha y las palabras suben una a una
       if (caja && !reduce && 'IntersectionObserver' in window) {
