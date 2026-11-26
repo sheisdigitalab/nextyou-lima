@@ -49,11 +49,11 @@ export const uniV4 = {
 };
 
 // «La uni no es el único camino»: botón bajo el globo, cerrando la sección
-export const uniBotonV4 = { texto: 'Descubre otros caminos además de la uni' };
 
 // Sara
 export const saraV4 = {
   ...sara,
+  etiqueta: 'Por qué existe NextYou',
   titulo: 'Tardé 10 años en llegar a un trabajo que ni sabía que existía',
   resaltado: '10 años',
   // Va seguida del logo de NextYou

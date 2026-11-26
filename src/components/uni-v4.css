@@ -22,12 +22,6 @@
 @media (max-width:62.49rem){#la-uni-no-es-lo-unico .camino8::before{background:linear-gradient(to bottom,rgba(246,241,232,.55) 0%,rgba(246,241,232,.55) 72%,#c8f53b 100%)}}
 
 /* Botón justo debajo del esquema (en móvil, a todo el ancho) */
-.uni-cta{display:flex;justify-content:center;margin-top:56px;padding:0 16px}
-.uni-cta a{display:inline-flex;align-items:center;gap:10px;background:#c8f53b;color:#161412;font-weight:700;font-size:1.0625rem;text-decoration:none;border-radius:99px;padding:16px 28px;transition:transform .2s ease,box-shadow .2s ease}
-.uni-cta a:hover{transform:translateY(-2px);box-shadow:0 10px 30px -12px rgba(200,245,59,.55)}
-.uni-cta a:focus-visible{outline:2px solid #c8f53b;outline-offset:4px}
-@media (prefers-reduced-motion:reduce){.uni-cta a{transition:none}.uni-cta a:hover{transform:none}}
-@media (max-width:760px){.uni-cta{margin-top:40px}.uni-cta a{width:100%;justify-content:space-between;font-size:1rem}}
 
 /* Esquema compacto: «Tres caminos…» pegado a las cajas, menos hueco y cajas con menos relleno en móvil */
 @media (min-width:62.5rem){#la-uni-no-es-lo-unico .camino8{margin-top:104px!important}#la-uni-no-es-lo-unico .camino8__rotulo--1{transform:translateY(16px)}}

@@ -1,0 +1,28 @@
+/* Ajustes del banner «¿Y si quieres estudiar fuera?» en v4 (sobre lo ya publicado)
+   - Etiqueta al tamaño del resto de etiquetas (12px) y título al de los títulos de sección (52px / 31,2px en móvil), en 2 líneas.
+   - Caja más grande (480px de alto en escritorio), fondo negro de la página (#161412) con borde fino; globo de 700px (520px entre 901 y 1200px).
+   - Botón «Explora tu camino →» relleno lima, enlazado a /empezar/.
+   - Sin el botón «Descubre otros caminos además de la uni» bajo el esquema; 120px (80 en móvil) entre el esquema y el banner. */
+html body .bn .bn-eti{font-size:12px!important;letter-spacing:.16em!important;line-height:1.4!important;font-weight:700!important;margin-bottom:14px!important;white-space:normal!important}
+html body .bn .bn-tx h3{font-size:52px!important;font-weight:900!important;letter-spacing:-.02em!important;line-height:1.05!important;font-stretch:100%!important;max-width:none!important;text-wrap:balance}
+@media (max-width:767px){html body .bn .bn-tx h3{font-size:31.2px!important}}
+@media (min-width:901px){html body .bn{min-height:380px!important;max-height:none!important}}
+html body .bn{background:#161412!important;border:1px solid #f6f1e81f!important}
+@media (min-width:901px){
+ html body .bn{min-height:480px!important}
+ html body .bn .ng-globo{width:700px!important;left:52%!important}
+ html body .bn-tx{padding:64px 56px!important;max-width:560px}
+}
+@media (min-width:901px) and (max-width:1200px){html body .bn .ng-globo{width:560px!important;left:48%!important}}
+@media (max-width:900px){html body .bn-globo-slot{background:#161412!important;height:300px!important}}
+html body .bn .bn-cta2{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:#c8f53b;color:#161412;font-weight:700;text-decoration:none;border-radius:99px;padding:14px 24px;box-shadow:inset 0 0 0 1.5px #c8f53b;transition:background-color .2s}
+html body .bn .bn-cta2:hover{background:#d4f75e}
+html body .bn .bn-cta2:focus-visible{outline:2px solid #c8f53b;outline-offset:4px}
+@media (max-width:520px){html body .bn .bn-cta2{align-self:stretch;justify-content:space-between}}
+@media (min-width:901px){html body .bn .ng-globo{left:47%!important}}@media (min-width:901px) and (max-width:1200px){html body .bn .ng-globo{width:520px!important;left:44%!important}}@media (min-width:1201px) and (max-width:1380px){html body .bn .ng-globo{left:43%!important}}
+html body .bn-wrap{padding-top:120px!important}@media (max-width:767px){html body .bn-wrap{padding-top:80px!important}}
+
+/* Entre 901 y 1200px la columna de texto es estrecha: el título se mantiene en dos líneas */
+@media (min-width:901px) and (max-width:1200px){html body .bn .bn-tx h3{width:7.7em}}
+/* Por debajo de 1000px el esquema es una lista con 8px propios al final: así quedan 120px (80 en móvil) hasta el banner */
+@media (max-width:62.49rem){html body .bn-wrap{padding-top:112px!important}}@media (max-width:767px){html body .bn-wrap{padding-top:72px!important}}

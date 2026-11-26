@@ -2,6 +2,8 @@
 // Banner «¿Y si quieres estudiar fuera?», justo después de «La uni no es el único camino» (solo /home-v4/).
 // Referencia: exploracion/home-v4-banner/. El mapa son los puntos de dots-globo.json; usa d3-geo.
 import './banner-globo.css';
+import './banner-ajustes-v4.css';
+import { BASE } from '../../config';
 ---
 
 <div class="bn-wrap"><section class="bn sinfundido" aria-labelledby="t-fuera">
@@ -9,7 +11,8 @@ import './banner-globo.css';
  <div class="bn-tx">
   <p class="bn-eti">También fuera de España</p>
   <h3 id="t-fuera">¿Y si quieres estudiar fuera?</h3>
-  <p>Si en el test marcas que te gustaría estudiar fuera de España, tus caminos también te enseñan opciones en otros países.</p>
+  <p>Tu camino no tiene por qué empezar ni acabar aquí. Si en el test marcas que te imaginas estudiando fuera, tus caminos te abren puertas en otros países.</p>
+  <a class="bn-cta2" href={`${BASE}empezar/`}>Explora tu camino <span aria-hidden="true">→</span></a>
  </div>
 </section></div>
 

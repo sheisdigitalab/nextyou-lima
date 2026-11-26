@@ -4,7 +4,7 @@ import DOTS from './dots-globo.json';
 
 const box=document.getElementById('globo'),cv=document.getElementById('cv'),ctx=cv.getContext('2d'),pinsEl=document.getElementById('pins'),hint=document.getElementById('hint');
 const O={Madrid:[-3.70,40.42]};
-const D=[['París',2.35,48.86,'Madrid','l'],['Berlín',13.4,52.52,'Madrid','r'],['Estocolmo',18.07,59.33,'Madrid','r'],['Nueva York',-74.0,40.71,'Madrid','r'],['Dubái',55.27,25.2,'Madrid','r']];
+const D=[['París',2.35,48.86,'Madrid','l'],['Berlín',13.4,52.52,'Madrid','r'],['Estocolmo',18.07,59.33,'Madrid','r'],['Nueva York',-74.0,40.71,'Madrid','r'],['Dubái',55.27,25.2,'Madrid','l']];
 const proj=geoOrthographic().clipAngle(90).precision(.5);
 const grat=geoGraticule().step([15,15])();
 let W=0,R=0,dpr=1,minX=0,maxX=0;
@@ -41,4 +41,7 @@ box.addEventListener('pointermove',e=>{if(!drag)return;const k=90/R;rot=[drag.r[
 const end=()=>{drag=null;box.classList.remove('drag')};box.addEventListener('pointerup',end);box.addEventListener('pointercancel',end);
 box.tabIndex=0;box.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();rot[0]+=e.key==='ArrowRight'?10:-10;idle=0;hint.classList.add('off')}});
 new IntersectionObserver(es=>es.forEach(en=>{visible=en.isIntersecting}),{rootMargin:'100px'}).observe(box);
-size();addEventListener('resize',()=>{size();draw()});draw();requestAnimationFrame(loop);
+size();addEventListener('resize',()=>{size();draw()});
+// El globo cambia de tamaño también sin redimensionar la ventana (fuentes, estilos): recolocar puntos y nombres
+if('ResizeObserver' in window){const ro=new ResizeObserver(()=>{size();draw()});ro.observe(marco);ro.observe(box);}
+draw();requestAnimationFrame(loop);
