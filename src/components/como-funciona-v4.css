@@ -1,16 +1,17 @@
 /* «Cómo funciona» en v4 (la v3 no se toca)
-   1. El paso 01 arranca arriba, a 152px de la intro y alineado con el borde del móvil fijo (72px en móvil y tablet vertical);
+   1. El móvil fijo arranca a 152px de la intro (72px en móvil y tablet vertical) y el texto del paso 01 va centrado con él;
       02 y 03 mantienen el efecto original (texto centrado junto al móvil fijo).
    2. El paso 03 tiene la misma altura que los demás, para que se active y el móvil muestre su pantalla (vídeo de Laia).
    3. Se quita el fundido de toda la sección a negro (clase cfa--negro): el bloque 04 es su propia banda negra a todo el ancho.
       En el JS, desactiva el IntersectionObserver que pone cfa--negro solo en v4 (o deja de añadir la clase); estas reglas lo neutralizan igualmente.
    4. 128px de crema entre el móvil y la banda negra (88 en móvil); sin franja crema entre el 04 y «Los de dentro». */
-/* «Cómo funciona»: efecto original de pasos + móvil; el paso 01 arranca arriba */
-/* El móvil fijo empieza 24px por debajo del flujo: 128 + 24 = 152, la misma altura que el «01» */
+/* «Cómo funciona»: efecto original de pasos + móvil; el paso 01, centrado con el móvil */
+/* El móvil fijo empieza 24px por debajo del flujo: 128 + 24 = 152 */
 .cfa--escena .cfa__flujo{margin-top:128px!important}
 #como-funciona:not(.cfa--escena) .cfa__flujo{margin-top:72px!important}
 .cfa--escena .cfa__paso{min-height:calc(100vh - 73px)!important}
-.cfa--escena .cfa__paso:first-child{justify-content:flex-start!important;padding-top:24px!important}
+/* El paso 01 mide lo mismo que el móvil: así empiezan centrados entre sí en cualquier altura de ventana */
+.cfa--escena .cfa__paso:first-child{min-height:calc(670px * var(--cfa-k, 1))!important;justify-content:center!important;padding:0!important}
 .cfa--escena .cfa__paso:last-child{min-height:calc(100vh - 73px)!important;justify-content:center!important;padding:0!important}
 .cfa--escena .cfa__flujo{padding-bottom:128px!important}
 @media (max-width:767px){.cfa--escena .cfa__flujo{padding-bottom:88px!important}}
@@ -36,6 +37,8 @@ html body section#como-funciona.cfa--escena.cfa--fundido .cfa__coach{position:st
 html body section#como-funciona.cfa--escena.cfa--fundido .cfa__coach>*{opacity:0;translate:0 28px;transition:opacity .2s ease,translate .2s ease!important}
 html body section#como-funciona.cfa--escena.cfa--fundido.cfa--acomp .cfa__coach,html body section#como-funciona.cfa--escena.cfa--fundido .cfa__coach:has(:focus-visible){background-color:#161412;pointer-events:auto;transition:background-color .4s ease!important}
 html body section#como-funciona.cfa--escena.cfa--fundido.cfa--acomp .cfa__coach>*,html body section#como-funciona.cfa--escena.cfa--fundido .cfa__coach:has(:focus-visible)>*{opacity:1;translate:0 0;transition:opacity .45s ease .3s,translate .65s cubic-bezier(.2,.8,.2,1) .3s!important}
+/* El paso 03 se lee centrado un buen tramo antes de que empiece el fundido, como los otros dos */
+html body section#como-funciona.cfa--escena.cfa--fundido .cfa__flujo{padding-bottom:248px!important}
 /* Salto directo a #acompanamiento: el bloque llega ya fijo arriba (el menú queda dentro de su relleno) */
 html body section#como-funciona.cfa--escena.cfa--fundido #acompanamiento{scroll-margin-top:0}
 /* El bloque ya trae aire por debajo (va centrado en la pantalla): menos relleno al empezar «Los de dentro» */

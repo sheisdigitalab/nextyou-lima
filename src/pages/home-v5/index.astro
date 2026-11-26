@@ -1133,11 +1133,34 @@ const cursiva = (texto: string, palabra: string) => texto.replace(palabra, `<em>
         alCambiar(i);
       };
       if (reduce) apps.forEach((a) => a.classList.add('cfa-visto'));
-      const io = new IntersectionObserver((es) => {
-        es.forEach((e) => { if (e.isIntersecting) activar(Number((e.target as HTMLElement).dataset.cfaPaso)); });
-      }, { rootMargin: '-40% 0px -40% 0px' });
-      pasos.forEach((p) => io.observe(p));
+      // Ordenador: el móvil espera a su texto. Cambia cuando el texto del paso nuevo ya ha subido casi a la altura del
+      // centro del móvil (al volver, cuando el anterior ha bajado hasta ahí). En móvil, cada paso lleva su pantalla debajo.
+      const MARGEN = 80;
+      const textos = pasos.map((p) => p.querySelector<HTMLElement>('.cfa__txt')!);
+      const medio = (t: HTMLElement) => { const r = t.getBoundingClientRect(); return (r.top + r.bottom) / 2; };
+      const seguir = () => {
+        if (!mq.matches) return;
+        const e = escena.getBoundingClientRect();
+        const centro = e.top + 335 * (e.width / escena.offsetWidth); // centro del teléfono, con la escala de la ventana
+        let i = Math.max(activo, 0);
+        while (i < textos.length - 1 && medio(textos[i + 1]) <= centro + MARGEN) i++;
+        while (i > 0 && medio(textos[i - 1]) >= centro - MARGEN) i--;
+        activar(i);
+      };
+      let io: IntersectionObserver | undefined;
+      const observar = () => {
+        io?.disconnect();
+        if (mq.matches) { requestAnimationFrame(seguir); return; }
+        io = new IntersectionObserver((es) => {
+          es.forEach((e) => { if (e.isIntersecting) activar(Number((e.target as HTMLElement).dataset.cfaPaso)); });
+        }, { rootMargin: '-40% 0px -40% 0px' });
+        pasos.forEach((p) => io!.observe(p));
+      };
       activar(0);
+      observar();
+      mq.addEventListener('change', observar);
+      addEventListener('scroll', seguir, { passive: true });
+      addEventListener('resize', seguir);
 
       // Paso 1: el test avanza solo, marca una respuesta y el perfil se va llenando
       const t = sec.querySelector<HTMLElement>('[data-cfa-test]')!;
