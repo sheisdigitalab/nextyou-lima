@@ -131,11 +131,13 @@ dialog.cld .cld__in { gap: 1.5rem; margin: 0; padding: 1.5rem 2rem 2.5rem; borde
 dialog.cld .cl__qa,
 dialog.cld .cl__ex { grid-template-columns: 1fr; }
 /* Cada centro, en este orden: ciudad, universidad, titulación y, en una línea, estrellas con la nota y el precio a la derecha */
-dialog.cld .cl__centros li { flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 14px 16px; }
+dialog.cld .cl__centros li { flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 22px 24px; border-radius: 16px; }
 dialog.cld .cl__centros li > * { flex: none; }
-.cld__fila { align-self: stretch; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; margin-top: 0.5rem; }
+.cld__fila { align-self: stretch; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; margin-top: 0.85rem; }
 .cld__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .cld__nota + .cld__tags { justify-content: flex-end; margin-left: auto; } /* con estrellas, nota y precio a la derecha */
+/* Viñetas de «Qué aprendes» y «De qué puedes trabajar» en negro */
+dialog.cld .cl__ex li::before { background: #161412; }
 /* «Bueno saber»: arriba del todo, con un fondo lima muy suave */
 .cld__tip { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.9rem 1rem; border-radius: 0.9rem; background: color-mix(in srgb, var(--acento) 20%, #f6f1e8); color: #2f2a24; }
 .cld__bombilla { flex: none; display: grid; place-items: center; height: 1.4rem; color: #161412; }
@@ -151,9 +153,19 @@ dialog.cld .cl__when + .cl__when { margin-top: -0.5rem; }
 .cld__nota { display: inline-flex; align-items: center; gap: 0.35rem; margin-right: 0.25rem; font-size: 0.875rem; line-height: 1.3; color: #574e46; }
 .cld__estrellas { font-size: 1rem; letter-spacing: 0.08em; line-height: 1; color: transparent; background: linear-gradient(90deg, #161412 var(--v), rgb(22 20 18 / 0.18) var(--v)); -webkit-background-clip: text; background-clip: text; }
 /* Centros: públicos y privados por separado */
+.cld__demo + .cld__demo { margin-top: -0.85rem; }
 .cld__h { margin: 0.5rem 0 0; font-family: var(--titular); font-size: 1.25rem; font-weight: 800; line-height: 1.25; }
-.cld__grupo { display: grid; gap: 0.6rem; }
-.cld__grupo + .cld__grupo { margin-top: 0.6rem; }
+.cld__grupo { display: grid; gap: 1rem; }
+/* Aire en «Dónde»: separado de «Cuándo te apuntas», con el título, los botones y cada centro holgados */
+dialog.cld .cl__est--lugar.cl__est--v2[data-est] { gap: 2.5rem; }
+dialog.cld .cl__donde { gap: 1.25rem; }
+dialog.cld .cl__centros { gap: 1rem; }
+.cld__grupo[hidden] { display: none; }
+.cld__tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem; }
+.cld__tab { min-height: 44px; padding: 0 1.1rem; border: 1px solid rgb(22 20 18 / 0.25); border-radius: 999px; background: none; color: #161412; font: inherit; font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: background-color 200ms ease, border-color 200ms ease; }
+.cld__tab:hover { border-color: #161412; }
+.cld__tab:focus-visible { outline: 3px solid #161412; outline-offset: 2px; }
+.cld__tab[aria-pressed='true'] { border-color: #161412; background: #161412; color: #f6f1e8; }
 .cld__grupo h5 { margin: 0.35rem 0 0; font-size: 0.875rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #574e46; }
 @media (max-width: 40rem) {
   /* Que estrellas, nota y precio quepan en la misma línea */
@@ -161,7 +173,8 @@ dialog.cld .cl__when + .cl__when { margin-top: -0.5rem; }
   .cld__nota { gap: 0.25rem; margin-right: 0; }
   .cld__estrellas { letter-spacing: 0; }
   dialog.cld .cld__fila .cl__tag { padding-inline: 8px; }
-  dialog.cld .cl__centros li { padding-inline: 12px; }
+  dialog.cld .cl__centros li { padding: 18px 12px; }
+  dialog.cld .cl__est--lugar.cl__est--v2[data-est] { gap: 2rem; }
   .cld__cab { padding: 1.25rem 1.25rem 1rem; }
   dialog.cld .cld__in { padding: 1.25rem 1.25rem 2rem; }
 }

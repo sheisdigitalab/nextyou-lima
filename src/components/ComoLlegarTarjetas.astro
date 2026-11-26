@@ -70,6 +70,30 @@ const carrera = (z: Centro, f: Ficha) => {
   if (z.sub || f.titulo !== 'Universidad' || f.oficial.includes(' o ')) return z.sub;
   return `Se llama ${OTRO_NOMBRE[z.nombre] ?? f.oficial.replace(/^Grado en /, '')}`;
 };
+// Centros privados: precio orientativo «desde» (primer curso), solo donde hay una cifra publicada.
+// PENDIENTE CLIENTA: confirmar. Sin cifra fiable (UVic, UNIR, CEU, LCI) sigue «Pregunta el precio».
+const PRECIO_DESDE: Record<string, string> = {
+  'ERAM (vinculada a la UdG)': '7.515', // lista de notas de corte de la UdG, 2026
+  'Universidad Loyola': '9.940', // tabla de precios de Loyola, 2026-27
+  'EUSA (vinculada a la U. de Sevilla)': '6.382', // portales de estudios, 2025-26
+  'U-tad': '11.200', // portales de estudios, 2025-26
+};
+// Todos los centros llevan la misma línea: estrellas, nota (o cómo se entra) y precio. Lo que no trae el centro sale del
+// dato de la comunidad solo si es público; si no, se pide consultarlo. Turno y modalidad van junto a la ciudad.
+const precioPublico = (valor = '') => (valor.includes('€') ? valor.replace(/^Unos /, '').replace(' € al año', ' €/año') : 'Pregunta el precio');
+fichas.forEach((f) => f.regiones.forEach((r) => r.centros.forEach((z) => {
+  const desde = z.tipo === 'Privada' ? PRECIO_DESDE[z.nombre] : undefined;
+  const nota = z.tags.find((x) => /^nota|sin nota|prueba|entrevista/i.test(x));
+  const precio = z.tags.find((x) => /€|precio/i.test(x));
+  const extras = z.tags.filter((x) => x !== nota && x !== precio);
+  const publico = z.tipo === 'Pública';
+  const porMedia = publico && /nota (de corte )?fija|nota media/i.test(r.qa.find((q) => q.t === 'Nota para entrar')?.valor ?? '');
+  z.lugar = [z.lugar, ...extras].filter(Boolean).join(' · ');
+  z.tags = [
+    nota ?? (porMedia ? 'Por nota media' : 'Consulta el acceso'),
+    desde ? `Desde ${desde} €/año` : (precio ?? (publico ? precioPublico(r.qa.find((q) => q.t === 'Cuánto cuesta')?.valor) : 'Pregunta el precio')),
+  ];
+})));
 const dato = (r: Region, t: string) => r.qa.find((x) => x.t === t);
 const hay = (r: Region, tipo: string) => r.centros.some((z) => z.tipo === tipo);
 // La «i» sale donde se habla de nota de corte (no en «No hay» ni en «Prueba propia»)
@@ -208,18 +232,23 @@ const grupos = (centros: Centro[]) => {
               {(r.centros.length > 0 || r.avisos.length > 0) && (
                 <div class="cl__donde">
                   {r.dondeTitulo && <h4 class="cld__h">{r.dondeTitulo}</h4>}
-                  {grupos(r.centros).map((g) => (
-                    <div class="cld__grupo">
-                      {g.h && <h5>{g.h}</h5>}
+                  {grupos(r.centros).length > 1 && (
+                    <div class="cld__tabs" role="group" aria-label="Tipo de centro">
+                      {grupos(r.centros).map((g, i) => <button type="button" class="cld__tab" data-grupo={i} aria-pressed={i === 0 ? 'true' : 'false'}>{g.h}</button>)}
+                    </div>
+                  )}
+                  {grupos(r.centros).map((g, i, todos) => (
+                    <div class="cld__grupo" data-grupo={i} hidden={i > 0}>
+                      {g.h && todos.length === 1 && <h5>{g.h}</h5>}
                       <ul class="cl__centros" role="list">
                         {g.lista.map((z) => (
                           <li>
                             {z.lugar && <span class="cl__lugar">{z.lugar}</span>}
                             <b>{z.nombre}</b>
                             {carrera(z, f) && <span class="cl__sub">{carrera(z, f)}</span>}
-                            {((ESTRELLAS_EJEMPLO && f.titulo === 'Universidad') || z.tags.length > 0) && (
+                            {(ESTRELLAS_EJEMPLO || z.tags.length > 0) && (
                               <span class="cld__fila">
-                                {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && (
+                                {ESTRELLAS_EJEMPLO && (
                                   <span class="cld__nota" role="img" aria-label={`Valoración ilustrativa: ${String(estrellas(z.nombre)).replace('.', ',')} de 5, ${cuantas(z.nombre)} opiniones`}>
                                     <span class="cld__estrellas" style={`--v: ${estrellas(z.nombre) * 20}%`}>★★★★★</span>
                                     <span>({cuantas(z.nombre)})</span>
@@ -236,7 +265,8 @@ const grupos = (centros: Centro[]) => {
                     </div>
                   ))}
                   {r.avisos.map((t) => <p class="cl__aviso">{t}</p>)}
-                  {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && r.centros.length > 0 && <p class="cld__demo">Valoraciones ilustrativas.</p>}
+                  {ESTRELLAS_EJEMPLO && r.centros.length > 0 && <p class="cld__demo">Valoraciones ilustrativas.</p>}
+                  {r.centros.some((z) => z.tags.some((x) => x.startsWith('Desde '))) && <p class="cld__demo">Los precios «desde» son orientativos: confírmalos con el centro.</p>}
                 </div>
               )}
             </div>
@@ -265,6 +295,14 @@ const grupos = (centros: Centro[]) => {
       if (e.target === d && e.clientX < d.getBoundingClientRect().left) d.close();
     });
   });
+  // «Centros públicos» / «Centros privados»: se ve una lista cada vez
+  document.querySelectorAll<HTMLButtonElement>('.cld__tab').forEach((b) =>
+    b.addEventListener('click', () => {
+      const caja = b.closest('.cl__donde')!;
+      caja.querySelectorAll('.cld__tab').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      caja.querySelectorAll<HTMLElement>('.cld__grupo').forEach((g) => (g.hidden = g.dataset.grupo !== b.dataset.grupo));
+    })
+  );
   // La explicación de la «i» sale al pasar el ratón o con el teclado (solo CSS); al tocarla (móvil) se queda abierta
   document.querySelectorAll<HTMLButtonElement>('.clc__q').forEach((b) => {
     const cerrar = () => b.setAttribute('aria-expanded', 'false');
