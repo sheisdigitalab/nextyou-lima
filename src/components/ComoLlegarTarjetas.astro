@@ -18,17 +18,12 @@ const COMUNIDADES = ['cat', 'mad', 'val', 'and'] as const;
 // PENDIENTE CLIENTA: todavía no hay datos para estudiar fuera
 const AVISO_INT = 'Todavía no tenemos centros ni precios para estudiar fuera de España.';
 const TIPOS = ['Pública', 'Privada'];
-// ESTRELLAS INVENTADAS, solo para enseñar el diseño: van siempre con la etiqueta «ejemplo» porque son centros reales.
+// ESTRELLAS INVENTADAS, solo para enseñar el diseño: llevan la línea «Valoraciones ilustrativas» porque son centros reales.
 // PENDIENTE CLIENTA: decidir de dónde salen las valoraciones reales. Quitarlas (false) antes de lanzar la web.
 const ESTRELLAS_EJEMPLO = true;
 const semilla = (nombre: string) => [...nombre].reduce((s, c) => s + c.charCodeAt(0), 0);
 const estrellas = (nombre: string) => [3.6, 3.8, 3.9, 4.1, 4.3, 4.4, 4.6][semilla(nombre) % 7];
 const cuantas = (nombre: string) => 24 + (semilla(nombre) % 150);
-// Huecos de opinión: no se escribe ninguna opinión sobre centros reales
-const OPINIONES = [
-  { v: 5, t: 'Aquí irá la opinión de un alumno sobre las clases y las prácticas.' },
-  { v: 4, t: 'Aquí irá otra opinión: ambiente, profesorado y salidas.' },
-];
 
 interface Dato { t: string; valor: string; nota?: string; total?: string }
 interface Centro { nombre: string; lugar?: string; tipo?: string; tags: string[]; sub?: string }
@@ -67,6 +62,14 @@ const fichas: Ficha[] = camino
       }),
     }));
 
+// Nombre de la carrera en cada universidad, como el que ya traía Lleida. El resto se toma del nombre de la vía, salvo
+// donde se llama distinto (comprobado en su web) y en Animación, que reúne dos grados y no sabemos cuál da cada centro.
+// PENDIENTE CLIENTA: confirmar centro por centro
+const OTRO_NOMBRE: Record<string, string> = { 'ERAM (vinculada a la UdG)': 'Comunicación Audiovisual y Multimedia', UNIR: 'Ciberseguridad' };
+const carrera = (z: Centro, f: Ficha) => {
+  if (z.sub || f.titulo !== 'Universidad' || f.oficial.includes(' o ')) return z.sub;
+  return `Se llama ${OTRO_NOMBRE[z.nombre] ?? f.oficial.replace(/^Grado en /, '')}`;
+};
 const dato = (r: Region, t: string) => r.qa.find((x) => x.t === t);
 const hay = (r: Region, tipo: string) => r.centros.some((z) => z.tipo === tipo);
 // La «i» sale donde se habla de nota de corte (no en «No hay» ni en «Prueba propia»)
@@ -205,34 +208,27 @@ const grupos = (centros: Centro[]) => {
               {(r.centros.length > 0 || r.avisos.length > 0) && (
                 <div class="cl__donde">
                   {r.dondeTitulo && <h4 class="cld__h">{r.dondeTitulo}</h4>}
-                  {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && r.centros.length > 0 && <p class="cld__demo">Estrellas y valoraciones de ejemplo: todavía no son reales.</p>}
                   {grupos(r.centros).map((g) => (
                     <div class="cld__grupo">
                       {g.h && <h5>{g.h}</h5>}
                       <ul class="cl__centros" role="list">
                         {g.lista.map((z) => (
                           <li>
-                            <b>{z.nombre}</b>
                             {z.lugar && <span class="cl__lugar">{z.lugar}</span>}
-                            {z.tags.map((x) => <span class="cl__tag cl__tag--dat">{x}</span>)}
-                            {z.sub && <span class="cl__sub">{z.sub}</span>}
-                            {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && (
-                              <details class="cld__val">
-                                <summary>
-                                  <span class="cld__estrellas" style={`--v: ${estrellas(z.nombre) * 20}%`} aria-hidden="true">★★★★★</span>
-                                  <b>{String(estrellas(z.nombre)).replace('.', ',')}</b>
-                                  <span class="cld__cuantas">{cuantas(z.nombre)} valoraciones (ejemplo)</span>
-                                </summary>
-                                <ul role="list">
-                                  {OPINIONES.map((o) => (
-                                    <li>
-                                      <span class="cld__estrellas" style={`--v: ${o.v * 20}%`} role="img" aria-label={`${o.v} de 5`}>★★★★★</span>
-                                      <p>{o.t}</p>
-                                      <small>Alumno o alumna · ejemplo</small>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </details>
+                            <b>{z.nombre}</b>
+                            {carrera(z, f) && <span class="cl__sub">{carrera(z, f)}</span>}
+                            {((ESTRELLAS_EJEMPLO && f.titulo === 'Universidad') || z.tags.length > 0) && (
+                              <span class="cld__fila">
+                                {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && (
+                                  <span class="cld__nota" role="img" aria-label={`Valoración ilustrativa: ${String(estrellas(z.nombre)).replace('.', ',')} de 5, ${cuantas(z.nombre)} opiniones`}>
+                                    <span class="cld__estrellas" style={`--v: ${estrellas(z.nombre) * 20}%`}>★★★★★</span>
+                                    <span>({cuantas(z.nombre)})</span>
+                                  </span>
+                                )}
+                                {z.tags.length > 0 && (
+                                  <span class="cld__tags">{z.tags.map((x) => <span class="cl__tag cl__tag--dat">{x}</span>)}</span>
+                                )}
+                              </span>
                             )}
                           </li>
                         ))}
@@ -240,6 +236,7 @@ const grupos = (centros: Centro[]) => {
                     </div>
                   ))}
                   {r.avisos.map((t) => <p class="cl__aviso">{t}</p>)}
+                  {ESTRELLAS_EJEMPLO && f.titulo === 'Universidad' && r.centros.length > 0 && <p class="cld__demo">Valoraciones ilustrativas.</p>}
                 </div>
               )}
             </div>
