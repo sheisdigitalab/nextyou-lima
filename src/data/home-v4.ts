@@ -2,6 +2,7 @@
 // así los datos que usa la v3 no se tocan y las dos versiones se pueden comparar.
 import { sara } from './home';
 import { unicoLima, comoAppLima, uniNoUnicoLima } from './lima-v3';
+import janNuevo from '../assets/muestra/joven-jan-v4.jpg';
 
 // Portada: titular («explorar tu futuro» va a rotulador) y lema del pie
 export const heroV4 = {
@@ -21,6 +22,10 @@ export const unicoV4Home = {
   etiqueta: 'No eres el único que se siente perdido',
   titulo: 'Jóvenes como tú que están dudando sobre qué estudiar y a qué dedicarse',
   resaltado: 'qué estudiar y a qué dedicarse',
+  // Cara nueva para Jan solo aquí: la foto anterior sigue en / y en la v3
+  personas: unicoLima.personas.map((p) =>
+    p.nombre === 'Jan' ? { ...p, foto: janNuevo, alt: 'Jan sonriendo, con camiseta clara, junto a una pared blanca.' } : p,
+  ),
 };
 
 // Acompañamiento (paso 4 de «Cómo funciona»): nuevo párrafo; la línea «El test, los caminos y las historias son gratis.» se quita en la página
